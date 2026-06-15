@@ -738,7 +738,7 @@ exports.dashboardSynthese = async (req, res) => {
          AND ft.code != 'PS-ME-MC-A'
          AND s.statut IN ('SOUMIS','VALIDE')
          AND DATE_TRUNC('month', s.date_soumission) = make_date($1,$2,1)
-         ${ligne_id ? `AND e.ligne_id = $3` : ''}`,
+         ${ligne_id ? `AND e.ligne_production = $3` : ''}`,
       ligne_id ? [anneeInt, moisInt, ligne_id] : [anneeInt, moisInt]
     );
 
@@ -787,7 +787,7 @@ exports.suiviEquipementsParLigne = async (req, res) => {
     let filter = '';
     if (ligne_id) {
       params.push(ligne_id);
-      filter = ` AND e.ligne_id = $${params.length}`;
+      filter = ` AND e.ligne_production = $${params.length}`;
     }
 
     const { rows } = await db.query(
@@ -806,7 +806,7 @@ exports.suiviEquipementsParLigne = async (req, res) => {
          sea.responsable,
          sea.delai
        FROM equipements e
-       LEFT JOIN ligne_production lp ON e.ligne_id = lp.id
+       LEFT JOIN ligne_production lp ON lp.code = e.ligne_production
        LEFT JOIN v_maintenance_equipement_suivi v
          ON v.equipement_id = e.id AND v.mois_annee = make_date($1, $2, 1)
        LEFT JOIN suivi_equipement_action sea
@@ -888,13 +888,13 @@ exports.graphiqueEvolutionMaintenance = async (req, res) => {
         COUNT(*) AS nb_interventions
       FROM intervention_quart i
       JOIN equipements e ON i.equipement_id = e.id
-      LEFT JOIN ligne_production lp ON e.ligne_id = lp.id
+      LEFT JOIN ligne_production lp ON lp.code = e.ligne_production
       WHERE EXTRACT(YEAR FROM i.modifie_le) = $1
     `;
 
     if (ligne_id) {
       params.push(ligne_id);
-      query += ` AND e.ligne_id = $${params.length}`;
+      query += ` AND e.ligne_production = $${params.length}`;
     }
 
     if (equipement_id) {
