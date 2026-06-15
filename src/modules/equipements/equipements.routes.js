@@ -1,10 +1,10 @@
-const express = require('express');
-const router = express.Router();
-const ctrl = require('./equipements.controller');
-const auth = require('../../middleware/auth');
-const roles = require('../../middleware/roles');
+const express  = require('express');
+const router   = express.Router();
+const ctrl     = require('./equipements.controller');
+const auth     = require('../../middleware/auth');
+const roles    = require('../../middleware/roles');
 const validate = require('../../middleware/validate');
-const Joi = require('joi');
+const Joi      = require('joi');
 
 const createSchema = Joi.object({
     code_ref:              Joi.string().max(50).required(),
@@ -17,7 +17,6 @@ const createSchema = Joi.object({
     prochaine_maintenance: Joi.string().isoDate().optional().allow(null, ''),
 });
 
-// Schema séparé pour PUT — toutes les colonnes optionnelles
 const updateSchema = Joi.object({
     code_ref:              Joi.string().max(50).optional(),
     nom:                   Joi.string().max(200).optional(),
@@ -31,11 +30,26 @@ const updateSchema = Joi.object({
 
 router.use(auth);
 
-router.get('/',                  ctrl.getAll);
-router.get('/:id',               ctrl.getById);
-router.get('/:id/historique',    ctrl.getHistorique);
-router.post('/',                 roles('ADMIN','RESP_MAINT'), validate(createSchema), ctrl.create);
-router.put('/:id',               roles('ADMIN','RESP_MAINT'), validate(updateSchema), ctrl.update);
-router.patch('/:id/etat',        roles('ADMIN','RESP_MAINT','TECHNICIEN'), ctrl.updateEtat);
+// ── CRUD équipements ──────────────────────────────────────────────
+router.get('/',               ctrl.getAll);
+router.get('/:id',            ctrl.getById);
+router.get('/:id/historique', ctrl.getHistorique);
+router.post('/',              roles('ADMIN','RESP_MAINT'), validate(createSchema), ctrl.create);
+router.put('/:id',            roles('ADMIN','RESP_MAINT'), validate(updateSchema), ctrl.update);
+router.patch('/:id/etat',     roles('ADMIN','RESP_MAINT','TECHNICIEN'), ctrl.updateEtat);
+
+// ── Prédictions IA pannes ─────────────────────────────────────────
+router.get('/ia/predictions', async (req, res, next) => {
+    try {
+        const iaService = require('../../services/ia.service');
+        const now   = new Date();
+        const mois  = parseInt(req.query.mois)  || now.getMonth() + 1;
+        const annee = parseInt(req.query.annee) || now.getFullYear();
+
+        const data = await iaService.getPredictionsPannes(annee, mois);
+        if (!data) return res.json({ disponible: false, predictions: [] });
+        res.json({ disponible: true, ...data });
+    } catch (err) { next(err); }
+});
 
 module.exports = router;
