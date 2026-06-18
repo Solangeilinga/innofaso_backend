@@ -30,15 +30,7 @@ const updateSchema = Joi.object({
 
 router.use(auth);
 
-// ── CRUD équipements ──────────────────────────────────────────────
-router.get('/',               ctrl.getAll);
-router.get('/:id',            ctrl.getById);
-router.get('/:id/historique', ctrl.getHistorique);
-router.post('/',              roles('ADMIN','RESP_MAINT'), validate(createSchema), ctrl.create);
-router.put('/:id',            roles('ADMIN','RESP_MAINT'), validate(updateSchema), ctrl.update);
-router.patch('/:id/etat',     roles('ADMIN','RESP_MAINT','TECHNICIEN'), ctrl.updateEtat);
-
-// ── Prédictions IA pannes ─────────────────────────────────────────
+// ── Routes fixes en PREMIER (avant /:id) ─────────────────────────
 router.get('/ia/predictions', async (req, res, next) => {
     try {
         const iaService = require('../../services/ia.service');
@@ -51,5 +43,13 @@ router.get('/ia/predictions', async (req, res, next) => {
         res.json({ disponible: true, ...data });
     } catch (err) { next(err); }
 });
+
+// ── Routes dynamiques /:id en DERNIER ────────────────────────────
+router.get('/',               ctrl.getAll);
+router.get('/:id',            ctrl.getById);
+router.get('/:id/historique', ctrl.getHistorique);
+router.post('/',              roles('ADMIN','RESP_MAINT'), validate(createSchema), ctrl.create);
+router.put('/:id',            roles('ADMIN','RESP_MAINT'), validate(updateSchema), ctrl.update);
+router.patch('/:id/etat',     roles('ADMIN','RESP_MAINT','TECHNICIEN'), ctrl.updateEtat);
 
 module.exports = router;
