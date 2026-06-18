@@ -20,8 +20,6 @@ const equipementsRoutes = require('./src/modules/equipements/equipements.routes'
 const alertesRoutes     = require('./src/modules/alertes/alertes.routes');
 const planningRoutes    = require('./src/modules/planning/planning.routes');
 const lignesRoutes      = require('./src/modules/lignes/lignes.routes');
-const stockRoutes       = require('./src/modules/stock/stock.routes');
-const matieresRoutes    = require('./src/modules/matieres/matieres.routes');
 const rapportsRoutes    = require('./src/modules/rapports/rapports.routes');
 const dashboardRoutes   = require('./src/modules/dashboard/dashboard.routes');
 
@@ -88,8 +86,6 @@ app.use(`${v1}/equipements`,  equipementsRoutes);
 app.use(`${v1}/alertes`,      alertesRoutes);
 app.use(`${v1}/planning`,     planningRoutes);
 app.use(`${v1}/lignes`,       lignesRoutes);
-app.use(`${v1}/stock`,        stockRoutes);
-app.use(`${v1}/matieres`,     matieresRoutes);
 app.use(`${v1}/rapports`,     rapportsRoutes);
 app.use(`${v1}/dashboard`,    dashboardRoutes);
 

@@ -182,7 +182,10 @@ const updateStatut = async (id, statut, userId, role, ip, appareil, commentaire)
     };
 
     const { rows } = await query(
-        'SELECT statut, utilisateur_id FROM soumissions WHERE id = $1', [id]
+        `SELECT s.statut, s.utilisateur_id, ft.module
+         FROM soumissions s
+         JOIN formulaires_types ft ON ft.id = s.formulaire_type_id
+         WHERE s.id = $1`, [id]
     );
     if (rows.length === 0) {
         const err = new Error('Soumission non trouvée.');
@@ -191,10 +194,21 @@ const updateStatut = async (id, statut, userId, role, ip, appareil, commentaire)
     }
 
     const actuel = rows[0].statut;
-    if (['VALIDE','REJETE'].includes(statut) && !['ADMIN','RESP_MAINT','RESP_PROD'].includes(role)) {
-        const err = new Error('Droits insuffisants pour valider/rejeter.');
-        err.statusCode = 403;
-        throw err;
+    const module = rows[0].module; // 'MAINTENANCE' ou 'PRODUCTION'
+
+    if (['VALIDE','REJETE'].includes(statut)) {
+        const autorise =
+            role === 'ADMIN' ||
+            (module === 'MAINTENANCE' && role === 'RESP_MAINT') ||
+            (module === 'PRODUCTION'  && role === 'RESP_PROD');
+
+        if (!autorise) {
+            const err = new Error(
+                `Seul le responsable ${module === 'MAINTENANCE' ? 'maintenance' : 'production'} peut valider ce formulaire.`
+            );
+            err.statusCode = 403;
+            throw err;
+        }
     }
     if (!(TRANSITIONS[actuel] || []).includes(statut)) {
         const err = new Error(`Transition interdite : ${actuel} → ${statut}.`);
