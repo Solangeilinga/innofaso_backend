@@ -9,7 +9,10 @@ CREATE TABLE IF NOT EXISTS pieces_rechange (
   cree_le         TIMESTAMP    NOT NULL DEFAULT NOW()
 );
 
-CREATE TYPE type_mouvement AS ENUM ('ENTREE', 'SORTIE');
+DO $$ BEGIN
+  CREATE TYPE type_mouvement AS ENUM ('ENTREE', 'SORTIE');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 CREATE TABLE IF NOT EXISTS mouvements_stock (
   id              UUID      PRIMARY KEY DEFAULT uuid_generate_v4(),

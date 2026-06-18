@@ -1,5 +1,11 @@
-CREATE TYPE statut_soumission AS ENUM ('BROUILLON', 'SOUMIS');
-CREATE TYPE source_soumission  AS ENUM ('EN_LIGNE', 'HORS_LIGNE');
+DO $$ BEGIN
+  CREATE TYPE statut_soumission AS ENUM ('BROUILLON', 'SOUMIS');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$ BEGIN
+  CREATE TYPE source_soumission  AS ENUM ('EN_LIGNE', 'HORS_LIGNE');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- ================================================================
 -- SOUMISSION  — une saisie terrain complète

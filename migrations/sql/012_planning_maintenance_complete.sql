@@ -22,11 +22,11 @@ INSERT INTO ligne_production (code, nom) VALUES
 ON CONFLICT (code) DO NOTHING;
 
 -- ── 2. AJOUTER ligne_id À EQUIPEMENT ───────────────────────────
-ALTER TABLE equipement 
+ALTER TABLE equipements 
 ADD COLUMN IF NOT EXISTS ligne_id UUID REFERENCES ligne_production(id);
 
 -- Mettre à jour les équipements existants avec ligne_production VARCHAR
-UPDATE equipement e
+UPDATE equipements e
 SET ligne_id = lp.id
 FROM ligne_production lp
 WHERE e.ligne_production IS NOT NULL 
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS planning_semaine (
   date_fin_semaine     DATE NOT NULL,
   semaine_num          INTEGER NOT NULL,
   annee                INTEGER NOT NULL,
-  admin_id             UUID NOT NULL REFERENCES utilisateur(id),
+  admin_id             UUID NOT NULL REFERENCES utilisateurs(id),
   statut               VARCHAR(50) NOT NULL DEFAULT 'BROUILLON',
   notes                TEXT,
   cree_le              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -88,8 +88,8 @@ CREATE TABLE IF NOT EXISTS planning_quart (
   id                 UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   planning_jour_id   UUID NOT NULL REFERENCES planning_jour(id) ON DELETE CASCADE,
   quart_id           UUID NOT NULL REFERENCES quart_maintenance(id),
-  maintenancier_id   UUID NOT NULL REFERENCES utilisateur(id),
-  co_maintenancier_id UUID REFERENCES utilisateur(id),
+  maintenancier_id   UUID NOT NULL REFERENCES utilisateurs(id),
+  co_maintenancier_id UUID REFERENCES utilisateurs(id),
   cree_le            TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE(planning_jour_id, quart_id)
 );
@@ -102,7 +102,7 @@ CREATE INDEX IF NOT EXISTS idx_planning_quart_maintenancier ON planning_quart(ma
 CREATE TABLE IF NOT EXISTS intervention_quart (
   id                 UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   planning_quart_id  UUID NOT NULL REFERENCES planning_quart(id) ON DELETE CASCADE,
-  equipement_id      UUID NOT NULL REFERENCES equipement(id),
+  equipement_id      UUID NOT NULL REFERENCES equipements(id),
   duree_arret_effectif DECIMAL(10,2) NOT NULL DEFAULT 0,
   cause_indisponibilite VARCHAR(500),
   observations       TEXT,
@@ -137,23 +137,24 @@ CREATE TRIGGER trg_calc_taux_disponibilite
   FOR EACH ROW EXECUTE FUNCTION calculer_taux_disponibilite();
 
 -- ── 8. ENRICHIR planning_maintenance (table existante) ────────
-ALTER TABLE planning_maintenance
+ALTER TABLE plannings_maintenance
 ADD COLUMN IF NOT EXISTS ligne_id UUID REFERENCES ligne_production(id),
 ADD COLUMN IF NOT EXISTS quart_id UUID REFERENCES quart_maintenance(id),
-ADD COLUMN IF NOT EXISTS co_maintenancier_id UUID REFERENCES utilisateur(id),
+ADD COLUMN IF NOT EXISTS co_maintenancier_id UUID REFERENCES utilisateurs(id),
 ADD COLUMN IF NOT EXISTS duree_arret DECIMAL(10,2),
 ADD COLUMN IF NOT EXISTS cause_indisponibilite VARCHAR(500),
 ADD COLUMN IF NOT EXISTS observations TEXT,
 ADD COLUMN IF NOT EXISTS temps_couverture DECIMAL(10,2) DEFAULT 8.0,
 ADD COLUMN IF NOT EXISTS taux_disponibilite DECIMAL(5,2),
 ADD COLUMN IF NOT EXISTS taux_cible DECIMAL(5,2) DEFAULT 90.0,
-ADD COLUMN IF NOT EXISTS source_soumission_id UUID REFERENCES soumission(id);
+ADD COLUMN IF NOT EXISTS source_soumission_id UUID REFERENCES soumissions(id);
 
-CREATE INDEX IF NOT EXISTS idx_planning_ligne ON planning_maintenance(ligne_id);
-CREATE INDEX IF NOT EXISTS idx_planning_quart ON planning_maintenance(quart_id);
+CREATE INDEX IF NOT EXISTS idx_planning_ligne ON plannings_maintenance(ligne_id);
+CREATE INDEX IF NOT EXISTS idx_planning_quart ON plannings_maintenance(quart_id);
 
 -- ── 9. VUE: Dashboard maintenance par mois ─────────────────────
-CREATE OR REPLACE VIEW v_maintenance_dashboard_mensuel AS
+DROP VIEW IF EXISTS v_maintenance_dashboard_mensuel CASCADE;
+CREATE VIEW v_maintenance_dashboard_mensuel AS
 SELECT 
   DATE_TRUNC('month', i.modifie_le)::DATE AS mois,
   pq.maintenancier_id,
@@ -170,14 +171,15 @@ SELECT
   STRING_AGG(DISTINCT i.cause_indisponibilite, ' | ') AS causes
 FROM intervention_quart i
 JOIN planning_quart pq ON i.planning_quart_id = pq.id
-JOIN utilisateur u ON pq.maintenancier_id = u.id
-JOIN equipement e ON i.equipement_id = e.id
+JOIN utilisateurs u ON pq.maintenancier_id = u.id
+JOIN equipements e ON i.equipement_id = e.id
 LEFT JOIN ligne_production lp ON e.ligne_id = lp.id
 GROUP BY DATE_TRUNC('month', i.modifie_le), pq.maintenancier_id, u.nom, u.prenom,
          e.id, e.nom, e.code_ref, lp.code;
 
 -- ── 10. VUE: Suivi maintenance par équipement ──────────────────
-CREATE OR REPLACE VIEW v_maintenance_equipement_suivi AS
+DROP VIEW IF EXISTS v_maintenance_equipement_suivi CASCADE;
+CREATE VIEW v_maintenance_equipement_suivi AS
 SELECT 
   DATE_TRUNC('month', i.modifie_le)::DATE AS mois_annee,
   e.id AS equipement_id,
@@ -189,7 +191,7 @@ SELECT
   AVG(i.taux_disponibilite_calcule) AS avg_disponibilite,
   STRING_AGG(DISTINCT i.observations, ' | ') AS remarques
 FROM intervention_quart i
-JOIN equipement e ON i.equipement_id = e.id
+JOIN equipements e ON i.equipement_id = e.id
 LEFT JOIN ligne_production lp ON e.ligne_id = lp.id
 GROUP BY DATE_TRUNC('month', i.modifie_le), e.id, e.nom, e.code_ref, lp.code;
 

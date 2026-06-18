@@ -1,6 +1,10 @@
-CREATE TYPE etat_equipement AS ENUM (
-  'OPERATIONNEL', 'EN_PANNE', 'EN_MAINTENANCE'
-);
+DO $$ BEGIN
+  CREATE TYPE etat_equipement AS ENUM (
+    'OPERATIONNEL', 'EN_PANNE', 'EN_MAINTENANCE'
+  );
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 CREATE TABLE IF NOT EXISTS equipements (
   id                    UUID         PRIMARY KEY DEFAULT uuid_generate_v4(),

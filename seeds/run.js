@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const { pool } = require('../src/config/db');
 const bcrypt = require('bcrypt');
 
@@ -46,7 +48,8 @@ async function seed() {
         { code: 'PS-ME-EN-FOH-A', titre: "Maintenance du fondoir à huile", module: 'MAINTENANCE', frequence: 'JOURNALIER' },
         { code: 'PS-ME-EN-FVE-A', titre: "Intervention fiche de vie des équipements", module: 'MAINTENANCE', frequence: 'JOURNALIER' },
         { code: 'PS-ME-EN-GCG-A', titre: "Gestion de la consommation des groupes électrogènes", module: 'MAINTENANCE', frequence: 'JOURNALIER' },
-        { code: 'PS-ME-EN-MCI-A', titre: "Maintenance de conditionneuse IMANPACK", module: 'MAINTENANCE', frequence: 'JOURNALIER' },
+        { code: 'PS-ME-EN-MCI-A', titre: "Maintenance de conditionneuse simple", module: 'MAINTENANCE', frequence: 'JOURNALIER' },
+        { code: 'PS-ME-EN-MCI-B', titre: "Maintenance conditionneuse IMANPACK", module: 'MAINTENANCE', frequence: 'JOURNALIER' },
         { code: 'PS-ME-EN-MCP-A', titre: "Maintenance corrective – pannes", module: 'MAINTENANCE', frequence: 'JOURNALIER' },
         { code: 'PS-ME-EN-MCT-A', titre: "Maintenance cuve tampon", module: 'MAINTENANCE', frequence: 'JOURNALIER' },
         { code: 'PS-ME-EN-MEC-A', titre: "Maintenance échangeur de chaleur", module: 'MAINTENANCE', frequence: 'JOURNALIER' },

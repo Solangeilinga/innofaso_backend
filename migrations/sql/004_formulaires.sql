@@ -1,8 +1,11 @@
 -- 004_formulaires.sql (version améliorée)
-CREATE TYPE type_champ AS ENUM (
-  'TEXTE', 'NOMBRE', 'DATE', 'HEURE',
-  'BOOLEEN', 'LISTE', 'SIGNATURE', 'CALCULE', 'PHOTO'
-);
+DO $$ BEGIN
+  CREATE TYPE type_champ AS ENUM (
+    'TEXTE', 'NOMBRE', 'DATE', 'HEURE',
+    'BOOLEEN', 'LISTE', 'SIGNATURE', 'CALCULE', 'PHOTO'
+  );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- ================================================================
 -- FORMULAIRE_TYPE — définition statique de chaque formulaire

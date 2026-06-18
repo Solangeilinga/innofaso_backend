@@ -17,7 +17,10 @@ CREATE TABLE IF NOT EXISTS matieres_premieres (
   modifie_le       TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
 
-CREATE TYPE type_mouvement_mp AS ENUM ('ENTREE', 'SORTIE', 'AJUSTEMENT');
+DO $$ BEGIN
+  CREATE TYPE type_mouvement_mp AS ENUM ('ENTREE', 'SORTIE', 'AJUSTEMENT');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 CREATE TABLE IF NOT EXISTS mouvements_matieres (
   id               UUID         PRIMARY KEY DEFAULT uuid_generate_v4(),

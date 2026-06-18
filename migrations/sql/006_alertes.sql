@@ -1,10 +1,16 @@
-CREATE TYPE type_alerte AS ENUM (
-  'MAINTENANCE_PREVENTIVE',
-  'FORMULAIRE_EN_RETARD',
-  'PANNE_CRITIQUE',
-  'STOCK_BAS'
-);
-CREATE TYPE statut_alerte AS ENUM ('NON_LUE', 'LUE', 'TRAITEE');
+DO $$ BEGIN
+  CREATE TYPE type_alerte AS ENUM (
+    'MAINTENANCE_PREVENTIVE',
+    'FORMULAIRE_EN_RETARD',
+    'PANNE_CRITIQUE',
+    'STOCK_BAS'
+  );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$ BEGIN
+  CREATE TYPE statut_alerte AS ENUM ('NON_LUE', 'LUE', 'TRAITEE');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 CREATE TABLE IF NOT EXISTS alertes (
   id              UUID      PRIMARY KEY DEFAULT uuid_generate_v4(),

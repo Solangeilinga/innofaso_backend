@@ -1,0 +1,442 @@
+[2026-06-18T14:11:25.519Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T14:11:25.709Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T14:11:25.520Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T14:18:30.806Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T14:18:30.805Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T14:18:30.819Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T14:18:56.674Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T14:18:56.675Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T14:18:56.696Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T14:20:03.108Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T14:20:03.108Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T14:20:03.125Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T14:20:53.670Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T14:20:53.671Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T14:20:53.692Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T14:22:13.758Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T14:22:13.759Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T14:22:13.779Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T14:27:47.771Z] [INFO] [0mPOST /api/v1/auth/login [32m200[0m 349.398 ms - 551[0m
+[2026-06-18T14:27:50.161Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [32m200[0m 14.301 ms - 11[0m
+[2026-06-18T14:27:50.175Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.974 ms - -[0m
+[2026-06-18T14:27:50.243Z] [INFO] [0mGET /api/v1/planning/lignes [32m200[0m 91.429 ms - 472[0m
+[2026-06-18T14:27:50.255Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 2.573 ms - -[0m
+[2026-06-18T14:27:50.273Z] [INFO] [0mGET /api/v1/planning/suivi-equipements?mois=6&annee=2026 [32m200[0m 114.757 ms - 2[0m
+[2026-06-18T14:27:50.283Z] [INFO] [0mGET /api/v1/planning/suivi-equipements?mois=6&annee=2026 [36m304[0m 2.863 ms - -[0m
+[2026-06-18T14:27:50.285Z] [INFO] [0mGET /api/v1/planning/graphiques?mois=6&annee=2026 [32m200[0m 128.106 ms - 1133[0m
+[2026-06-18T14:27:50.287Z] [INFO] [0mGET /api/v1/planning/synthese?mois=6&annee=2026 [32m200[0m 131.992 ms - 190[0m
+[2026-06-18T14:27:50.302Z] [INFO] [0mGET /api/v1/planning/graphiques?mois=6&annee=2026 [36m304[0m 10.902 ms - -[0m
+[2026-06-18T14:27:50.306Z] [INFO] [0mGET /api/v1/planning/synthese?mois=6&annee=2026 [36m304[0m 11.517 ms - -[0m
+[2026-06-18T14:27:53.176Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 8.776 ms - -[0m
+[2026-06-18T14:27:53.183Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [32m200[0m 17.878 ms - 14836[0m
+[2026-06-18T14:27:53.198Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 6.968 ms - -[0m
+[2026-06-18T14:28:13.678Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&frequence=JOURNALIER&actif=true [32m200[0m 4.191 ms - 6746[0m
+[2026-06-18T14:28:17.610Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 5.690 ms - -[0m
+[2026-06-18T14:28:17.611Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [32m200[0m 4.507 ms - 122[0m
+[2026-06-18T14:28:17.612Z] [INFO] [0mGET /api/v1/equipements [32m200[0m 7.866 ms - 100[0m
+[2026-06-18T14:28:17.617Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24 [32m200[0m 12.085 ms - 6783[0m
+[2026-06-18T14:28:17.624Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 1.870 ms - -[0m
+[2026-06-18T14:28:17.631Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24 [36m304[0m 4.804 ms - -[0m
+[2026-06-18T14:28:17.633Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 7.888 ms - -[0m
+[2026-06-18T14:29:13.250Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.577 ms - -[0m
+[2026-06-18T14:29:13.259Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 7.231 ms - -[0m
+[2026-06-18T14:29:13.273Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 4.556 ms - -[0m
+[2026-06-18T14:29:14.765Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.386 ms - -[0m
+[2026-06-18T14:29:14.773Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24 [36m304[0m 9.440 ms - -[0m
+[2026-06-18T14:29:14.786Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24 [36m304[0m 4.864 ms - -[0m
+[2026-06-18T14:29:25.617Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.117 ms - -[0m
+[2026-06-18T14:29:25.621Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 5.391 ms - -[0m
+[2026-06-18T14:29:25.635Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 6.910 ms - -[0m
+[2026-06-18T14:29:38.873Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 8.412 ms - -[0m
+[2026-06-18T14:29:38.877Z] [INFO] [0mGET /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030 [32m200[0m 13.370 ms - 17354[0m
+[2026-06-18T14:29:38.904Z] [INFO] [0mGET /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030 [36m304[0m 9.310 ms - -[0m
+[2026-06-18T14:29:38.956Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 85.543 ms - -[0m
+[2026-06-18T14:29:38.960Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 91.698 ms - -[0m
+[2026-06-18T14:29:38.967Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 1.744 ms - -[0m
+[2026-06-18T14:29:38.975Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 9.148 ms - -[0m
+[2026-06-18T14:30:38.862Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.538 ms - -[0m
+[2026-06-18T14:31:38.859Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.605 ms - -[0m
+[2026-06-18T14:32:38.870Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.680 ms - -[0m
+[2026-06-18T14:33:12.544Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.815 ms - -[0m
+[2026-06-18T14:33:12.621Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 78.913 ms - -[0m
+[2026-06-18T14:33:12.629Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 3.538 ms - -[0m
+[2026-06-18T14:33:15.978Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 5.168 ms - -[0m
+[2026-06-18T14:33:15.987Z] [INFO] [0mGET /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030 [36m304[0m 11.167 ms - -[0m
+[2026-06-18T14:33:16.001Z] [INFO] [0mGET /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030 [36m304[0m 6.410 ms - -[0m
+[2026-06-18T14:34:15.979Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.605 ms - -[0m
+[2026-06-18T14:35:15.983Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.555 ms - -[0m
+[2026-06-18T14:36:15.982Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.166 ms - -[0m
+[2026-06-18T14:37:08.539Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 10.329 ms - -[0m
+[2026-06-18T14:37:08.554Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 7.715 ms - -[0m
+[2026-06-18T14:37:08.607Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 77.789 ms - -[0m
+[2026-06-18T14:37:12.947Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.597 ms - -[0m
+[2026-06-18T14:37:12.961Z] [INFO] [0mGET /api/v1/formulaires/afb7c3d2-9309-40ee-b91c-5fa76e0d2171 [32m200[0m 13.557 ms - 4173[0m
+[2026-06-18T14:37:12.974Z] [INFO] [0mGET /api/v1/formulaires/afb7c3d2-9309-40ee-b91c-5fa76e0d2171 [36m304[0m 8.164 ms - -[0m
+[2026-06-18T14:37:13.028Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 81.888 ms - -[0m
+[2026-06-18T14:37:13.029Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 84.763 ms - -[0m
+[2026-06-18T14:37:13.037Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 2.356 ms - -[0m
+[2026-06-18T14:37:13.043Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 7.556 ms - -[0m
+[2026-06-18T14:37:17.920Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.074 ms - -[0m
+[2026-06-18T14:37:17.933Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 14.564 ms - -[0m
+[2026-06-18T14:37:17.945Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 5.859 ms - -[0m
+[2026-06-18T14:37:19.639Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.150 ms - -[0m
+[2026-06-18T14:37:19.648Z] [INFO] [0mGET /api/v1/formulaires/afb7c3d2-9309-40ee-b91c-5fa76e0d2171 [36m304[0m 9.558 ms - -[0m
+[2026-06-18T14:37:19.659Z] [INFO] [0mGET /api/v1/formulaires/afb7c3d2-9309-40ee-b91c-5fa76e0d2171 [36m304[0m 3.707 ms - -[0m
+[2026-06-18T14:37:48.599Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 12.501 ms - -[0m
+[2026-06-18T14:37:48.614Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 23.395 ms - -[0m
+[2026-06-18T14:37:48.638Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 6.659 ms - -[0m
+[2026-06-18T14:37:50.392Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.984 ms - -[0m
+[2026-06-18T14:37:50.395Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 3.459 ms - -[0m
+[2026-06-18T14:37:50.398Z] [INFO] [0mGET /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030 [36m304[0m 9.143 ms - -[0m
+[2026-06-18T14:37:50.404Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 13.952 ms - -[0m
+[2026-06-18T14:37:50.410Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 1.700 ms - -[0m
+[2026-06-18T14:37:50.434Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 18.122 ms - -[0m
+[2026-06-18T14:37:50.444Z] [INFO] [0mGET /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030 [36m304[0m 29.678 ms - -[0m
+[2026-06-18T14:37:51.882Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.569 ms - -[0m
+[2026-06-18T14:37:51.891Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 7.782 ms - -[0m
+[2026-06-18T14:37:51.904Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 5.831 ms - -[0m
+[2026-06-18T14:37:53.813Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.101 ms - -[0m
+[2026-06-18T14:37:53.816Z] [INFO] [0mGET /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030 [36m304[0m 5.041 ms - -[0m
+[2026-06-18T14:37:53.865Z] [INFO] [0mGET /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030 [36m304[0m 4.462 ms - -[0m
+[2026-06-18T14:38:53.814Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.535 ms - -[0m
+[2026-06-18T14:39:07.393Z] [INFO] [0mPOST /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030/champs [32m201[0m 16.570 ms - 591[0m
+[2026-06-18T14:39:07.405Z] [INFO] [0mGET /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030 [32m200[0m 4.130 ms - 17970[0m
+[2026-06-18T14:39:48.033Z] [INFO] [0mDELETE /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030/champs/ee2b49a7-a977-4a0b-860a-d1fe3345197f [32m200[0m 4.666 ms - 29[0m
+[2026-06-18T14:39:53.816Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.807 ms - -[0m
+[2026-06-18T14:40:28.561Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.630 ms - -[0m
+[2026-06-18T14:40:28.654Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 93.787 ms - -[0m
+[2026-06-18T14:40:28.663Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 4.037 ms - -[0m
+[2026-06-18T14:40:31.598Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.575 ms - -[0m
+[2026-06-18T14:40:31.600Z] [INFO] [0mGET /api/v1/formulaires/afb7c3d2-9309-40ee-b91c-5fa76e0d2171 [36m304[0m 4.995 ms - -[0m
+[2026-06-18T14:40:31.611Z] [INFO] [0mGET /api/v1/formulaires/afb7c3d2-9309-40ee-b91c-5fa76e0d2171 [36m304[0m 4.978 ms - -[0m
+[2026-06-18T14:40:58.795Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.864 ms - -[0m
+[2026-06-18T14:40:58.800Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 6.586 ms - -[0m
+[2026-06-18T14:40:58.811Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 4.462 ms - -[0m
+[2026-06-18T14:41:15.169Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&frequence=JOURNALIER&actif=true [36m304[0m 4.209 ms - -[0m
+[2026-06-18T14:41:23.216Z] [INFO] [0mGET /api/v1/formulaires?search=n&module=MAINTENANCE&frequence=JOURNALIER&actif=true [32m200[0m 5.150 ms - 6746[0m
+[2026-06-18T14:41:23.669Z] [INFO] [0mGET /api/v1/formulaires?search=ne&module=MAINTENANCE&frequence=JOURNALIER&actif=true [32m200[0m 10.431 ms - 2193[0m
+[2026-06-18T14:41:24.923Z] [INFO] [0mGET /api/v1/formulaires?search=net&module=MAINTENANCE&frequence=JOURNALIER&actif=true [32m200[0m 4.053 ms - 307[0m
+[2026-06-18T14:41:29.231Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.849 ms - -[0m
+[2026-06-18T14:41:29.236Z] [INFO] [0mGET /api/v1/formulaires/332400b3-77fa-4e4a-9ccf-192a2d693975 [32m200[0m 10.419 ms - 4058[0m
+[2026-06-18T14:41:29.250Z] [INFO] [0mGET /api/v1/formulaires/332400b3-77fa-4e4a-9ccf-192a2d693975 [36m304[0m 5.180 ms - -[0m
+[2026-06-18T14:41:29.306Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 77.856 ms - -[0m
+[2026-06-18T14:41:29.307Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 80.055 ms - -[0m
+[2026-06-18T14:41:29.313Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 1.228 ms - -[0m
+[2026-06-18T14:41:29.318Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 3.033 ms - -[0m
+[2026-06-18T14:42:02.656Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.348 ms - -[0m
+[2026-06-18T14:42:02.676Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 30.210 ms - -[0m
+[2026-06-18T14:42:02.687Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 3.812 ms - -[0m
+[2026-06-18T14:42:06.959Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&frequence=JOURNALIER&actif=true [36m304[0m 4.677 ms - -[0m
+[2026-06-18T14:42:10.901Z] [INFO] [0mGET /api/v1/formulaires?search=l&module=MAINTENANCE&frequence=JOURNALIER&actif=true [32m200[0m 3.678 ms - 3691[0m
+[2026-06-18T14:42:11.524Z] [INFO] [0mGET /api/v1/formulaires?search=la&module=MAINTENANCE&frequence=JOURNALIER&actif=true [32m200[0m 7.471 ms - 1254[0m
+[2026-06-18T14:42:12.511Z] [INFO] [0mGET /api/v1/formulaires?search=lav&module=MAINTENANCE&frequence=JOURNALIER&actif=true [32m200[0m 2.490 ms - 2[0m
+[2026-06-18T14:42:12.920Z] [INFO] [0mGET /api/v1/formulaires?search=lave&module=MAINTENANCE&frequence=JOURNALIER&actif=true [32m200[0m 2.192 ms - 2[0m
+[2026-06-18T14:42:14.418Z] [INFO] [0mGET /api/v1/formulaires?search=lav&module=MAINTENANCE&frequence=JOURNALIER&actif=true [36m304[0m 2.560 ms - -[0m
+[2026-06-18T14:42:14.602Z] [INFO] [0mGET /api/v1/formulaires?search=la&module=MAINTENANCE&frequence=JOURNALIER&actif=true [36m304[0m 2.598 ms - -[0m
+[2026-06-18T14:42:14.786Z] [INFO] [0mGET /api/v1/formulaires?search=l&module=MAINTENANCE&frequence=JOURNALIER&actif=true [36m304[0m 5.223 ms - -[0m
+[2026-06-18T14:42:15.261Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&frequence=JOURNALIER&actif=true [36m304[0m 3.739 ms - -[0m
+[2026-06-18T14:42:39.369Z] [INFO] [0mGET /api/v1/formulaires?search=I&module=MAINTENANCE&frequence=JOURNALIER&actif=true [32m200[0m 4.348 ms - 6746[0m
+[2026-06-18T14:42:39.908Z] [INFO] [0mGET /api/v1/formulaires?search=IM&module=MAINTENANCE&frequence=JOURNALIER&actif=true [32m200[0m 3.132 ms - 1266[0m
+[2026-06-18T14:42:40.956Z] [INFO] [0mGET /api/v1/formulaires?search=IMA&module=MAINTENANCE&frequence=JOURNALIER&actif=true [32m200[0m 2.746 ms - 617[0m
+[2026-06-18T14:42:43.632Z] [INFO] [0mGET /api/v1/formulaires?search=IMAN&module=MAINTENANCE&frequence=JOURNALIER&actif=true [32m200[0m 2.552 ms - 617[0m
+[2026-06-18T14:42:44.117Z] [INFO] [0mGET /api/v1/formulaires?search=IMANP&module=MAINTENANCE&frequence=JOURNALIER&actif=true [32m200[0m 2.312 ms - 308[0m
+[2026-06-18T14:42:44.702Z] [INFO] [0mGET /api/v1/formulaires?search=IMANPA&module=MAINTENANCE&frequence=JOURNALIER&actif=true [32m200[0m 2.168 ms - 308[0m
+[2026-06-18T14:42:48.088Z] [INFO] [0mGET /api/v1/formulaires/2fbe12d7-6ebf-487c-81e2-286d5d363e5c [32m200[0m 7.430 ms - 9865[0m
+[2026-06-18T14:42:48.092Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 7.782 ms - -[0m
+[2026-06-18T14:42:48.108Z] [INFO] [0mGET /api/v1/formulaires/2fbe12d7-6ebf-487c-81e2-286d5d363e5c [36m304[0m 10.988 ms - -[0m
+[2026-06-18T14:42:48.113Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 10.526 ms - -[0m
+[2026-06-18T14:42:48.174Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 88.445 ms - -[0m
+[2026-06-18T14:42:48.181Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 94.408 ms - -[0m
+[2026-06-18T14:42:48.187Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 0.951 ms - -[0m
+[2026-06-18T14:43:48.087Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.844 ms - -[0m
+[2026-06-18T14:44:48.077Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.406 ms - -[0m
+[2026-06-18T14:45:48.078Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.513 ms - -[0m
+[2026-06-18T14:46:48.877Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 86.530 ms - -[0m
+[2026-06-18T14:47:48.081Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.470 ms - -[0m
+[2026-06-18T14:48:47.592Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.806 ms - -[0m
+[2026-06-18T14:48:47.681Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 91.509 ms - -[0m
+[2026-06-18T14:48:47.694Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 7.808 ms - -[0m
+[2026-06-18T14:48:54.035Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&frequence=JOURNALIER&actif=true [36m304[0m 4.592 ms - -[0m
+[2026-06-18T14:48:56.237Z] [INFO] [0mGET /api/v1/formulaires?search=I&module=MAINTENANCE&frequence=JOURNALIER&actif=true [36m304[0m 3.259 ms - -[0m
+[2026-06-18T14:48:56.782Z] [INFO] [0mGET /api/v1/formulaires?search=IM&module=MAINTENANCE&frequence=JOURNALIER&actif=true [36m304[0m 3.698 ms - -[0m
+[2026-06-18T14:48:57.577Z] [INFO] [0mGET /api/v1/formulaires?search=IMA&module=MAINTENANCE&frequence=JOURNALIER&actif=true [36m304[0m 2.686 ms - -[0m
+[2026-06-18T14:49:03.563Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 7.465 ms - -[0m
+[2026-06-18T14:49:03.575Z] [INFO] [0mGET /api/v1/formulaires/2fbe12d7-6ebf-487c-81e2-286d5d363e5c [36m304[0m 18.601 ms - -[0m
+[2026-06-18T14:49:03.592Z] [INFO] [0mGET /api/v1/formulaires/2fbe12d7-6ebf-487c-81e2-286d5d363e5c [36m304[0m 6.659 ms - -[0m
+[2026-06-18T14:49:03.635Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 77.198 ms - -[0m
+[2026-06-18T14:49:03.642Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 0.968 ms - -[0m
+[2026-06-18T14:49:03.648Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 90.197 ms - -[0m
+[2026-06-18T14:49:03.656Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 3.226 ms - -[0m
+[2026-06-18T14:49:17.975Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.455 ms - -[0m
+[2026-06-18T14:49:17.984Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 14.281 ms - -[0m
+[2026-06-18T14:49:17.997Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 5.775 ms - -[0m
+[2026-06-18T14:49:24.851Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&frequence=JOURNALIER&actif=true [36m304[0m 4.611 ms - -[0m
+[2026-06-18T14:49:27.405Z] [INFO] [0mGET /api/v1/formulaires?search=I&module=MAINTENANCE&frequence=JOURNALIER&actif=true [36m304[0m 7.100 ms - -[0m
+[2026-06-18T14:49:27.890Z] [INFO] [0mGET /api/v1/formulaires?search=IM&module=MAINTENANCE&frequence=JOURNALIER&actif=true [36m304[0m 4.460 ms - -[0m
+[2026-06-18T14:49:29.096Z] [INFO] [0mGET /api/v1/formulaires?search=IMA&module=MAINTENANCE&frequence=JOURNALIER&actif=true [36m304[0m 2.203 ms - -[0m
+[2026-06-18T14:49:31.139Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.503 ms - -[0m
+[2026-06-18T14:49:31.143Z] [INFO] [0mGET /api/v1/formulaires/2fbe12d7-6ebf-487c-81e2-286d5d363e5c [36m304[0m 7.893 ms - -[0m
+[2026-06-18T14:49:31.158Z] [INFO] [0mGET /api/v1/formulaires/2fbe12d7-6ebf-487c-81e2-286d5d363e5c [36m304[0m 7.028 ms - -[0m
+[2026-06-18T14:50:31.135Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.587 ms - -[0m
+[2026-06-18T14:51:20.886Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.774 ms - -[0m
+[2026-06-18T14:51:20.960Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 75.943 ms - -[0m
+[2026-06-18T14:51:20.969Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 3.151 ms - -[0m
+[2026-06-18T14:51:25.739Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&frequence=JOURNALIER&actif=true [36m304[0m 4.590 ms - -[0m
+[2026-06-18T14:52:14.616Z] [INFO] [0mGET /api/v1/formulaires?search=I&module=MAINTENANCE&frequence=JOURNALIER&actif=true [36m304[0m 4.841 ms - -[0m
+[2026-06-18T14:52:15.344Z] [INFO] [0mGET /api/v1/formulaires?search=IM&module=MAINTENANCE&frequence=JOURNALIER&actif=true [36m304[0m 2.912 ms - -[0m
+[2026-06-18T14:52:18.926Z] [INFO] [0mGET /api/v1/formulaires?search=I&module=MAINTENANCE&frequence=JOURNALIER&actif=true [36m304[0m 2.697 ms - -[0m
+[2026-06-18T14:52:19.119Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&frequence=JOURNALIER&actif=true [36m304[0m 3.288 ms - -[0m
+[2026-06-18T14:52:20.416Z] [INFO] [0mGET /api/v1/formulaires?search=C&module=MAINTENANCE&frequence=JOURNALIER&actif=true [32m200[0m 3.448 ms - 6459[0m
+[2026-06-18T14:52:20.838Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.511 ms - -[0m
+[2026-06-18T14:52:21.198Z] [INFO] [0mGET /api/v1/formulaires?search=CN&module=MAINTENANCE&frequence=JOURNALIER&actif=true [32m200[0m 2.369 ms - 2[0m
+[2026-06-18T14:52:21.616Z] [INFO] [0mGET /api/v1/formulaires?search=CND&module=MAINTENANCE&frequence=JOURNALIER&actif=true [32m200[0m 2.368 ms - 2[0m
+[2026-06-18T14:52:22.822Z] [INFO] [0mGET /api/v1/formulaires?search=CN&module=MAINTENANCE&frequence=JOURNALIER&actif=true [36m304[0m 2.885 ms - -[0m
+[2026-06-18T14:52:23.078Z] [INFO] [0mGET /api/v1/formulaires?search=C&module=MAINTENANCE&frequence=JOURNALIER&actif=true [36m304[0m 4.109 ms - -[0m
+[2026-06-18T14:52:24.381Z] [INFO] [0mGET /api/v1/formulaires?search=CO&module=MAINTENANCE&frequence=JOURNALIER&actif=true [32m200[0m 3.381 ms - 1874[0m
+[2026-06-18T14:52:26.003Z] [INFO] [0mGET /api/v1/formulaires?search=CON&module=MAINTENANCE&frequence=JOURNALIER&actif=true [32m200[0m 3.304 ms - 961[0m
+[2026-06-18T14:52:35.048Z] [INFO] [0mGET /api/v1/formulaires/1f80b28f-afd2-4759-8914-fef3cc62c467 [32m200[0m 10.728 ms - 5795[0m
+[2026-06-18T14:52:35.066Z] [INFO] [0mGET /api/v1/formulaires/1f80b28f-afd2-4759-8914-fef3cc62c467 [36m304[0m 5.414 ms - -[0m
+[2026-06-18T14:52:35.119Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 81.331 ms - -[0m
+[2026-06-18T14:52:35.128Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 86.449 ms - -[0m
+[2026-06-18T14:52:35.132Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 92.626 ms - -[0m
+[2026-06-18T14:52:35.135Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 2.151 ms - -[0m
+[2026-06-18T14:52:35.141Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 2.598 ms - -[0m
+[2026-06-18T14:52:45.220Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 13.971 ms - -[0m
+[2026-06-18T14:52:45.213Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 5.591 ms - -[0m
+[2026-06-18T14:52:45.235Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 6.577 ms - -[0m
+[2026-06-18T14:53:08.518Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.477 ms - -[0m
+[2026-06-18T14:53:08.528Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24 [36m304[0m 13.091 ms - -[0m
+[2026-06-18T14:53:08.539Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24 [36m304[0m 3.619 ms - -[0m
+[2026-06-18T14:53:46.506Z] [INFO] [0mPOST /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24/champs [32m201[0m 14.556 ms - 581[0m
+[2026-06-18T14:53:46.518Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24 [32m200[0m 4.919 ms - 7389[0m
+[2026-06-18T14:54:08.516Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.368 ms - -[0m
+[2026-06-18T14:55:08.622Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 70.878 ms - -[0m
+[2026-06-18T14:56:08.558Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.384 ms - -[0m
+[2026-06-18T14:57:08.560Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.365 ms - -[0m
+[2026-06-18T14:58:08.555Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.040 ms - -[0m
+[2026-06-18T14:59:08.618Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 54.659 ms - -[0m
+[2026-06-18T15:00:59.613Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 60.734 ms - -[0m
+[2026-06-18T15:01:59.579Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 5.599 ms - -[0m
+[2026-06-18T15:02:59.568Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.648 ms - -[0m
+[2026-06-18T15:03:10.911Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 6.800 ms - -[0m
+[2026-06-18T15:04:08.559Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.958 ms - -[0m
+[2026-06-18T15:05:59.654Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 89.090 ms - -[0m
+[2026-06-18T15:06:59.563Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.053 ms - -[0m
+[2026-06-18T15:07:46.541Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.535 ms - -[0m
+[2026-06-18T15:08:08.565Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.381 ms - -[0m
+[2026-06-18T15:09:35.107Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 105.510 ms - -[0m
+[2026-06-18T15:10:08.559Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.242 ms - -[0m
+[2026-06-18T15:11:41.977Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 76.708 ms - -[0m
+[2026-06-18T15:11:59.484Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.252 ms - -[0m
+[2026-06-18T15:11:59.516Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24 [36m304[0m 19.616 ms - -[0m
+[2026-06-18T15:11:59.529Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24 [36m304[0m 5.733 ms - -[0m
+[2026-06-18T15:11:59.605Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 99.959 ms - -[0m
+[2026-06-18T15:11:59.613Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 1.184 ms - -[0m
+[2026-06-18T15:11:59.617Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 116.019 ms - -[0m
+[2026-06-18T15:11:59.628Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 4.236 ms - -[0m
+[2026-06-18T15:12:59.561Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.050 ms - -[0m
+[2026-06-18T15:13:59.563Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.669 ms - -[0m
+[2026-06-18T15:14:17.945Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T15:14:17.946Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T15:14:18.307Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T15:14:48.369Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T15:14:48.370Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T15:14:48.395Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T15:14:59.595Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 14.581 ms - -[0m
+[2026-06-18T15:15:17.584Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T15:15:17.585Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T15:15:17.599Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T15:15:47.486Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T15:15:47.487Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T15:15:47.504Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T15:15:59.584Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 19.446 ms - -[0m
+[2026-06-18T15:16:33.094Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T15:16:33.094Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T15:16:33.110Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T15:16:57.362Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T15:16:57.362Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T15:16:57.377Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T15:16:59.595Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 14.252 ms - -[0m
+[2026-06-18T15:17:22.841Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T15:17:22.845Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T15:17:22.868Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T15:17:58.706Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T15:17:58.706Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T15:17:58.723Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T15:17:59.586Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 16.759 ms - -[0m
+[2026-06-18T15:18:24.202Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T15:18:24.203Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T15:18:24.217Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T15:18:59.590Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 12.717 ms - -[0m
+[2026-06-18T15:19:59.570Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.388 ms - -[0m
+[2026-06-18T15:20:59.584Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.143 ms - -[0m
+[2026-06-18T15:21:59.574Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.543 ms - -[0m
+[2026-06-18T15:22:59.567Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.712 ms - -[0m
+[2026-06-18T15:23:10.302Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T15:23:10.322Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T15:23:10.303Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T15:23:28.249Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T15:23:28.250Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T15:23:28.283Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T15:23:59.609Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 20.219 ms - -[0m
+[2026-06-18T15:24:59.561Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.224 ms - -[0m
+[2026-06-18T15:25:56.521Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T15:25:56.521Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T15:25:56.535Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T15:25:59.591Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 16.232 ms - -[0m
+[2026-06-18T15:26:27.985Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T15:26:27.985Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T15:26:28.000Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T15:26:59.591Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 21.247 ms - -[0m
+[2026-06-18T15:27:59.561Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [33m401[0m 0.989 ms - 58[0m
+[2026-06-18T15:28:46.509Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T15:28:46.527Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T15:28:46.509Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T15:29:11.410Z] [INFO] [0mGET /api/v1/formulaires/meta/types-champs [33m401[0m 0.230 ms - 43[0m
+[2026-06-18T15:29:59.543Z] [INFO] [0mGET /api/v1/formulaires/meta/types-champs [33m401[0m 0.230 ms - 43[0m
+[2026-06-18T15:30:37.552Z] [INFO] [0mPOST /api/v1/auth/login [32m200[0m 394.856 ms - 551[0m
+[2026-06-18T15:30:37.833Z] [INFO] [0mGET /api/v1/formulaires/meta/types-champs [33m401[0m 0.290 ms - 29[0m
+[2026-06-18T15:32:26.840Z] [INFO] [0mPOST /api/v1/auth/login [32m200[0m 315.067 ms - 551[0m
+[2026-06-18T15:32:52.398Z] [INFO] [0mGET /api/v1/formulaires/meta/types-champs [32m200[0m 2.162 ms - 517[0m
+[2026-06-18T15:33:21.798Z] [INFO] [0mGET /api/v1/formulaires?code=PS-ME-EN-FDV-A [32m200[0m 10.614 ms - 19194[0m
+[2026-06-18T15:33:22.142Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24/sections [32m200[0m 6.080 ms - 7941[0m
+[2026-06-18T15:34:00.582Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24/sections [32m200[0m 3.356 ms - 7941[0m
+[2026-06-18T15:34:40.901Z] [INFO] [0mGET /api/v1/formulaires?search=FDV-A [32m200[0m 3.931 ms - 302[0m
+[2026-06-18T15:35:03.505Z] [INFO] [0mGET /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030/sections [32m200[0m 12.082 ms - 19977[0m
+[2026-06-18T15:35:33.262Z] [INFO] [0mPOST /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030/sections [32m201[0m 8.998 ms - 223[0m
+[2026-06-18T15:35:33.976Z] [INFO] [0mPUT /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030/sections/1bd99c07-d4bb-4871-8ab9-dc15dd82cd9e [32m200[0m 5.407 ms - 258[0m
+[2026-06-18T15:35:34.287Z] [INFO] [0mDELETE /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030/sections/1bd99c07-d4bb-4871-8ab9-dc15dd82cd9e [32m200[0m 2.135 ms - 32[0m
+[2026-06-18T15:35:34.574Z] [INFO] [0mGET /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030/sections [32m200[0m 8.034 ms - 19977[0m
+[2026-06-18T15:36:32.369Z] [INFO] [0mGET /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030/champs [32m200[0m 6.226 ms - 20315[0m
+[2026-06-18T15:37:39.913Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T15:37:39.916Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T15:37:39.934Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T16:36:48.033Z] [INFO] [0mGET / [33m404[0m 4.163 ms - 34[0m
+[2026-06-18T16:36:53.376Z] [INFO] [0mGET / [33m404[0m 1.719 ms - 34[0m
+[2026-06-18T16:36:53.383Z] [INFO] [0mGET /loginMsg.js [33m404[0m 0.680 ms - 45[0m
+[2026-06-18T16:36:53.389Z] [INFO] [0mGET /cgi/get.cgi?cmd=home_login [33m404[0m 0.320 ms - 60[0m
+[2026-06-18T21:19:40.763Z] [INFO] [0mPOST /api/v1/auth/login [32m200[0m 709.322 ms - 551[0m
+[2026-06-18T21:19:40.873Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 26.572 ms - -[0m
+[2026-06-18T21:19:40.897Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 10.944 ms - -[0m
+[2026-06-18T21:19:40.995Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 140.501 ms - -[0m
+[2026-06-18T21:19:41.005Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 2.762 ms - -[0m
+[2026-06-18T21:19:41.021Z] [INFO] [0mGET /api/v1/planning/suivi-equipements?mois=6&annee=2026 [36m304[0m 156.366 ms - -[0m
+[2026-06-18T21:19:41.034Z] [INFO] [0mGET /api/v1/planning/suivi-equipements?mois=6&annee=2026 [36m304[0m 5.504 ms - -[0m
+[2026-06-18T21:19:41.041Z] [INFO] [0mGET /api/v1/planning/graphiques?mois=6&annee=2026 [36m304[0m 182.510 ms - -[0m
+[2026-06-18T21:19:41.047Z] [INFO] [0mGET /api/v1/planning/synthese?mois=6&annee=2026 [36m304[0m 185.465 ms - -[0m
+[2026-06-18T21:19:41.064Z] [INFO] [0mGET /api/v1/planning/graphiques?mois=6&annee=2026 [36m304[0m 13.564 ms - -[0m
+[2026-06-18T21:19:41.068Z] [INFO] [0mGET /api/v1/planning/synthese?mois=6&annee=2026 [36m304[0m 13.959 ms - -[0m
+[2026-06-18T21:19:43.896Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 8.705 ms - -[0m
+[2026-06-18T21:19:43.908Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [32m200[0m 19.914 ms - 14836[0m
+[2026-06-18T21:19:43.925Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 7.032 ms - -[0m
+[2026-06-18T21:19:46.519Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.536 ms - -[0m
+[2026-06-18T21:19:46.524Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24 [32m200[0m 9.021 ms - 8467[0m
+[2026-06-18T21:19:46.540Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24 [36m304[0m 4.386 ms - -[0m
+[2026-06-18T21:20:46.531Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.084 ms - -[0m
+[2026-06-18T21:21:46.532Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 6.174 ms - -[0m
+[2026-06-18T21:22:46.525Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.506 ms - -[0m
+[2026-06-18T21:23:47.649Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 173.712 ms - -[0m
+[2026-06-18T21:24:47.500Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 5.360 ms - -[0m
+[2026-06-18T21:25:47.491Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 5.536 ms - -[0m
+[2026-06-18T21:26:59.645Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 144.371 ms - -[0m
+[2026-06-18T21:27:59.580Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.470 ms - -[0m
+[2026-06-18T21:28:59.506Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 5.377 ms - -[0m
+[2026-06-18T21:29:59.493Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 5.149 ms - -[0m
+[2026-06-18T21:33:57.287Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 106.914 ms - -[0m
+[2026-06-18T21:34:02.153Z] [INFO] [0mGET /api/v1/auth/me [32m200[0m 6.488 ms - 145[0m
+[2026-06-18T21:34:02.190Z] [INFO] [0mGET /api/v1/auth/me [36m304[0m 3.792 ms - -[0m
+[2026-06-18T21:34:02.282Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 5.664 ms - -[0m
+[2026-06-18T21:34:02.309Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.980 ms - -[0m
+[2026-06-18T21:34:02.498Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24 [36m304[0m 220.057 ms - -[0m
+[2026-06-18T21:34:02.520Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24 [36m304[0m 9.270 ms - -[0m
+[2026-06-18T21:34:18.092Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 5.690 ms - -[0m
+[2026-06-18T21:34:18.105Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 17.494 ms - -[0m
+[2026-06-18T21:34:18.155Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 8.054 ms - -[0m
+[2026-06-18T21:34:21.006Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.868 ms - -[0m
+[2026-06-18T21:34:21.018Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 3.591 ms - -[0m
+[2026-06-18T21:34:21.032Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 5.420 ms - -[0m
+[2026-06-18T21:34:21.030Z] [INFO] [0mGET /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030 [32m200[0m 17.351 ms - 20000[0m
+[2026-06-18T21:34:21.055Z] [INFO] [0mGET /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030 [36m304[0m 7.472 ms - -[0m
+[2026-06-18T21:34:21.119Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 102.549 ms - -[0m
+[2026-06-18T21:34:21.131Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 4.516 ms - -[0m
+[2026-06-18T21:34:22.485Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.477 ms - -[0m
+[2026-06-18T21:34:22.494Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 11.066 ms - -[0m
+[2026-06-18T21:34:22.513Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 6.642 ms - -[0m
+[2026-06-18T21:34:24.035Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.741 ms - -[0m
+[2026-06-18T21:34:24.048Z] [INFO] [0mGET /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030 [36m304[0m 14.173 ms - -[0m
+[2026-06-18T21:34:24.070Z] [INFO] [0mGET /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030 [36m304[0m 5.661 ms - -[0m
+[2026-06-18T21:34:26.787Z] [INFO] [0mGET /api/v1/auth/me [36m304[0m 2.151 ms - -[0m
+[2026-06-18T21:34:26.798Z] [INFO] [0mGET /api/v1/auth/me [36m304[0m 2.175 ms - -[0m
+[2026-06-18T21:34:26.907Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 12.821 ms - -[0m
+[2026-06-18T21:34:26.923Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.327 ms - -[0m
+[2026-06-18T21:34:26.928Z] [INFO] [0mGET /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030 [36m304[0m 36.453 ms - -[0m
+[2026-06-18T21:34:26.947Z] [INFO] [0mGET /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030 [36m304[0m 10.754 ms - -[0m
+[2026-06-18T21:35:26.114Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.263 ms - -[0m
+[2026-06-18T21:35:26.120Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 7.248 ms - -[0m
+[2026-06-18T21:35:26.133Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 5.710 ms - -[0m
+[2026-06-18T21:35:27.918Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.447 ms - -[0m
+[2026-06-18T21:35:27.924Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24 [36m304[0m 6.954 ms - -[0m
+[2026-06-18T21:35:27.936Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24 [36m304[0m 4.643 ms - -[0m
+[2026-06-18T21:36:27.935Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.511 ms - -[0m
+[2026-06-18T21:37:27.940Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 5.519 ms - -[0m
+[2026-06-18T21:38:27.919Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.358 ms - -[0m
+[2026-06-18T21:39:28.549Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 82.379 ms - -[0m
+[2026-06-18T21:40:28.481Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 6.486 ms - -[0m
+[2026-06-18T21:41:27.929Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 6.402 ms - -[0m
+[2026-06-18T21:42:28.566Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 86.650 ms - -[0m
+[2026-06-18T21:43:59.553Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 81.426 ms - -[0m
+[2026-06-18T21:44:59.480Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.257 ms - -[0m
+[2026-06-18T21:45:59.491Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 7.175 ms - -[0m
+[2026-06-18T21:46:59.492Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.659 ms - -[0m
+[2026-06-18T21:47:24.962Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T21:47:24.963Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T21:47:25.140Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T21:49:55.776Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-18T21:49:55.798Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-18T21:49:55.777Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-18T21:50:00.381Z] [INFO] [0mPOST /api/v1/auth/login [32m200[0m 368.632 ms - 551[0m
+[2026-06-18T21:50:00.802Z] [INFO] [0mGET /api/v1/formulaires?search=FDV-A [32m200[0m 34.619 ms - 302[0m
+[2026-06-18T21:50:01.205Z] [INFO] [0mPUT /api/v1/formulaires/5f0469b1-05ca-49f2-8cc9-fc0aaa91b030/sections/reordonner [32m200[0m 5.477 ms - 45[0m
+[2026-06-18T21:52:26.357Z] [INFO] [0mPOST /api/v1/auth/login [32m200[0m 590.553 ms - 551[0m
+[2026-06-18T21:52:26.520Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 26.794 ms - -[0m
+[2026-06-18T21:52:26.547Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 8.777 ms - -[0m
+[2026-06-18T21:52:26.639Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 144.638 ms - -[0m
+[2026-06-18T21:52:26.651Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 3.876 ms - -[0m
+[2026-06-18T21:52:26.671Z] [INFO] [0mGET /api/v1/planning/suivi-equipements?mois=6&annee=2026 [36m304[0m 161.994 ms - -[0m
+[2026-06-18T21:52:26.685Z] [INFO] [0mGET /api/v1/planning/graphiques?mois=6&annee=2026 [36m304[0m 188.119 ms - -[0m
+[2026-06-18T21:52:26.689Z] [INFO] [0mGET /api/v1/planning/synthese?mois=6&annee=2026 [36m304[0m 189.764 ms - -[0m
+[2026-06-18T21:52:26.691Z] [INFO] [0mGET /api/v1/planning/suivi-equipements?mois=6&annee=2026 [36m304[0m 7.688 ms - -[0m
+[2026-06-18T21:52:26.743Z] [INFO] [0mGET /api/v1/planning/graphiques?mois=6&annee=2026 [36m304[0m 41.279 ms - -[0m
+[2026-06-18T21:52:26.746Z] [INFO] [0mGET /api/v1/planning/synthese?mois=6&annee=2026 [36m304[0m 40.986 ms - -[0m
+[2026-06-18T21:52:29.340Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.141 ms - -[0m
+[2026-06-18T21:52:29.345Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 8.005 ms - -[0m
+[2026-06-18T21:52:29.362Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 7.606 ms - -[0m
+[2026-06-18T21:52:31.282Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 8.492 ms - -[0m
+[2026-06-18T21:52:31.293Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24 [36m304[0m 18.157 ms - -[0m
+[2026-06-18T21:52:31.313Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24 [36m304[0m 9.717 ms - -[0m
+[2026-06-18T21:52:31.323Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24/sections [32m200[0m 13.311 ms - 7941[0m
+[2026-06-18T21:52:31.338Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24/sections [36m304[0m 6.457 ms - -[0m
+[2026-06-18T21:53:18.702Z] [INFO] [0mPOST /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24/sections [32m201[0m 27.534 ms - 221[0m
+[2026-06-18T21:53:18.726Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24 [36m304[0m 9.091 ms - -[0m
+[2026-06-18T21:53:18.745Z] [INFO] [0mGET /api/v1/formulaires/7e952210-6e7e-42b6-b423-afa1f0b95b24/sections [32m200[0m 7.702 ms - 8191[0m
+[2026-06-18T21:53:31.276Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.335 ms - -[0m
+[2026-06-18T21:54:31.281Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.019 ms - -[0m
+[2026-06-18T21:55:31.284Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.292 ms - -[0m
+[2026-06-18T21:56:31.283Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.760 ms - -[0m
+[2026-06-18T21:57:31.635Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 153.271 ms - -[0m
+[2026-06-18T21:58:31.475Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.963 ms - -[0m
+[2026-06-18T21:59:31.474Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.139 ms - -[0m
+[2026-06-18T22:00:59.714Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 225.396 ms - -[0m
+[2026-06-18T22:01:59.502Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 6.906 ms - -[0m
+[2026-06-18T22:02:59.494Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 6.226 ms - -[0m
+[2026-06-18T22:03:59.479Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 5.299 ms - -[0m
+[2026-06-18T22:04:59.491Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.094 ms - -[0m
+[2026-06-18T22:05:59.481Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 5.212 ms - -[0m
+[2026-06-18T22:06:59.484Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 5.365 ms - -[0m
+[2026-06-18T22:07:59.483Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.984 ms - -[0m
+[2026-06-18T22:08:59.485Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 5.456 ms - -[0m
+[2026-06-18T22:09:59.491Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 6.509 ms - -[0m
+[2026-06-18T22:10:59.487Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 5.912 ms - -[0m
+[2026-06-18T22:11:59.490Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 5.139 ms - -[0m
+[2026-06-18T22:12:59.484Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.590 ms - -[0m
+[2026-06-18T22:13:59.487Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.947 ms - -[0m

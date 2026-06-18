@@ -27,4 +27,10 @@ const restoreChamp = async (req, res, next) => {
 };
 
 
-module.exports = { getAll, getById, creer, modifier, softDelete, getChamps, addChamp, updateChamp, softDeleteChamp, reordonner, typesChamps, restore, restoreChamp };
+const getSections           = async (req, res, next) => { try { res.json(await service.getSections(req.params.id)); } catch (e) { next(e); } };
+const addSection            = async (req, res, next) => { try { res.status(201).json(await service.addSection(req.params.id, req.body)); } catch (e) { next(e); } };
+const updateSection         = async (req, res, next) => { try { res.json(await service.updateSection(req.params.sectionId, req.body)); } catch (e) { next(e); } };
+const deleteSection         = async (req, res, next) => { try { await service.deleteSection(req.params.sectionId); res.json({ message: 'Section archivée.' }); } catch (e) { next(e); } };
+const reordonnerSections    = async (req, res, next) => { try { await service.reordonnerSections(req.params.id, req.body.ordres); res.json({ message: 'Ordre des sections mis à jour.' }); } catch (e) { next(e); } };
+
+module.exports = { getAll, getById, creer, modifier, softDelete, getChamps, addChamp, updateChamp, softDeleteChamp, reordonner, typesChamps, restore, restoreChamp, getSections, addSection, updateSection, deleteSection, reordonnerSections };

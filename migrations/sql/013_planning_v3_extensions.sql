@@ -24,7 +24,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_planning_semaine_mois
   WHERE mois IS NOT NULL AND semaine_index IS NOT NULL;
 
 ALTER TABLE intervention_quart
-  ADD COLUMN IF NOT EXISTS soumission_id UUID REFERENCES soumission(id) ON DELETE SET NULL;
+  ADD COLUMN IF NOT EXISTS soumission_id UUID REFERENCES soumissions(id) ON DELETE SET NULL;
 
 CREATE TABLE IF NOT EXISTS intervention_ligne (
   id                        UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS intervention_ligne (
   taux_cible                DECIMAL(5,2) NOT NULL DEFAULT 90.0,
   cause_indisponibilite     VARCHAR(500),
   observations              TEXT,
-  soumission_id             UUID REFERENCES soumission(id) ON DELETE SET NULL,
+  soumission_id             UUID REFERENCES soumissions(id) ON DELETE SET NULL,
   cree_le                   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   modifie_le                TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -62,7 +62,7 @@ CREATE TRIGGER trg_calc_taux_ligne
 
 CREATE TABLE IF NOT EXISTS suivi_equipement_action (
   id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  equipement_id   UUID NOT NULL REFERENCES equipement(id) ON DELETE CASCADE,
+  equipement_id   UUID NOT NULL REFERENCES equipements(id) ON DELETE CASCADE,
   mois            DATE NOT NULL,
   difficulte      TEXT,
   action          TEXT,
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS suivi_equipement_action (
 );
 
 -- Formulaire maintenance corrective (sync planning)
-INSERT INTO formulaire_type (code, titre, module, frequence)
+INSERT INTO formulaires_types (code, titre, module, frequence)
 VALUES (
   'PS-ME-MC-A',
   'Maintenance corrective — intervention quart',
@@ -83,10 +83,10 @@ VALUES (
 )
 ON CONFLICT (code) DO NOTHING;
 
-INSERT INTO champ_definition (formulaire_type_id, nom_champ, type_champ, section, obligatoire, ordre, options_liste)
-SELECT ft.id, v.nom, v.type::type_champ_enum, v.section, v.obligatoire, v.ordre,
+INSERT INTO champs_definitions (formulaire_type_id, nom_champ, type_champ, section, obligatoire, ordre, options_liste)
+SELECT ft.id, v.nom, v.type::type_champ, v.section, v.obligatoire, v.ordre,
        CASE WHEN v.options IS NULL THEN NULL ELSE v.options::jsonb END
-FROM formulaire_type ft
+FROM formulaires_types ft
 CROSS JOIN (VALUES
   ('Date intervention', 'DATE', 'Contexte', TRUE, 1, NULL::text),
   ('Quart', 'LISTE', 'Contexte', TRUE, 2, '["Quart A (06h-14h)","Quart B (14h-22h)","Quart C (22h-06h)"]'),
@@ -98,7 +98,7 @@ CROSS JOIN (VALUES
 ) AS v(nom, type, section, obligatoire, ordre, options)
 WHERE ft.code = 'PS-ME-MC-A'
   AND NOT EXISTS (
-    SELECT 1 FROM champ_definition cd
+    SELECT 1 FROM champs_definitions cd
     WHERE cd.formulaire_type_id = ft.id AND cd.nom_champ = v.nom
   );
 
@@ -123,7 +123,7 @@ FROM planning_quart pq
 JOIN planning_jour pj ON pq.planning_jour_id = pj.id
 JOIN planning_semaine ps ON pj.planning_semaine_id = ps.id
 JOIN ligne_production lp ON ps.ligne_id = lp.id
-JOIN utilisateur u ON pq.maintenancier_id = u.id
+JOIN utilisateurs u ON pq.maintenancier_id = u.id
 LEFT JOIN intervention_quart i ON i.planning_quart_id = pq.id
 LEFT JOIN intervention_ligne il ON il.planning_quart_id = pq.id
 WHERE i.id IS NOT NULL OR il.id IS NOT NULL
@@ -142,6 +142,6 @@ SELECT
   AVG(i.taux_disponibilite_calcule) AS avg_disponibilite,
   STRING_AGG(DISTINCT i.observations, ' | ') AS remarques
 FROM intervention_quart i
-JOIN equipement e ON i.equipement_id = e.id
+JOIN equipements e ON i.equipement_id = e.id
 LEFT JOIN ligne_production lp ON e.ligne_id = lp.id
 GROUP BY DATE_TRUNC('month', i.modifie_le), e.id, e.nom, e.code_ref, lp.code;

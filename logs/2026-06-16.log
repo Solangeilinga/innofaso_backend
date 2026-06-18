@@ -1,0 +1,8 @@
+[2026-06-16T11:07:31.369Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-16T11:07:31.369Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-16T11:07:31.556Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-16T11:08:10.975Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-16T11:08:10.976Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-16T11:08:10.989Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-16T11:08:52.283Z] [ERROR] Email ou mot de passe incorrect. {"stack":"Error: Email ou mot de passe incorrect.\n    at Object.login (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\auth\\auth.service.js:29:21)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async login (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\auth\\auth.controller.js:16:24)","method":"POST","url":"/api/v1/auth/login","ip":"127.0.0.1","user":"anonymous"}
+[2026-06-16T11:08:52.288Z] [INFO] [0mPOST /api/v1/auth/login [33m401[0m 63.312 ms - 424[0m

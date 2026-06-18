@@ -10,6 +10,7 @@ const champSchema = Joi.object({
     nom_champ: Joi.string().max(300).required(),
     type_champ: Joi.string().valid('TEXTE','NOMBRE','DATE','HEURE','BOOLEEN','LISTE','SIGNATURE','CALCULE','PHOTO').required(),
     section: Joi.string().max(200).optional().allow(null,''),
+    section_id: Joi.string().uuid().optional().allow(null,''),
     obligatoire: Joi.boolean().default(false),
     ordre: Joi.number().integer().default(0),
     unite: Joi.string().max(50).optional().allow(null,''),
@@ -58,10 +59,17 @@ router.put('/:id/restore',  roles('ADMIN'), ctrl.restore);            // ✅ RES
 // Champs
 router.get('/:id/champs',               ctrl.getChamps);
 router.post('/:id/champs',              roles('ADMIN','RESP_MAINT','RESP_PROD'), validate(champSchema), ctrl.addChamp);
+router.put('/:id/champs/reordonner',    roles('ADMIN','RESP_MAINT','RESP_PROD'), ctrl.reordonner);
 router.put('/:id/champs/:champId',      roles('ADMIN','RESP_MAINT','RESP_PROD'), validate(champSchema.fork(Object.keys(champSchema.describe().keys), f => f.optional())), ctrl.updateChamp);
 router.delete('/:id/champs/:champId',   roles('ADMIN','RESP_MAINT','RESP_PROD'), ctrl.softDeleteChamp);  // soft delete (archivage)
 router.put('/:id/champs/:champId/restore', roles('ADMIN'), ctrl.restoreChamp);   // ✅ RESTAURATION champ
-router.put('/:id/champs/reordonner',    roles('ADMIN','RESP_MAINT','RESP_PROD'), ctrl.reordonner);
+
+// Sections
+router.get('/:id/sections',                    ctrl.getSections);
+router.post('/:id/sections',                   roles('ADMIN','RESP_MAINT','RESP_PROD'), ctrl.addSection);
+router.put('/:id/sections/reordonner',         roles('ADMIN','RESP_MAINT','RESP_PROD'), ctrl.reordonnerSections);
+router.put('/:id/sections/:sectionId',         roles('ADMIN','RESP_MAINT','RESP_PROD'), ctrl.updateSection);
+router.delete('/:id/sections/:sectionId',      roles('ADMIN','RESP_MAINT','RESP_PROD'), ctrl.deleteSection);
 
 // Types de champs disponibles
 router.get('/meta/types-champs', ctrl.typesChamps);

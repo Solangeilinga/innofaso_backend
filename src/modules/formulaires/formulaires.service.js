@@ -38,7 +38,7 @@ const getById = async (id) => {
     if (rows.length === 0) {
         const err = new Error('Formulaire non trouvé.'); err.statusCode = 404; throw err;
     }
-    // Charger aussi les champs actifs
+    // Charger les champs actifs
     const champs = await getChamps(id);
     return { ...rows[0], champs };
 };
@@ -91,11 +91,13 @@ const restore = async (id) => {
 
 const getChamps = async (formulaireId) => {
     const { rows } = await query(
-        `SELECT cd.*, cs.nom_champ AS champ_source_nom
+        `SELECT cd.*, cs.nom_champ AS champ_source_nom,
+                fs.titre AS section_titre, fs.ordre AS section_ordre
          FROM champs_definitions cd
          LEFT JOIN champs_definitions cs ON cs.id = cd.champ_source_id
+         LEFT JOIN formulaire_sections fs ON fs.id = cd.section_id
          WHERE cd.formulaire_type_id = $1 AND cd.actif = TRUE
-         ORDER BY cd.section NULLS LAST, cd.ordre`,
+         ORDER BY COALESCE(fs.ordre, 999999), fs.titre NULLS LAST, cd.ordre`,
         [formulaireId]
     );
     return rows;
@@ -106,9 +108,9 @@ const getChampsBySection = async (formulaireId) => {
     const champs = await getChamps(formulaireId);
     const sections = {};
     for (const champ of champs) {
-        const s = champ.section || 'Général';
-        if (!sections[s]) sections[s] = [];
-        sections[s].push(champ);
+        const key = champ.section_titre || champ.section || 'Général';
+        if (!sections[key]) sections[key] = [];
+        sections[key].push(champ);
     }
     return sections;
 };
@@ -129,19 +131,30 @@ const addChamp = async (formulaireId, data) => {
     // ✅ CORRECTION : Ajouter label (utiliser nom_champ comme valeur par défaut)
     const label = data.label || data.nom_champ;
     
+    // Resolve section_id from section name if provided but section_id not set
+    let sectionId = data.section_id || null;
+    if (!sectionId && data.section) {
+        const sec = await query(
+            `SELECT id FROM formulaire_sections WHERE formulaire_type_id = $1 AND titre = $2 AND actif = TRUE`,
+            [formulaireId, data.section]
+        );
+        if (sec.rows.length > 0) sectionId = sec.rows[0].id;
+    }
+    
     const { rows } = await query(
         `INSERT INTO champs_definitions
-         (formulaire_type_id, nom_champ, label, type_champ, section, obligatoire,
+         (formulaire_type_id, nom_champ, label, type_champ, section, section_id, obligatoire,
           ordre, unite, placeholder, aide, options_liste, formule, champ_source_id,
           valeur_min, valeur_max)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
          RETURNING *`,
         [
             formulaireId, 
             data.nom_champ, 
             label,  // ✅ NOUVEAU : champ label
             data.type_champ,
-            data.section || null, 
+            data.section || null,
+            sectionId,
             data.obligatoire || false,
             ordre, 
             data.unite || null,
@@ -167,7 +180,7 @@ const updateChamp = async (champId, data) => {
     
     const updates = [];
     const params = [];
-    const fields = ['nom_champ', 'label', 'type_champ', 'section', 'obligatoire', 'ordre', 'unite',
+    const fields = ['nom_champ', 'label', 'type_champ', 'section', 'section_id', 'obligatoire', 'ordre', 'unite',
                     'placeholder', 'aide', 'options_liste', 'formule', 'valeur_min', 'valeur_max'];
     
     for (const field of fields) {
@@ -240,6 +253,90 @@ const reordonner = async (formulaireId, ordres) => {
     }
 };
 
+// ─── SECTIONS ─────────────────────────────────────────────────────────
+
+const getSections = async (formulaireId) => {
+    const sections = await query(
+        `SELECT fs.*,
+            COUNT(cd.id) FILTER (WHERE cd.actif = TRUE) AS nb_champs
+         FROM formulaire_sections fs
+         LEFT JOIN champs_definitions cd ON cd.section_id = fs.id
+         WHERE fs.formulaire_type_id = $1 AND fs.actif = TRUE
+         GROUP BY fs.id
+         ORDER BY fs.ordre`,
+        [formulaireId]
+    );
+    // Also include fields grouped under each section
+    for (const sec of sections.rows) {
+        const { rows: champs } = await query(
+            `SELECT cd.*, cs.nom_champ AS champ_source_nom
+             FROM champs_definitions cd
+             LEFT JOIN champs_definitions cs ON cs.id = cd.champ_source_id
+             WHERE cd.section_id = $1 AND cd.actif = TRUE
+             ORDER BY cd.ordre`,
+            [sec.id]
+        );
+        sec.champs = champs;
+    }
+    return sections.rows;
+};
+
+const addSection = async (formulaireId, { titre, ordre, description }) => {
+    if (ordre === undefined || ordre === null) {
+        const { rows } = await query(
+            `SELECT COALESCE(MAX(ordre), -1) + 1 AS next_ordre FROM formulaire_sections WHERE formulaire_type_id = $1`,
+            [formulaireId]
+        );
+        ordre = rows[0].next_ordre;
+    }
+    const { rows } = await query(
+        `INSERT INTO formulaire_sections (formulaire_type_id, titre, ordre, description)
+         VALUES ($1, $2, $3, $4) RETURNING *`,
+        [formulaireId, titre, ordre, description || null]
+    );
+    return rows[0];
+};
+
+const updateSection = async (sectionId, data) => {
+    const updates = [];
+    const params = [];
+    const fields = ['titre', 'ordre', 'description'];
+    for (const f of fields) {
+        if (data[f] !== undefined) { params.push(data[f]); updates.push(`${f} = $${params.length}`); }
+    }
+    if (updates.length === 0) {
+        const { rows } = await query(`SELECT * FROM formulaire_sections WHERE id = $1`, [sectionId]);
+        if (rows.length === 0) { const err = new Error('Section non trouvée.'); err.statusCode = 404; throw err; }
+        return rows[0];
+    }
+    params.push(new Date(), sectionId);
+    const { rows } = await query(
+        `UPDATE formulaire_sections SET ${updates.join(', ')}, modifie_le = $${params.length - 1}
+         WHERE id = $${params.length} RETURNING *`,
+        params
+    );
+    if (rows.length === 0) { const err = new Error('Section non trouvée.'); err.statusCode = 404; throw err; }
+    return rows[0];
+};
+
+const deleteSection = async (sectionId) => {
+    const { rowCount } = await query(
+        `UPDATE formulaire_sections SET actif = FALSE, modifie_le = NOW() WHERE id = $1`,
+        [sectionId]
+    );
+    if (rowCount === 0) { const err = new Error('Section non trouvée.'); err.statusCode = 404; throw err; }
+};
+
+const reordonnerSections = async (formulaireId, ordres) => {
+    for (const { id, ordre } of ordres) {
+        await query(
+            `UPDATE formulaire_sections SET ordre = $1, modifie_le = NOW()
+             WHERE id = $2 AND formulaire_type_id = $3`,
+            [ordre, id, formulaireId]
+        );
+    }
+};
+
 const typesChamps = () => [
     { value: 'TEXTE',     label: 'Texte',            icon: 'Type' },
     { value: 'NOMBRE',    label: 'Nombre',           icon: 'Hash' },
@@ -267,4 +364,10 @@ module.exports = {
     restoreChamp, 
     reordonner,
     typesChamps,
+    // Sections
+    getSections,
+    addSection,
+    updateSection,
+    deleteSection,
+    reordonnerSections,
 };

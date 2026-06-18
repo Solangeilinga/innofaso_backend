@@ -1,6 +1,9 @@
-CREATE TYPE statut_planning AS ENUM (
-  'PLANIFIE', 'EN_COURS', 'REALISE', 'EN_RETARD'
-);
+DO $$ BEGIN
+  CREATE TYPE statut_planning AS ENUM (
+    'PLANIFIE', 'EN_COURS', 'REALISE', 'EN_RETARD'
+  );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 CREATE TABLE IF NOT EXISTS plannings_maintenance (
   id                  UUID    PRIMARY KEY DEFAULT uuid_generate_v4(),
