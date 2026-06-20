@@ -365,35 +365,36 @@ const saveEntete = async (formulaireId, data) => {
         [formulaireId]
     );
 
+    const vals = [
+        data.emetteur_nom||null,      data.emetteur_fonction||null,   data.emetteur_date||null,
+        data.verificateur_nom||null,  data.verificateur_fonction||null, data.verificateur_date||null,
+        data.approbateur_nom||null,   data.approbateur_fonction||null,  data.approbateur_date||null,
+        data.destinataires||null,
+        data.date_creation||null,
+    ];
+
     if (existing.length > 0) {
         const { rows } = await query(
             `UPDATE formulaire_entete SET
-                emetteur_nom=$1, emetteur_fonction=$2,
-                verificateur_nom=$3, verificateur_fonction=$4,
-                approbateur_nom=$5, approbateur_fonction=$6,
+                emetteur_nom=$1,      emetteur_fonction=$2,     emetteur_date=$3,
+                verificateur_nom=$4,  verificateur_fonction=$5, verificateur_date=$6,
+                approbateur_nom=$7,   approbateur_fonction=$8,  approbateur_date=$9,
+                destinataires=$10,    date_creation=$11,
                 modifie_le=NOW()
-             WHERE formulaire_type_id=$7 RETURNING *`,
-            [
-                data.emetteur_nom||null, data.emetteur_fonction||null,
-                data.verificateur_nom||null, data.verificateur_fonction||null,
-                data.approbateur_nom||null, data.approbateur_fonction||null,
-                formulaireId,
-            ]
+             WHERE formulaire_type_id=$12 RETURNING *`,
+            [...vals, formulaireId]
         );
         return rows[0];
     } else {
         const { rows } = await query(
-            `INSERT INTO formulaire_entete
-             (formulaire_type_id, emetteur_nom, emetteur_fonction,
-              verificateur_nom, verificateur_fonction,
-              approbateur_nom, approbateur_fonction)
-             VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
-            [
-                formulaireId,
-                data.emetteur_nom||null, data.emetteur_fonction||null,
-                data.verificateur_nom||null, data.verificateur_fonction||null,
-                data.approbateur_nom||null, data.approbateur_fonction||null,
-            ]
+            `INSERT INTO formulaire_entete (
+                formulaire_type_id,
+                emetteur_nom, emetteur_fonction, emetteur_date,
+                verificateur_nom, verificateur_fonction, verificateur_date,
+                approbateur_nom, approbateur_fonction, approbateur_date,
+                destinataires, date_creation
+             ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *`,
+            [formulaireId, ...vals]
         );
         return rows[0];
     }
