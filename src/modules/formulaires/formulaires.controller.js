@@ -33,4 +33,7 @@ const updateSection         = async (req, res, next) => { try { res.json(await s
 const deleteSection         = async (req, res, next) => { try { await service.deleteSection(req.params.sectionId); res.json({ message: 'Section archivée.' }); } catch (e) { next(e); } };
 const reordonnerSections    = async (req, res, next) => { try { await service.reordonnerSections(req.params.id, req.body.ordres); res.json({ message: 'Ordre des sections mis à jour.' }); } catch (e) { next(e); } };
 
-module.exports = { getAll, getById, creer, modifier, softDelete, getChamps, addChamp, updateChamp, softDeleteChamp, reordonner, typesChamps, restore, restoreChamp, getSections, addSection, updateSection, deleteSection, reordonnerSections };
+const getEntete  = async (req, res, next) => { try { res.json(await service.getEntete(req.params.id)); } catch (e) { next(e); } };
+const saveEntete = async (req, res, next) => { try { res.json(await service.saveEntete(req.params.id, req.body)); } catch (e) { next(e); } };
+
+module.exports = { getAll, getById, creer, modifier, softDelete, getChamps, addChamp, updateChamp, softDeleteChamp, reordonner, typesChamps, restore, restoreChamp, getSections, addSection, updateSection, deleteSection, reordonnerSections, getEntete, saveEntete };

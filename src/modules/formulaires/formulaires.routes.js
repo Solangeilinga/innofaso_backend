@@ -74,6 +74,10 @@ router.delete('/:id/sections/:sectionId',      roles('ADMIN','RESP_MAINT','RESP_
 // Types de champs disponibles
 router.get('/meta/types-champs', ctrl.typesChamps);
 
+// ── Entête du formulaire (admin seulement) ───────────────────────
+router.get('/:id/entete', ctrl.getEntete);
+router.put('/:id/entete', roles('ADMIN'), ctrl.saveEntete);
+
 module.exports = router;
 // ── IA / Schema JSON (depuis Alfred) ──────────────────────────────
 const { requestGroqDelta, applyDelta } = require('../../services/formAi.service');

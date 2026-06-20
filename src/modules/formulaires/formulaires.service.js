@@ -349,6 +349,57 @@ const typesChamps = () => [
     { value: 'PHOTO',     label: 'Photo',            icon: 'Camera' },
 ];
 
+// ─── ENTÊTE FORMULAIRE ────────────────────────────────────────────────
+
+const getEntete = async (formulaireId) => {
+    const { rows } = await query(
+        `SELECT * FROM formulaire_entete WHERE formulaire_type_id = $1`,
+        [formulaireId]
+    );
+    return rows[0] || null;
+};
+
+const saveEntete = async (formulaireId, data) => {
+    const { rows: existing } = await query(
+        `SELECT id FROM formulaire_entete WHERE formulaire_type_id = $1`,
+        [formulaireId]
+    );
+
+    if (existing.length > 0) {
+        const { rows } = await query(
+            `UPDATE formulaire_entete SET
+                emetteur_nom=$1, emetteur_fonction=$2,
+                verificateur_nom=$3, verificateur_fonction=$4,
+                approbateur_nom=$5, approbateur_fonction=$6,
+                modifie_le=NOW()
+             WHERE formulaire_type_id=$7 RETURNING *`,
+            [
+                data.emetteur_nom||null, data.emetteur_fonction||null,
+                data.verificateur_nom||null, data.verificateur_fonction||null,
+                data.approbateur_nom||null, data.approbateur_fonction||null,
+                formulaireId,
+            ]
+        );
+        return rows[0];
+    } else {
+        const { rows } = await query(
+            `INSERT INTO formulaire_entete
+             (formulaire_type_id, emetteur_nom, emetteur_fonction,
+              verificateur_nom, verificateur_fonction,
+              approbateur_nom, approbateur_fonction)
+             VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
+            [
+                formulaireId,
+                data.emetteur_nom||null, data.emetteur_fonction||null,
+                data.verificateur_nom||null, data.verificateur_fonction||null,
+                data.approbateur_nom||null, data.approbateur_fonction||null,
+            ]
+        );
+        return rows[0];
+    }
+};
+
+// Export mis à jour
 module.exports = {
     getAll, 
     getById, 
@@ -364,10 +415,11 @@ module.exports = {
     restoreChamp, 
     reordonner,
     typesChamps,
-    // Sections
     getSections,
     addSection,
     updateSection,
     deleteSection,
     reordonnerSections,
+    getEntete,
+    saveEntete,
 };
