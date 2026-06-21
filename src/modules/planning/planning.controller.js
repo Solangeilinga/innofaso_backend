@@ -191,6 +191,47 @@ exports.assignerMaintenancierQuart = async (req, res) => {
           [uuid(), planningJourId, quartId, maintenancier_id, co_maintenancier_id || null]
         );
 
+    // ── Alertes d'assignation ──────────────────────────────────────
+    try {
+      const alertesService = require('../alertes/alertes.service');
+
+      // Récupérer les infos du quart et de la date
+      const { rows: infos } = await db.query(
+        `SELECT pj.date_jour, qm.nom AS quart_nom, qm.heure_debut, qm.heure_fin,
+                lp.code AS ligne_code
+         FROM planning_jour pj
+         JOIN planning_semaine ps ON ps.id = pj.planning_semaine_id
+         JOIN ligne_production lp ON lp.id = ps.ligne_id
+         JOIN quart_maintenance qm ON qm.id = $1
+         WHERE pj.id = $2`,
+        [quartId, planningJourId]
+      );
+
+      if (infos.length > 0) {
+        const { date_jour, quart_nom, heure_debut, heure_fin, ligne_code } = infos[0];
+        const dateF = new Date(date_jour).toLocaleDateString('fr-FR');
+        const msg = `🔧 Vous avez été assigné au ${quart_nom} (${heure_debut}h-${heure_fin}h) — Ligne ${ligne_code} le ${dateF}`;
+
+        // Notifier le maintenancier principal
+        await alertesService.creer({
+          utilisateur_id: maintenancier_id,
+          type_alerte:    'MAINTENANCE_PREVENTIVE',
+          message:        msg,
+        });
+
+        // Notifier le co-maintenancier si présent
+        if (co_maintenancier_id) {
+          await alertesService.creer({
+            utilisateur_id: co_maintenancier_id,
+            type_alerte:    'MAINTENANCE_PREVENTIVE',
+            message:        msg,
+          });
+        }
+      }
+    } catch (alertErr) {
+      console.error('Erreur alerte assignation:', alertErr.message);
+    }
+
     res.json(result.rows[0]);
   } catch (e) {
     console.error(e);

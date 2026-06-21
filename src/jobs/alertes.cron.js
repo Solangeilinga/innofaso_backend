@@ -109,3 +109,80 @@ cron.schedule('0 23 * * *', safeRun('23h00 — rappels maintenances demain', asy
 
     logger.info(`Rappels maintenances : ${planBasique.length + planQuart.length}`);
 }));
+// ── Deadline quart dépassée sans soumission → alerte admin+resps ─────
+// Toutes les heures : vérifier les quarts qui viennent de se terminer
+cron.schedule('0 * * * *', safeRun('Deadline quart — alerte responsables', async () => {
+    const { pool } = require('../config/db');
+    const alertesService = getAlertesService();
+    const heure = new Date().getHours();
+
+    // Quarts terminés à cette heure aujourd'hui
+    const { rows: quartsTermines } = await pool.query(
+        `SELECT DISTINCT
+            pq.maintenancier_id,
+            pq.co_maintenancier_id,
+            qm.nom AS quart_nom,
+            qm.heure_debut,
+            qm.heure_fin,
+            pj.date_jour,
+            lp.code AS ligne_code
+         FROM planning_quart pq
+         JOIN planning_jour pj     ON pq.planning_jour_id = pj.id
+         JOIN quart_maintenance qm ON pq.quart_id = qm.id
+         JOIN planning_semaine ps  ON pj.planning_semaine_id = ps.id
+         JOIN ligne_production lp  ON ps.ligne_id = lp.id
+         WHERE pj.date_jour = CURRENT_DATE
+           AND qm.heure_fin = $1`,
+        [heure]
+    );
+
+    for (const q of quartsTermines) {
+        const destinataires = [q.maintenancier_id, q.co_maintenancier_id].filter(Boolean);
+
+        // Vérifier si au moins un formulaire a été soumis pendant ce quart
+        const fin = q.heure_fin === 0 ? 24 : q.heure_fin;
+        const { rows: soumissions } = await pool.query(
+            `SELECT id FROM soumissions
+             WHERE utilisateur_id = ANY($1)
+               AND date_soumission::date = $2
+               AND EXTRACT(HOUR FROM date_soumission) >= $3
+               AND EXTRACT(HOUR FROM date_soumission) < $4
+               AND statut IN ('SOUMIS','VALIDE')
+             LIMIT 1`,
+            [destinataires, q.date_jour, q.heure_debut, fin]
+        );
+
+        if (soumissions.length === 0) {
+            // Récupérer tous les admins et responsables
+            const { rows: responsables } = await pool.query(
+                `SELECT u.id FROM utilisateurs u
+                 JOIN roles r ON r.id = u.role_id
+                 WHERE r.nom IN ('ADMIN','RESP_MAINT','RESP_PROD')
+                   AND u.actif = TRUE`
+            );
+
+            const dateF = new Date(q.date_jour).toLocaleDateString('fr-FR');
+            const msg = `🚨 Aucune soumission pour le ${q.quart_nom} (${q.heure_debut}h-${q.heure_fin}h) — Ligne ${q.ligne_code} (${dateF}). Travail non confirmé.`;
+
+            // Éviter les doublons
+            const { rows: dejaAlerte } = await pool.query(
+                `SELECT id FROM alertes
+                 WHERE type_alerte = 'FORMULAIRE_EN_RETARD'
+                   AND date_creation::date = CURRENT_DATE
+                   AND message LIKE $1`,
+                [`%${q.quart_nom}%Ligne ${q.ligne_code}%`]
+            );
+
+            if (dejaAlerte.length === 0) {
+                for (const r of responsables) {
+                    await alertesService.creer({
+                        utilisateur_id: r.id,
+                        type_alerte:    'FORMULAIRE_EN_RETARD',
+                        message:        msg,
+                    });
+                }
+                logger.info(`Deadline quart non couvert : ${q.quart_nom} Ligne ${q.ligne_code}`);
+            }
+        }
+    }
+}));
