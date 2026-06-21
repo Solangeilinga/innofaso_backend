@@ -12,10 +12,10 @@ const getAll = async ({ page = 1, limit = 20, formulaire_type_id, equipement_id,
     if (formulaire_type_id) add(formulaire_type_id, 's.formulaire_type_id = ');
     if (equipement_id)      add(equipement_id,      's.equipement_id = ');
     if (utilisateur_id)     add(utilisateur_id,     's.utilisateur_id = ');
-    if (statut)             add(statut.toUpperCase(),'s.statut = ');
+    if (statut)             add(statut.toUpperCase(),'s.statut::text = ');
     if (date_debut)         add(date_debut,          's.date_soumission::DATE >= ');
     if (date_fin)           add(date_fin,            's.date_soumission::DATE <= ');
-    if (mod)                add(mod.toUpperCase(),   'ft.module = ');
+    if (mod)                add(mod.toUpperCase(),   'ft.module::text = ');
 
     const where = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
     const countRes = await query(
@@ -27,8 +27,10 @@ const getAll = async ({ page = 1, limit = 20, formulaire_type_id, equipement_id,
 
     params.push(limit, offset);
     const { rows } = await query(
-        `SELECT s.id, s.statut, s.date_soumission, s.source, s.commentaire_rejet,
-             ft.code AS formulaire_code, ft.titre AS formulaire_titre, ft.module, ft.frequence,
+        `SELECT s.id, s.statut, s.date_soumission, s.source,
+             COALESCE(s.commentaire_rejet, '') AS commentaire_rejet,
+             ft.code AS formulaire_code, ft.titre AS formulaire_titre,
+             ft.module, ft.frequence,
              u.nom AS operateur_nom, u.prenom AS operateur_prenom, u.email AS operateur_email,
              e.nom AS equipement_nom, e.code_ref AS equipement_code,
              vp.nom AS valideur_nom, vp.prenom AS valideur_prenom
@@ -36,7 +38,7 @@ const getAll = async ({ page = 1, limit = 20, formulaire_type_id, equipement_id,
          JOIN formulaires_types ft ON ft.id = s.formulaire_type_id
          JOIN utilisateurs u       ON u.id  = s.utilisateur_id
          LEFT JOIN equipements e   ON e.id  = s.equipement_id
-         LEFT JOIN utilisateurs vp ON vp.id = s.valide_par
+         LEFT JOIN utilisateurs vp ON vp.id = COALESCE(s.valide_par, NULL)
          ${where}
          ORDER BY s.date_soumission DESC
          LIMIT $${params.length - 1} OFFSET $${params.length}`,
