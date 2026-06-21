@@ -12,25 +12,30 @@ const getAll = async ({ page = 1, limit = 20, formulaire_type_id, equipement_id,
     if (formulaire_type_id) add(formulaire_type_id, 's.formulaire_type_id = ');
     if (equipement_id)      add(equipement_id,      's.equipement_id = ');
     if (utilisateur_id)     add(utilisateur_id,     's.utilisateur_id = ');
-    if (statut)             add(statut.toUpperCase(),'s.statut::text = ');
-    if (date_debut)         add(date_debut,          's.date_soumission::DATE >= ');
-    if (date_fin)           add(date_fin,            's.date_soumission::DATE <= ');
-    if (mod)                add(mod.toUpperCase(),   'ft.module::text = ');
+    if (statut)             add(statut.toUpperCase(), 's.statut::text = ');
+    if (date_debut)         add(date_debut,           's.date_soumission::DATE >= ');
+    if (date_fin)           add(date_fin,             's.date_soumission::DATE <= ');
+    if (mod)                add(mod.toUpperCase(),    'ft.module::text = ');
 
     const where = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
+
     const countRes = await query(
-        `SELECT COUNT(*) FROM soumissions s JOIN formulaires_types ft ON ft.id = s.formulaire_type_id ${where}`,
+        `SELECT COUNT(*) FROM soumissions s
+         JOIN formulaires_types ft ON ft.id = s.formulaire_type_id ${where}`,
         params
     );
     const total = parseInt(countRes.rows[0].count);
-    const { offset, meta } = paginate(page, limit, total);
 
-    params.push(limit, offset);
+    const p     = Math.max(1, parseInt(page));
+    const l     = Math.min(100, Math.max(1, parseInt(limit)));
+    const offset = (p - 1) * l;
+
+    params.push(l, offset);
     const { rows } = await query(
-        `SELECT s.id, s.statut, s.date_soumission, s.source,
+        `SELECT s.id, s.statut::text AS statut, s.date_soumission, s.source,
              COALESCE(s.commentaire_rejet, '') AS commentaire_rejet,
              ft.code AS formulaire_code, ft.titre AS formulaire_titre,
-             ft.module, ft.frequence,
+             ft.module::text AS module, ft.frequence,
              u.nom AS operateur_nom, u.prenom AS operateur_prenom, u.email AS operateur_email,
              e.nom AS equipement_nom, e.code_ref AS equipement_code,
              vp.nom AS valideur_nom, vp.prenom AS valideur_prenom
@@ -38,13 +43,25 @@ const getAll = async ({ page = 1, limit = 20, formulaire_type_id, equipement_id,
          JOIN formulaires_types ft ON ft.id = s.formulaire_type_id
          JOIN utilisateurs u       ON u.id  = s.utilisateur_id
          LEFT JOIN equipements e   ON e.id  = s.equipement_id
-         LEFT JOIN utilisateurs vp ON vp.id = COALESCE(s.valide_par, NULL)
+         LEFT JOIN utilisateurs vp ON vp.id = s.valide_par
          ${where}
-         ORDER BY s.date_soumission DESC
+         ORDER BY s.date_soumission DESC NULLS LAST, s.id DESC
          LIMIT $${params.length - 1} OFFSET $${params.length}`,
         params
     );
-    return { data: rows, meta };
+
+    return {
+        data: rows,
+        meta: {
+            page:        p,
+            limit:       l,
+            total,
+            totalPages:  Math.ceil(total / l),
+            total_pages: Math.ceil(total / l),
+            has_next:    p * l < total,
+            has_prev:    p > 1,
+        },
+    };
 };
 
 const getById = async (id) => {
