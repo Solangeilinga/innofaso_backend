@@ -117,20 +117,35 @@ app.use(errorHandler);
 
 // ── Démarrage ───────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
-const server = app.listen(PORT, '0.0.0.0', () => {
-    logger.info(`🚀 InnoFaso backend démarré sur le port ${PORT} (${process.env.NODE_ENV})`);
-    logger.info(`   CORS autorisé : ${allowedOrigins.join(', ')}`);
-    try { require('./src/jobs/alertes.cron'); }
-    catch (e) { logger.warn('Cron alertes non démarré : ' + e.message); }
-});
 
-process.on('SIGTERM', () => {
-    logger.info('SIGTERM reçu — arrêt propre');
-    server.close(() => {
-        require('./src/config/db').pool.end(() => process.exit(0));
+async function start() {
+    // Appliquer les migrations SQL en attente avant d'accepter du trafic
+    try {
+        const { runMigrations } = require('./migrations/run');
+        await runMigrations({ closePool: false });
+    } catch (e) {
+        logger.error('Échec auto-migration au démarrage : ' + e.message);
+        process.exit(1);
+    }
+
+    const server = app.listen(PORT, '0.0.0.0', () => {
+        logger.info(`🚀 InnoFaso backend démarré sur le port ${PORT} (${process.env.NODE_ENV})`);
+        logger.info(`   CORS autorisé : ${allowedOrigins.join(', ')}`);
+        try { require('./src/jobs/alertes.cron'); }
+        catch (e) { logger.warn('Cron alertes non démarré : ' + e.message); }
     });
-});
+
+    process.on('SIGTERM', () => {
+        logger.info('SIGTERM reçu — arrêt propre');
+        server.close(() => {
+            require('./src/config/db').pool.end(() => process.exit(0));
+        });
+    });
+}
+
 process.on('unhandledRejection', r =>
     logger.error('Unhandled Rejection', { reason: String(r) }));
+
+start();
 
 module.exports = app;

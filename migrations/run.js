@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { pool } = require('../src/config/db');
 
-async function runMigrations() {
+async function runMigrations({ closePool = true } = {}) {
     const sqlDir = path.join(__dirname, 'sql');
 
     // Table de suivi — créée si absente
@@ -33,12 +33,18 @@ async function runMigrations() {
             console.log(`✅ Migration : ${file}`);
         } catch (err) {
             console.error(`❌ Échec ${file} :`, err.message);
-            process.exit(1);
+            if (closePool) process.exit(1);
+            throw err;
         }
     }
 
     console.log('🎉 Base de données à jour.');
-    await pool.end();
+    if (closePool) await pool.end();
 }
 
-runMigrations();
+// Exécution directe via `npm run migrate`
+if (require.main === module) {
+    runMigrations({ closePool: true });
+}
+
+module.exports = { runMigrations };
