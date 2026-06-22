@@ -32,9 +32,17 @@ async function runMigrations({ closePool = true } = {}) {
             await pool.query('INSERT INTO _migrations (filename) VALUES ($1)', [file]);
             console.log(`✅ Migration : ${file}`);
         } catch (err) {
-            console.error(`❌ Échec ${file} :`, err.message);
-            if (closePool) process.exit(1);
-            throw err;
+            // 23505 = unique_violation  |  42P07 = duplicate_table  |  42701 = duplicate_column
+            // Ces codes indiquent que la migration a déjà été appliquée hors du tracker.
+            const alreadyApplied = ['23505', '42P07', '42701'].includes(err.code);
+            if (alreadyApplied) {
+                console.warn(`⚠️  Migration ${file} : données déjà présentes (${err.code}), marquée comme exécutée.`);
+                await pool.query('INSERT INTO _migrations (filename) VALUES ($1) ON CONFLICT DO NOTHING', [file]);
+            } else {
+                console.error(`❌ Échec ${file} :`, err.message);
+                if (closePool) process.exit(1);
+                throw err;
+            }
         }
     }
 
