@@ -467,19 +467,6 @@ exports.obtenirPlanningMois = async (req, res) => {
               FROM intervention_quart iq
               JOIN equipements eq ON iq.equipement_id = eq.id
               WHERE iq.planning_quart_id = pq.id
-            ),
-            'formulaires', (
-              SELECT COALESCE(jsonb_agg(
-                jsonb_build_object(
-                  'id', ft.id,
-                  'code', ft.code,
-                  'titre', ft.titre,
-                  'module', ft.module
-                ) ORDER BY ft.titre
-              ), '[]'::jsonb)
-              FROM planning_quart_formulaires pqf
-              JOIN formulaires_types ft ON ft.id = pqf.formulaire_id
-              WHERE pqf.planning_quart_id = pq.id
             )
           ) ORDER BY qm.heure_debut
         ) FROM planning_quart pq
@@ -492,6 +479,37 @@ exports.obtenirPlanningMois = async (req, res) => {
        ORDER BY pj.date_jour`,
       [planning.id]
     );
+
+    // Enrichir avec les formulaires tagués (table créée par migration 016).
+    // Si la migration n'a pas encore été exécutée, on continue sans erreur.
+    try {
+      const quartIds = jours
+        .flatMap(j => (j.quarts_assignes || []).filter(Boolean).map(q => q.id));
+      if (quartIds.length > 0) {
+        const { rows: fRows } = await db.query(
+          `SELECT pqf.planning_quart_id, ft.id, ft.code, ft.titre, ft.module
+           FROM planning_quart_formulaires pqf
+           JOIN formulaires_types ft ON ft.id = pqf.formulaire_id
+           WHERE pqf.planning_quart_id = ANY($1::uuid[])
+           ORDER BY ft.titre`,
+          [quartIds]
+        );
+        const byQuart = {};
+        for (const r of fRows) {
+          if (!byQuart[r.planning_quart_id]) byQuart[r.planning_quart_id] = [];
+          byQuart[r.planning_quart_id].push({ id: r.id, code: r.code, titre: r.titre, module: r.module });
+        }
+        for (const jour of jours) {
+          if (Array.isArray(jour.quarts_assignes)) {
+            jour.quarts_assignes = jour.quarts_assignes.map(q =>
+              q ? { ...q, formulaires: byQuart[q.id] || [] } : q
+            );
+          }
+        }
+      }
+    } catch (_) {
+      // table absente (migration non encore exécutée) — formulaires = []
+    }
 
     const { rows: quartsRef } = await db.query(
       'SELECT * FROM quart_maintenance ORDER BY heure_debut'
@@ -1271,6 +1289,9 @@ exports.toggleFormulaireQuart = async (req, res) => {
     );
     res.json({ action: 'added', ...rows[0] });
   } catch (e) {
+    if (e.code === '42P01') {
+      return res.status(503).json({ error: 'Migration 016 non encore exécutée sur ce serveur' });
+    }
     console.error(e);
     res.status(500).json({ error: 'Erreur serveur' });
   }
@@ -1292,6 +1313,7 @@ exports.getFormulairesQuart = async (req, res) => {
     );
     res.json(rows);
   } catch (e) {
+    if (e.code === '42P01') return res.json([]);
     console.error(e);
     res.status(500).json({ error: 'Erreur serveur' });
   }
