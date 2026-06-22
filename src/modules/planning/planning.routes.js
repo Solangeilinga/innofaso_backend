@@ -36,6 +36,11 @@ router.post('/suivi/action',               auth, GESTIONNAIRES, ctrl.enregistrer
 router.post('/suivi-action',               auth, GESTIONNAIRES, ctrl.enregistrerSuiviAction);
 router.get('/graphique/evolution',         auth, ctrl.graphiqueEvolutionMaintenance);
 
+// ── FORMULAIRES PLANNING ─────────────────────────────
+router.get('/formulaires/disponibles',          auth, ctrl.listerFormulairesDisponibles);
+router.get('/quart/:planningQuartId/formulaires', auth, ctrl.getFormulairesQuart);
+router.post('/quart/formulaire/toggle',         auth, GESTIONNAIRES, ctrl.toggleFormulaireQuart);
+
 // ── UTILITAIRES ─────────────────────────────────────
 router.get('/lignes',                auth, ctrl.listerLignes);
 router.get('/lignes/lister',         auth, ctrl.listerLignes);

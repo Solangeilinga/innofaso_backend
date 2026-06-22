@@ -460,7 +460,6 @@ exports.obtenirPlanningMois = async (req, res) => {
                   'equipement_code', eq.code_ref,
                   'duree_arret', iq.duree_arret_effectif,
                   'cause_indisponibilite', iq.cause_indisponibilite,
-                  'observations', iq.observations,
                   'taux_disponibilite', iq.taux_disponibilite_calcule,
                   'soumission_id', iq.soumission_id
                 ) ORDER BY iq.cree_le
@@ -468,6 +467,19 @@ exports.obtenirPlanningMois = async (req, res) => {
               FROM intervention_quart iq
               JOIN equipements eq ON iq.equipement_id = eq.id
               WHERE iq.planning_quart_id = pq.id
+            ),
+            'formulaires', (
+              SELECT COALESCE(jsonb_agg(
+                jsonb_build_object(
+                  'id', ft.id,
+                  'code', ft.code,
+                  'titre', ft.titre,
+                  'module', ft.module
+                ) ORDER BY ft.titre
+              ), '[]'::jsonb)
+              FROM planning_quart_formulaires pqf
+              JOIN formulaires_types ft ON ft.id = pqf.formulaire_id
+              WHERE pqf.planning_quart_id = pq.id
             )
           ) ORDER BY qm.heure_debut
         ) FROM planning_quart pq
@@ -1203,6 +1215,82 @@ exports.mettreAJourLigneQuart = async (req, res) => {
     );
 
     res.json({ success: true, message: 'Ligne mise à jour' });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+// ========================================
+// FORMULAIRES — Tagage sur planning_quart
+// ========================================
+
+/**
+ * Lister tous les formulaires disponibles pour le tagage
+ */
+exports.listerFormulairesDisponibles = async (req, res) => {
+  try {
+    const { rows } = await db.query(
+      `SELECT id, code, titre, module
+       FROM formulaires_types
+       WHERE actif = TRUE
+       ORDER BY module, titre`
+    );
+    res.json(rows);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+/**
+ * Taguer ou détaguer un formulaire sur un quart (toggle)
+ */
+exports.toggleFormulaireQuart = async (req, res) => {
+  try {
+    const { planning_quart_id, formulaire_id } = req.body;
+    if (!planning_quart_id || !formulaire_id) {
+      return res.status(400).json({ error: 'planning_quart_id et formulaire_id requis' });
+    }
+
+    const { rows: existing } = await db.query(
+      `SELECT id FROM planning_quart_formulaires
+       WHERE planning_quart_id = $1 AND formulaire_id = $2`,
+      [planning_quart_id, formulaire_id]
+    );
+
+    if (existing.length) {
+      await db.query('DELETE FROM planning_quart_formulaires WHERE id = $1', [existing[0].id]);
+      return res.json({ action: 'removed' });
+    }
+
+    const { rows } = await db.query(
+      `INSERT INTO planning_quart_formulaires (id, planning_quart_id, formulaire_id)
+       VALUES ($1, $2, $3) RETURNING *`,
+      [uuid(), planning_quart_id, formulaire_id]
+    );
+    res.json({ action: 'added', ...rows[0] });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+/**
+ * Obtenir les formulaires tagués d'un quart
+ */
+exports.getFormulairesQuart = async (req, res) => {
+  try {
+    const { planningQuartId } = req.params;
+    const { rows } = await db.query(
+      `SELECT ft.id, ft.code, ft.titre, ft.module
+       FROM planning_quart_formulaires pqf
+       JOIN formulaires_types ft ON ft.id = pqf.formulaire_id
+       WHERE pqf.planning_quart_id = $1
+       ORDER BY ft.titre`,
+      [planningQuartId]
+    );
+    res.json(rows);
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: 'Erreur serveur' });
