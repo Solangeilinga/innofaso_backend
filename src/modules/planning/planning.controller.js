@@ -113,6 +113,10 @@ exports.obtenirPlanningSemaine = async (req, res) => {
            'maintenancier_nom', u1.prenom || ' ' || u1.nom,
            'co_maintenancier_id', pq.co_maintenancier_id,
            'co_maintenancier_nom', u2.prenom || ' ' || u2.nom,
+           'verificateur_id', pq.verificateur_id,
+           'verificateur_nom', u3.prenom || ' ' || u3.nom,
+           'validateur_id', pq.validateur_id,
+           'validateur_nom', u4.prenom || ' ' || u4.nom,
            'interventions', (
              SELECT jsonb_agg(
                jsonb_build_object(
@@ -134,11 +138,13 @@ exports.obtenirPlanningSemaine = async (req, res) => {
              WHERE iq.planning_quart_id = pq.id
            )
          )
-       ) FROM planning_quart pq
-       LEFT JOIN quart_maintenance qm ON pq.quart_id = qm.id
-       LEFT JOIN utilisateurs u1 ON pq.maintenancier_id = u1.id
-       LEFT JOIN utilisateurs u2 ON pq.co_maintenancier_id = u2.id
-       WHERE pq.planning_jour_id = pj.id) AS quarts
+        ) FROM planning_quart pq
+        LEFT JOIN quart_maintenance qm ON pq.quart_id = qm.id
+        LEFT JOIN utilisateurs u1 ON pq.maintenancier_id = u1.id
+        LEFT JOIN utilisateurs u2 ON pq.co_maintenancier_id = u2.id
+        LEFT JOIN utilisateurs u3 ON pq.verificateur_id   = u3.id
+        LEFT JOIN utilisateurs u4 ON pq.validateur_id     = u4.id
+        WHERE pq.planning_jour_id = pj.id) AS quarts
        FROM planning_jour pj
        WHERE pj.planning_semaine_id = $1
        ORDER BY pj.date_jour ASC`,
@@ -162,7 +168,7 @@ exports.assignerMaintenancierQuart = async (req, res) => {
   try {
     const planningJourId = req.body.planningJourId || req.body.planning_jour_id;
     const quartId = req.body.quartId || req.body.quart_id;
-    const { maintenancier_id, co_maintenancier_id } = req.body;
+    const { maintenancier_id, co_maintenancier_id, verificateur_id, validateur_id } = req.body;
 
     if (!planningJourId || !quartId || !maintenancier_id) {
       return res.status(400).json({ error: 'Paramètres requis manquants' });
@@ -178,17 +184,18 @@ exports.assignerMaintenancierQuart = async (req, res) => {
     const result = existing.length > 0
       ? await db.query(
           `UPDATE planning_quart 
-           SET maintenancier_id = $1, co_maintenancier_id = $2
-           WHERE planning_jour_id = $3 AND quart_id = $4
+           SET maintenancier_id = $1, co_maintenancier_id = $2,
+               verificateur_id = $3, validateur_id = $4
+           WHERE planning_jour_id = $5 AND quart_id = $6
            RETURNING *`,
-          [maintenancier_id, co_maintenancier_id || null, planningJourId, quartId]
+          [maintenancier_id, co_maintenancier_id || null, verificateur_id || null, validateur_id || null, planningJourId, quartId]
         )
       : await db.query(
           `INSERT INTO planning_quart 
-           (id, planning_jour_id, quart_id, maintenancier_id, co_maintenancier_id)
-           VALUES ($1, $2, $3, $4, $5)
+           (id, planning_jour_id, quart_id, maintenancier_id, co_maintenancier_id, verificateur_id, validateur_id)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)
            RETURNING *`,
-          [uuid(), planningJourId, quartId, maintenancier_id, co_maintenancier_id || null]
+          [uuid(), planningJourId, quartId, maintenancier_id, co_maintenancier_id || null, verificateur_id || null, validateur_id || null]
         );
 
     // ── Alertes d'assignation ──────────────────────────────────────
@@ -227,10 +234,39 @@ exports.assignerMaintenancierQuart = async (req, res) => {
             message:        msg,
           });
         }
+
+        // Notifier le vérificateur si présent
+        if (verificateur_id) {
+          await alertesService.creer({
+            utilisateur_id: verificateur_id,
+            type_alerte:    'MAINTENANCE_PREVENTIVE',
+            message:        `🔍 Vous êtes vérificateur | ` + msg,
+          });
+        }
+
+        // Notifier le validateur si présent
+        if (validateur_id) {
+          await alertesService.creer({
+            utilisateur_id: validateur_id,
+            type_alerte:    'MAINTENANCE_PREVENTIVE',
+            message:        `✅ Vous êtes validateur | ` + msg,
+          });
+        }
       }
     } catch (alertErr) {
       console.error('Erreur alerte assignation:', alertErr.message);
     }
+
+    // Synchroniser les processus_taches existants avec les nouvelles assignations
+    try {
+      const pqId = result.rows[0].id;
+      await db.query(
+        `UPDATE processus_taches
+         SET executeur_id = $1, verificateur_id = $2, validateur_id = $3
+         WHERE planning_quart_id = $4`,
+        [maintenancier_id, verificateur_id || null, validateur_id || null, pqId]
+      );
+    } catch (_) {}
 
     res.json(result.rows[0]);
   } catch (e) {
@@ -440,6 +476,10 @@ exports.obtenirPlanningMois = async (req, res) => {
             'maintenancier_nom', u1.prenom || ' ' || u1.nom,
             'co_maintenancier_id', pq.co_maintenancier_id,
             'co_maintenancier_nom', CASE WHEN u2.id IS NOT NULL THEN u2.prenom || ' ' || u2.nom END,
+            'verificateur_id', pq.verificateur_id,
+            'verificateur_nom', u3.prenom || ' ' || u3.nom,
+            'validateur_id', pq.validateur_id,
+            'validateur_nom', u4.prenom || ' ' || u4.nom,
             'ligne_intervention', (
               SELECT jsonb_build_object(
                 'id', il.id,
@@ -473,6 +513,8 @@ exports.obtenirPlanningMois = async (req, res) => {
         LEFT JOIN quart_maintenance qm ON pq.quart_id = qm.id
         LEFT JOIN utilisateurs u1 ON pq.maintenancier_id = u1.id
         LEFT JOIN utilisateurs u2 ON pq.co_maintenancier_id = u2.id
+        LEFT JOIN utilisateurs u3 ON pq.verificateur_id   = u3.id
+        LEFT JOIN utilisateurs u4 ON pq.validateur_id     = u4.id
         WHERE pq.planning_jour_id = pj.id) AS quarts_assignes
        FROM planning_jour pj
        WHERE pj.planning_semaine_id = $1
@@ -552,6 +594,7 @@ exports.mettreAJourInterventionLigne = async (req, res) => {
       cause_indisponibilite,
       observations,
       temps_couverture = 8.0,
+      taux_cible,
     } = req.body;
 
     if (!planning_quart_id) {
@@ -580,17 +623,18 @@ exports.mettreAJourInterventionLigne = async (req, res) => {
              cause_indisponibilite = COALESCE($2, cause_indisponibilite),
              observations = COALESCE($3, observations),
              temps_couverture = COALESCE($4, temps_couverture),
+             taux_cible = COALESCE($5, taux_cible),
              modifie_le = NOW()
-         WHERE planning_quart_id = $5
+         WHERE planning_quart_id = $6
          RETURNING *`,
-        [duree_arret_agregee, cause_indisponibilite, observations, temps_couverture, planning_quart_id]
+        [duree_arret_agregee, cause_indisponibilite, observations, temps_couverture, taux_cible, planning_quart_id]
       ));
     } else {
       ({ rows } = await db.query(
         `INSERT INTO intervention_ligne
          (id, planning_quart_id, ligne_id, duree_arret_agregee,
-          cause_indisponibilite, observations, temps_couverture)
-         VALUES ($1,$2,$3,$4,$5,$6,$7)
+          cause_indisponibilite, observations, temps_couverture, taux_cible)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
          RETURNING *`,
         [
           uuid(),
@@ -600,6 +644,7 @@ exports.mettreAJourInterventionLigne = async (req, res) => {
           cause_indisponibilite || null,
           observations || null,
           temps_couverture,
+          taux_cible || null,
         ]
       ));
     }
@@ -1279,6 +1324,8 @@ exports.toggleFormulaireQuart = async (req, res) => {
 
     if (existing.length) {
       await db.query('DELETE FROM planning_quart_formulaires WHERE id = $1', [existing[0].id]);
+      // Supprimer la tâche processus associée
+      try { await db.query('DELETE FROM processus_taches WHERE planning_quart_formulaire_id = $1', [existing[0].id]); } catch (_) {}
       return res.json({ action: 'removed' });
     }
 
@@ -1287,6 +1334,27 @@ exports.toggleFormulaireQuart = async (req, res) => {
        VALUES ($1, $2, $3) RETURNING *`,
       [uuid(), planning_quart_id, formulaire_id]
     );
+
+    // Auto‑création de la tâche processus si le quart a ses 3 acteurs
+    try {
+      const { rows: assignees } = await db.query(
+        `SELECT maintenancier_id, verificateur_id, validateur_id
+         FROM planning_quart WHERE id = $1`,
+        [planning_quart_id]
+      );
+      const a = assignees[0];
+      if (a && a.maintenancier_id && a.verificateur_id && a.validateur_id) {
+        await db.query(
+          `INSERT INTO processus_taches
+           (id, formulaire_id, planning_quart_id, planning_quart_formulaire_id,
+            executeur_id, verificateur_id, validateur_id)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+          [uuid(), formulaire_id, planning_quart_id, rows[0].id,
+           a.maintenancier_id, a.verificateur_id, a.validateur_id]
+        );
+      }
+    } catch (_) {}
+
     res.json({ action: 'added', ...rows[0] });
   } catch (e) {
     if (e.code === '42P01') {

@@ -1,0 +1,413 @@
+[2026-06-23T00:51:36.242Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-23T00:51:36.243Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-23T00:51:36.558Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-23T00:51:41.523Z] [ERROR] Email ou mot de passe incorrect. {"stack":"Error: Email ou mot de passe incorrect.\n    at Object.login (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\auth\\auth.service.js:29:21)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async login (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\auth\\auth.controller.js:16:24)","method":"POST","url":"/api/v1/auth/login","ip":"127.0.0.1","user":"anonymous"}
+[2026-06-23T00:51:41.532Z] [INFO] [0mPOST /api/v1/auth/login [33m401[0m 26.052 ms - 424[0m
+[2026-06-23T00:51:57.699Z] [ERROR] Email ou mot de passe incorrect. {"stack":"Error: Email ou mot de passe incorrect.\n    at Object.login (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\auth\\auth.service.js:29:21)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async login (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\auth\\auth.controller.js:16:24)","method":"POST","url":"/api/v1/auth/login","ip":"127.0.0.1","user":"anonymous"}
+[2026-06-23T00:51:57.700Z] [INFO] [0mPOST /api/v1/auth/login [33m401[0m 3.827 ms - 424[0m
+[2026-06-23T00:53:33.503Z] [INFO] [0mPOST /api/v1/auth/login [32m200[0m 390.132 ms - 551[0m
+[2026-06-23T00:53:35.631Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [32m200[0m 22.448 ms - 12[0m
+[2026-06-23T00:53:35.649Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 7.265 ms - -[0m
+[2026-06-23T00:53:35.713Z] [INFO] [0mGET /api/v1/planning/lignes [32m200[0m 99.015 ms - 472[0m
+[2026-06-23T00:53:35.727Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 4.331 ms - -[0m
+[2026-06-23T00:53:35.746Z] [INFO] [0mGET /api/v1/planning/suivi-equipements?mois=6&annee=2026 [32m200[0m 118.579 ms - 2[0m
+[2026-06-23T00:53:35.757Z] [INFO] [0mGET /api/v1/planning/suivi-equipements?mois=6&annee=2026 [36m304[0m 3.212 ms - -[0m
+[2026-06-23T00:53:35.781Z] [INFO] [0mGET /api/v1/planning/graphiques?mois=6&annee=2026 [32m200[0m 158.006 ms - 1133[0m
+[2026-06-23T00:53:35.791Z] [INFO] [0mGET /api/v1/planning/synthese?mois=6&annee=2026 [32m200[0m 173.668 ms - 190[0m
+[2026-06-23T00:53:35.798Z] [INFO] [0mGET /api/v1/planning/graphiques?mois=6&annee=2026 [36m304[0m 10.109 ms - -[0m
+[2026-06-23T00:53:35.804Z] [INFO] [0mGET /api/v1/planning/synthese?mois=6&annee=2026 [36m304[0m 7.957 ms - -[0m
+[2026-06-23T00:53:38.410Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.993 ms - -[0m
+[2026-06-23T00:53:38.412Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [32m200[0m 6.645 ms - 159[0m
+[2026-06-23T00:53:38.422Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 2.612 ms - -[0m
+[2026-06-23T00:53:42.429Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [32m200[0m 4.491 ms - 2[0m
+[2026-06-23T00:53:46.977Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 5.256 ms - -[0m
+[2026-06-23T00:53:48.099Z] [INFO] [0mGET /api/v1/processus?etape=VERIFICATION [32m200[0m 4.760 ms - 2[0m
+[2026-06-23T00:53:50.055Z] [INFO] [0mGET /api/v1/processus?etape=VALIDATION [32m200[0m 4.019 ms - 2[0m
+[2026-06-23T00:53:51.852Z] [INFO] [0mGET /api/v1/processus?etape=VERIFICATION [36m304[0m 4.787 ms - -[0m
+[2026-06-23T00:53:52.991Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 4.983 ms - -[0m
+[2026-06-23T00:54:02.911Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 4.216 ms - -[0m
+[2026-06-23T00:54:03.972Z] [INFO] [0mGET /api/v1/processus?etape=VERIFICATION [36m304[0m 3.809 ms - -[0m
+[2026-06-23T00:54:04.978Z] [INFO] [0mGET /api/v1/processus?etape=VALIDATION [36m304[0m 3.778 ms - -[0m
+[2026-06-23T00:54:07.816Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.538 ms - -[0m
+[2026-06-23T00:54:07.821Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 5.584 ms - -[0m
+[2026-06-23T00:54:07.827Z] [INFO] [0mGET /api/v1/planning/maintenanciers/lister [32m200[0m 8.734 ms - 129[0m
+[2026-06-23T00:54:07.835Z] [INFO] [0mGET /api/v1/planning/formulaires/disponibles [32m200[0m 15.893 ms - 8743[0m
+[2026-06-23T00:54:07.841Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 4.002 ms - -[0m
+[2026-06-23T00:54:07.844Z] [INFO] [0mGET /api/v1/planning/maintenanciers/lister [36m304[0m 4.627 ms - -[0m
+[2026-06-23T00:54:07.851Z] [INFO] [0mGET /api/v1/planning/formulaires/disponibles [36m304[0m 4.563 ms - -[0m
+[2026-06-23T00:54:07.881Z] [INFO] [0mGET /api/v1/planning/mois?ligne_id=c3e56289-afb2-44b8-b9da-be7deda29242&mois=6&annee=2026&semaine_index=4 [32m200[0m 28.288 ms - 3573[0m
+[2026-06-23T00:54:43.931Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.568 ms - -[0m
+[2026-06-23T00:54:43.934Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 3.874 ms - -[0m
+[2026-06-23T00:54:43.947Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 4.467 ms - -[0m
+[2026-06-23T00:54:45.964Z] [INFO] [0mGET /api/v1/processus?etape=VERIFICATION [36m304[0m 6.419 ms - -[0m
+[2026-06-23T00:54:48.138Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 4.548 ms - -[0m
+[2026-06-23T00:54:49.656Z] [INFO] [0mGET /api/v1/processus?etape=VALIDATION [36m304[0m 3.507 ms - -[0m
+[2026-06-23T00:54:50.703Z] [INFO] [0mGET /api/v1/processus?etape=VERIFICATION [36m304[0m 3.616 ms - -[0m
+[2026-06-23T00:54:51.754Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 3.884 ms - -[0m
+[2026-06-23T00:54:54.256Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 3.678 ms - -[0m
+[2026-06-23T00:54:55.281Z] [INFO] [0mGET /api/v1/processus?etape=VERIFICATION [36m304[0m 4.227 ms - -[0m
+[2026-06-23T00:54:56.202Z] [INFO] [0mGET /api/v1/processus?etape=VALIDATION [36m304[0m 3.253 ms - -[0m
+[2026-06-23T00:54:57.582Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 3.778 ms - -[0m
+[2026-06-23T00:55:03.406Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 4.433 ms - -[0m
+[2026-06-23T00:55:05.346Z] [INFO] [0mGET /api/v1/processus?etape=VERIFICATION [36m304[0m 5.031 ms - -[0m
+[2026-06-23T00:55:09.691Z] [INFO] [0mGET /api/v1/processus?etape=VALIDATION [36m304[0m 4.003 ms - -[0m
+[2026-06-23T00:55:11.810Z] [INFO] [0mGET /api/v1/processus?etape=VERIFICATION [36m304[0m 4.495 ms - -[0m
+[2026-06-23T00:55:13.242Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 5.446 ms - -[0m
+[2026-06-23T00:55:18.436Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 3.793 ms - -[0m
+[2026-06-23T00:55:32.693Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 8.877 ms - -[0m
+[2026-06-23T00:55:32.702Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 15.674 ms - -[0m
+[2026-06-23T00:55:32.718Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 2.606 ms - -[0m
+[2026-06-23T00:55:32.798Z] [INFO] [0mGET /api/v1/planning/maintenanciers/lister [36m304[0m 110.363 ms - -[0m
+[2026-06-23T00:55:32.806Z] [INFO] [0mGET /api/v1/planning/formulaires/disponibles [36m304[0m 114.435 ms - -[0m
+[2026-06-23T00:55:32.809Z] [INFO] [0mGET /api/v1/planning/maintenanciers/lister [36m304[0m 5.209 ms - -[0m
+[2026-06-23T00:55:32.817Z] [INFO] [0mGET /api/v1/planning/formulaires/disponibles [36m304[0m 4.419 ms - -[0m
+[2026-06-23T00:55:32.836Z] [INFO] [0mGET /api/v1/planning/mois?ligne_id=c3e56289-afb2-44b8-b9da-be7deda29242&mois=6&annee=2026&semaine_index=4 [36m304[0m 16.105 ms - -[0m
+[2026-06-23T00:56:29.778Z] [INFO] [0mGET /api/v1/planning/mois?ligne_id=c3e56289-afb2-44b8-b9da-be7deda29242&mois=6&annee=2026&semaine_index=3 [32m200[0m 30.655 ms - 3115[0m
+[2026-06-23T00:56:32.684Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.427 ms - -[0m
+[2026-06-23T00:57:32.758Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 57.967 ms - -[0m
+[2026-06-23T00:58:14.784Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.754 ms - -[0m
+[2026-06-23T00:58:14.858Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 75.052 ms - -[0m
+[2026-06-23T00:58:14.865Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 1.412 ms - -[0m
+[2026-06-23T00:58:23.398Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 7.264 ms - -[0m
+[2026-06-23T00:58:24.737Z] [INFO] [0mGET /api/v1/processus?etape=VERIFICATION [36m304[0m 4.016 ms - -[0m
+[2026-06-23T00:58:25.863Z] [INFO] [0mGET /api/v1/processus?etape=VALIDATION [36m304[0m 4.478 ms - -[0m
+[2026-06-23T00:58:27.168Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 3.744 ms - -[0m
+[2026-06-23T00:58:29.929Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.905 ms - -[0m
+[2026-06-23T00:58:29.939Z] [INFO] [0mGET /api/v1/alertes?statut=NON_LUE&module=MAINTENANCE&page=1&limit=20 [32m200[0m 13.347 ms - 9468[0m
+[2026-06-23T00:58:29.952Z] [INFO] [0mGET /api/v1/alertes?statut=NON_LUE&module=MAINTENANCE&page=1&limit=20 [36m304[0m 6.655 ms - -[0m
+[2026-06-23T00:58:42.556Z] [INFO] [0mGET /api/v1/alertes?statut=NON_LUE&module=MAINTENANCE&page=2&limit=20 [32m200[0m 5.978 ms - 1911[0m
+[2026-06-23T00:58:46.193Z] [INFO] [0mGET /api/v1/alertes?statut=NON_LUE&module=MAINTENANCE&page=1&limit=20 [36m304[0m 5.938 ms - -[0m
+[2026-06-23T00:58:55.777Z] [INFO] [0mGET /api/v1/alertes?statut=NON_LUE&type_alerte=PANNE_CRITIQUE&module=MAINTENANCE&page=1&limit=20 [32m200[0m 9.248 ms - 41[0m
+[2026-06-23T00:59:02.500Z] [INFO] [0mGET /api/v1/alertes?statut=NON_LUE&type_alerte=MAINTENANCE_PREVENTIVE&module=MAINTENANCE&page=1&limit=20 [32m200[0m 5.780 ms - 41[0m
+[2026-06-23T00:59:07.305Z] [INFO] [0mGET /api/v1/alertes?statut=NON_LUE&type_alerte=FORMULAIRE_EN_RETARD&module=MAINTENANCE&page=1&limit=20 [32m200[0m 7.504 ms - 9468[0m
+[2026-06-23T00:59:14.197Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.184 ms - -[0m
+[2026-06-23T00:59:14.203Z] [ERROR] la colonne s.valide_par n'existe pas {"stack":"error: la colonne s.valide_par n'existe pas\n    at D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\node_modules\\pg-pool\\index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async Object.getAll (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\soumissions\\soumissions.service.js:34:22)\n    at async getAll (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\soumissions\\soumissions.controller.js:3:62)","method":"GET","url":"/api/v1/soumissions?page=1&limit=15&module=MAINTENANCE","ip":"127.0.0.1","user":"admin@innofaso.com"}
+[2026-06-23T00:59:14.205Z] [INFO] [0mGET /api/v1/soumissions?page=1&limit=15&module=MAINTENANCE [31m500[0m 11.133 ms - 569[0m
+[2026-06-23T00:59:14.218Z] [ERROR] la colonne s.valide_par n'existe pas {"stack":"error: la colonne s.valide_par n'existe pas\n    at D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\node_modules\\pg-pool\\index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async Object.getAll (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\soumissions\\soumissions.service.js:34:22)\n    at async getAll (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\soumissions\\soumissions.controller.js:3:62)","method":"GET","url":"/api/v1/soumissions?page=1&limit=15&module=MAINTENANCE","ip":"127.0.0.1","user":"admin@innofaso.com"}
+[2026-06-23T00:59:14.221Z] [INFO] [0mGET /api/v1/soumissions?page=1&limit=15&module=MAINTENANCE [31m500[0m 9.758 ms - 569[0m
+[2026-06-23T00:59:14.276Z] [INFO] [0mGET /api/v1/formulaires?actif=true&module=MAINTENANCE [32m200[0m 80.959 ms - 14836[0m
+[2026-06-23T00:59:14.287Z] [INFO] [0mGET /api/v1/formulaires?actif=true&module=MAINTENANCE [36m304[0m 4.454 ms - -[0m
+[2026-06-23T00:59:24.112Z] [INFO] [0mGET /api/v1/lignes [32m200[0m 3.888 ms - 472[0m
+[2026-06-23T00:59:24.124Z] [INFO] [0mGET /api/v1/lignes [36m304[0m 2.126 ms - -[0m
+[2026-06-23T00:59:24.188Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 79.153 ms - -[0m
+[2026-06-23T00:59:25.787Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.658 ms - -[0m
+[2026-06-23T00:59:25.789Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 4.185 ms - -[0m
+[2026-06-23T00:59:25.801Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 3.950 ms - -[0m
+[2026-06-23T01:00:00.030Z] [INFO] Cron [Deadline quart — alerte responsables] démarré
+[2026-06-23T01:00:00.036Z] [INFO] Cron [Deadline quart — alerte responsables] terminé
+[2026-06-23T01:00:25.789Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.624 ms - -[0m
+[2026-06-23T01:01:25.856Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 58.001 ms - -[0m
+[2026-06-23T01:02:25.786Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.514 ms - -[0m
+[2026-06-23T01:02:44.054Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 7.887 ms - -[0m
+[2026-06-23T01:02:45.975Z] [INFO] [0mGET /api/v1/processus?etape=VERIFICATION [36m304[0m 3.702 ms - -[0m
+[2026-06-23T01:02:47.539Z] [INFO] [0mGET /api/v1/processus?etape=VALIDATION [36m304[0m 3.901 ms - -[0m
+[2026-06-23T01:02:57.744Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 3.474 ms - -[0m
+[2026-06-23T01:03:25.783Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.389 ms - -[0m
+[2026-06-23T01:04:25.884Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 59.017 ms - -[0m
+[2026-06-23T01:05:04.446Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 9.394 ms - -[0m
+[2026-06-23T01:05:06.462Z] [INFO] [0mGET /api/v1/equipements [32m200[0m 6.542 ms - 100[0m
+[2026-06-23T01:05:06.473Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 3.808 ms - -[0m
+[2026-06-23T01:05:06.523Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 66.350 ms - -[0m
+[2026-06-23T01:05:09.313Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.243 ms - -[0m
+[2026-06-23T01:05:09.320Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [32m200[0m 10.657 ms - 14836[0m
+[2026-06-23T01:05:09.330Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 3.786 ms - -[0m
+[2026-06-23T01:05:14.521Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.783 ms - -[0m
+[2026-06-23T01:05:14.525Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 5.204 ms - -[0m
+[2026-06-23T01:05:14.537Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 2.617 ms - -[0m
+[2026-06-23T01:05:21.254Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.356 ms - -[0m
+[2026-06-23T01:05:21.260Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 4.398 ms - -[0m
+[2026-06-23T01:05:21.272Z] [INFO] [0mGET /api/v1/planning/maintenanciers/lister [36m304[0m 10.168 ms - -[0m
+[2026-06-23T01:05:21.274Z] [INFO] [0mGET /api/v1/planning/formulaires/disponibles [36m304[0m 10.621 ms - -[0m
+[2026-06-23T01:05:21.286Z] [INFO] [0mGET /api/v1/planning/maintenanciers/lister [36m304[0m 4.750 ms - -[0m
+[2026-06-23T01:05:21.289Z] [INFO] [0mGET /api/v1/planning/formulaires/disponibles [36m304[0m 5.328 ms - -[0m
+[2026-06-23T01:05:21.314Z] [INFO] [0mGET /api/v1/planning/mois?ligne_id=c3e56289-afb2-44b8-b9da-be7deda29242&mois=6&annee=2026&semaine_index=4 [36m304[0m 11.856 ms - -[0m
+[2026-06-23T01:05:21.355Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 84.556 ms - -[0m
+[2026-06-23T01:06:21.263Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.663 ms - -[0m
+[2026-06-23T01:06:36.814Z] [INFO] [0mPOST /api/v1/planning/quart/assigner [32m200[0m 25.308 ms - 309[0m
+[2026-06-23T01:06:36.837Z] [INFO] [0mGET /api/v1/planning/mois?ligne_id=c3e56289-afb2-44b8-b9da-be7deda29242&mois=6&annee=2026&semaine_index=4 [32m200[0m 16.091 ms - 4016[0m
+[2026-06-23T01:06:41.170Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [32m200[0m 1.307 ms - 122[0m
+[2026-06-23T01:06:41.177Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 0.996 ms - -[0m
+[2026-06-23T01:06:43.428Z] [INFO] [0mPOST /api/v1/planning/quart/formulaire/toggle [32m200[0m 4.003 ms - 213[0m
+[2026-06-23T01:06:43.444Z] [INFO] [0mGET /api/v1/planning/mois?ligne_id=c3e56289-afb2-44b8-b9da-be7deda29242&mois=6&annee=2026&semaine_index=4 [32m200[0m 8.475 ms - 4149[0m
+[2026-06-23T01:06:55.643Z] [INFO] [0mPUT /api/v1/planning/intervention-ligne [32m200[0m 11.094 ms - 415[0m
+[2026-06-23T01:06:55.662Z] [INFO] [0mGET /api/v1/planning/mois?ligne_id=c3e56289-afb2-44b8-b9da-be7deda29242&mois=6&annee=2026&semaine_index=4 [32m200[0m 9.096 ms - 4317[0m
+[2026-06-23T01:07:15.762Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [32m200[0m 3.178 ms - 12[0m
+[2026-06-23T01:07:15.822Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 62.616 ms - -[0m
+[2026-06-23T01:07:15.829Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 1.417 ms - -[0m
+[2026-06-23T01:07:28.265Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 6.381 ms - -[0m
+[2026-06-23T01:08:15.836Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.437 ms - -[0m
+[2026-06-23T01:09:15.841Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 6.377 ms - -[0m
+[2026-06-23T01:10:15.836Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.315 ms - -[0m
+[2026-06-23T01:10:56.966Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.972 ms - -[0m
+[2026-06-23T01:10:56.976Z] [INFO] [0mGET /api/v1/planning/maintenanciers/lister [36m304[0m 7.834 ms - -[0m
+[2026-06-23T01:10:56.990Z] [INFO] [0mGET /api/v1/planning/maintenanciers/lister [36m304[0m 2.782 ms - -[0m
+[2026-06-23T01:10:57.044Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 79.038 ms - -[0m
+[2026-06-23T01:10:57.048Z] [INFO] [0mGET /api/v1/planning/formulaires/disponibles [36m304[0m 77.640 ms - -[0m
+[2026-06-23T01:10:57.053Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 3.241 ms - -[0m
+[2026-06-23T01:10:57.057Z] [INFO] [0mGET /api/v1/planning/formulaires/disponibles [36m304[0m 2.629 ms - -[0m
+[2026-06-23T01:10:57.075Z] [INFO] [0mGET /api/v1/planning/mois?ligne_id=c3e56289-afb2-44b8-b9da-be7deda29242&mois=6&annee=2026&semaine_index=4 [36m304[0m 12.767 ms - -[0m
+[2026-06-23T01:11:57.912Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 75.453 ms - -[0m
+[2026-06-23T01:12:12.051Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.533 ms - -[0m
+[2026-06-23T01:12:12.115Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 65.537 ms - -[0m
+[2026-06-23T01:12:12.121Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 1.424 ms - -[0m
+[2026-06-23T01:13:12.894Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 69.812 ms - -[0m
+[2026-06-23T01:14:12.836Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.664 ms - -[0m
+[2026-06-23T01:15:12.833Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.606 ms - -[0m
+[2026-06-23T01:16:12.832Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.362 ms - -[0m
+[2026-06-23T01:17:12.838Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.119 ms - -[0m
+[2026-06-23T01:17:17.427Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-23T01:17:17.427Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-23T01:17:17.442Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-23T01:17:22.322Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-23T01:17:22.336Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-23T01:17:22.323Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-23T01:17:29.356Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-23T01:17:29.356Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-23T01:17:29.370Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-23T01:17:59.296Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-23T01:17:59.311Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-23T01:17:59.296Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-23T01:18:12.844Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 10.696 ms - -[0m
+[2026-06-23T01:18:29.607Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-23T01:18:29.608Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-23T01:18:29.622Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-23T01:18:40.118Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-23T01:18:40.119Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-23T01:18:40.133Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-23T01:19:13.530Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-23T01:19:13.547Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-23T01:19:13.531Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-23T01:19:18.657Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-23T01:19:18.657Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-23T01:19:18.676Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-23T01:19:26.647Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-23T01:19:26.647Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-23T01:19:26.662Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-23T01:20:04.874Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 19.853 ms - -[0m
+[2026-06-23T01:21:04.838Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.259 ms - -[0m
+[2026-06-23T01:22:04.839Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.278 ms - -[0m
+[2026-06-23T01:23:04.839Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.719 ms - -[0m
+[2026-06-23T01:24:04.841Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.635 ms - -[0m
+[2026-06-23T01:25:04.837Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.258 ms - -[0m
+[2026-06-23T01:25:23.888Z] [INFO] 🚀 InnoFaso backend démarré sur le port 5000 (development)
+[2026-06-23T01:25:23.888Z] [INFO]    CORS autorisé : http://localhost:3000
+[2026-06-23T01:25:23.905Z] [INFO] ⏰ Cron des alertes démarré.
+[2026-06-23T01:26:04.857Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 11.482 ms - -[0m
+[2026-06-23T01:26:22.213Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.220 ms - -[0m
+[2026-06-23T01:26:26.341Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.692 ms - -[0m
+[2026-06-23T01:26:26.365Z] [INFO] [0mGET /api/v1/planning/maintenanciers/lister [36m304[0m 17.965 ms - -[0m
+[2026-06-23T01:26:26.386Z] [INFO] [0mGET /api/v1/planning/maintenanciers/lister [36m304[0m 11.407 ms - -[0m
+[2026-06-23T01:26:26.438Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 99.610 ms - -[0m
+[2026-06-23T01:26:26.448Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 1.848 ms - -[0m
+[2026-06-23T01:26:26.450Z] [INFO] [0mGET /api/v1/planning/formulaires/disponibles [36m304[0m 99.203 ms - -[0m
+[2026-06-23T01:26:26.452Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 90.191 ms - -[0m
+[2026-06-23T01:26:26.461Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 1.517 ms - -[0m
+[2026-06-23T01:26:26.464Z] [INFO] [0mGET /api/v1/planning/formulaires/disponibles [36m304[0m 7.044 ms - -[0m
+[2026-06-23T01:26:26.488Z] [INFO] [0mGET /api/v1/planning/mois?ligne_id=c3e56289-afb2-44b8-b9da-be7deda29242&mois=6&annee=2026&semaine_index=4 [32m200[0m 19.024 ms - 4407[0m
+[2026-06-23T01:26:38.382Z] [INFO] [0mPUT /api/v1/planning/intervention-ligne [32m200[0m 7.270 ms - 413[0m
+[2026-06-23T01:26:38.401Z] [INFO] [0mGET /api/v1/planning/mois?ligne_id=c3e56289-afb2-44b8-b9da-be7deda29242&mois=6&annee=2026&semaine_index=4 [32m200[0m 8.694 ms - 4405[0m
+[2026-06-23T01:26:43.647Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 1.027 ms - -[0m
+[2026-06-23T01:26:43.654Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 1.257 ms - -[0m
+[2026-06-23T01:27:18.028Z] [INFO] [0mPOST /api/v1/planning/quart/assigner [32m200[0m 41.856 ms - 421[0m
+[2026-06-23T01:27:18.046Z] [INFO] [0mGET /api/v1/planning/mois?ligne_id=c3e56289-afb2-44b8-b9da-be7deda29242&mois=6&annee=2026&semaine_index=4 [32m200[0m 9.897 ms - 4497[0m
+[2026-06-23T01:27:22.109Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [32m200[0m 4.997 ms - 12[0m
+[2026-06-23T01:27:22.111Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 5.474 ms - -[0m
+[2026-06-23T01:27:22.121Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 3.454 ms - -[0m
+[2026-06-23T01:27:24.083Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 6.212 ms - -[0m
+[2026-06-23T01:27:27.251Z] [INFO] [0mGET /api/v1/processus?etape=VERIFICATION [36m304[0m 11.684 ms - -[0m
+[2026-06-23T01:27:28.386Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 5.943 ms - -[0m
+[2026-06-23T01:27:31.620Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 8.310 ms - -[0m
+[2026-06-23T01:27:31.626Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 15.074 ms - -[0m
+[2026-06-23T01:27:31.643Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 8.575 ms - -[0m
+[2026-06-23T01:27:31.698Z] [INFO] [0mGET /api/v1/planning/maintenanciers/lister [36m304[0m 85.697 ms - -[0m
+[2026-06-23T01:27:31.706Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 92.620 ms - -[0m
+[2026-06-23T01:27:31.708Z] [INFO] [0mGET /api/v1/planning/maintenanciers/lister [36m304[0m 3.081 ms - -[0m
+[2026-06-23T01:27:31.713Z] [INFO] [0mGET /api/v1/planning/formulaires/disponibles [36m304[0m 95.759 ms - -[0m
+[2026-06-23T01:27:31.714Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 2.096 ms - -[0m
+[2026-06-23T01:27:31.725Z] [INFO] [0mGET /api/v1/planning/formulaires/disponibles [36m304[0m 4.745 ms - -[0m
+[2026-06-23T01:27:31.741Z] [INFO] [0mGET /api/v1/planning/mois?ligne_id=c3e56289-afb2-44b8-b9da-be7deda29242&mois=6&annee=2026&semaine_index=4 [36m304[0m 13.767 ms - -[0m
+[2026-06-23T01:27:39.453Z] [INFO] [0mPOST /api/v1/planning/quart/formulaire/toggle [32m200[0m 12.607 ms - 213[0m
+[2026-06-23T01:27:39.469Z] [INFO] [0mGET /api/v1/planning/mois?ligne_id=c3e56289-afb2-44b8-b9da-be7deda29242&mois=6&annee=2026&semaine_index=4 [32m200[0m 8.582 ms - 4624[0m
+[2026-06-23T01:27:41.680Z] [INFO] [0mPOST /api/v1/planning/quart/formulaire/toggle [31m500[0m 5.234 ms - 26[0m
+[2026-06-23T01:27:45.045Z] [INFO] [0mPOST /api/v1/planning/quart/formulaire/toggle [32m200[0m 6.920 ms - 20[0m
+[2026-06-23T01:27:45.070Z] [INFO] [0mGET /api/v1/planning/mois?ligne_id=c3e56289-afb2-44b8-b9da-be7deda29242&mois=6&annee=2026&semaine_index=4 [32m200[0m 16.618 ms - 4490[0m
+[2026-06-23T01:28:31.637Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 8.588 ms - -[0m
+[2026-06-23T01:29:31.617Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.495 ms - -[0m
+[2026-06-23T01:30:31.606Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.672 ms - -[0m
+[2026-06-23T01:30:38.708Z] [INFO] [0mGET /api/v1/planning/mois?ligne_id=c3e56289-afb2-44b8-b9da-be7deda29242&mois=6&annee=2026&semaine_index=3 [36m304[0m 5.848 ms - -[0m
+[2026-06-23T01:30:53.525Z] [INFO] [0mGET /api/v1/planning/mois?ligne_id=c3e56289-afb2-44b8-b9da-be7deda29242&mois=6&annee=2026&semaine_index=4 [36m304[0m 7.243 ms - -[0m
+[2026-06-23T01:31:31.612Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.896 ms - -[0m
+[2026-06-23T01:32:31.618Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.048 ms - -[0m
+[2026-06-23T01:33:31.607Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.665 ms - -[0m
+[2026-06-23T01:34:31.676Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 63.845 ms - -[0m
+[2026-06-23T01:35:31.609Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.557 ms - -[0m
+[2026-06-23T01:36:31.611Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.672 ms - -[0m
+[2026-06-23T01:37:31.889Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 59.157 ms - -[0m
+[2026-06-23T01:39:04.889Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 56.077 ms - -[0m
+[2026-06-23T01:40:04.838Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.525 ms - -[0m
+[2026-06-23T01:41:04.835Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.686 ms - -[0m
+[2026-06-23T01:42:04.833Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.709 ms - -[0m
+[2026-06-23T01:43:04.840Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.293 ms - -[0m
+[2026-06-23T01:44:04.833Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.408 ms - -[0m
+[2026-06-23T01:44:39.440Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.432 ms - -[0m
+[2026-06-23T01:45:31.627Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.619 ms - -[0m
+[2026-06-23T01:46:30.741Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.639 ms - -[0m
+[2026-06-23T01:46:30.772Z] [INFO] [0mGET /api/v1/planning/graphiques?mois=6&annee=2026 [32m200[0m 26.188 ms - 1161[0m
+[2026-06-23T01:46:30.790Z] [INFO] [0mGET /api/v1/planning/graphiques?mois=6&annee=2026 [36m304[0m 11.625 ms - -[0m
+[2026-06-23T01:46:30.831Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 82.949 ms - -[0m
+[2026-06-23T01:46:30.839Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 2.855 ms - -[0m
+[2026-06-23T01:46:30.843Z] [INFO] [0mGET /api/v1/planning/suivi-equipements?mois=6&annee=2026 [36m304[0m 94.873 ms - -[0m
+[2026-06-23T01:46:30.848Z] [INFO] [0mGET /api/v1/planning/synthese?mois=6&annee=2026 [32m200[0m 102.328 ms - 536[0m
+[2026-06-23T01:46:30.855Z] [INFO] [0mGET /api/v1/planning/suivi-equipements?mois=6&annee=2026 [36m304[0m 5.663 ms - -[0m
+[2026-06-23T01:46:30.873Z] [INFO] [0mGET /api/v1/planning/synthese?mois=6&annee=2026 [36m304[0m 19.548 ms - -[0m
+[2026-06-23T01:46:48.806Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.470 ms - -[0m
+[2026-06-23T01:46:48.809Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 5.740 ms - -[0m
+[2026-06-23T01:46:48.821Z] [INFO] [0mGET /api/v1/formulaires?module=MAINTENANCE&actif=true [36m304[0m 6.308 ms - -[0m
+[2026-06-23T01:46:50.157Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.211 ms - -[0m
+[2026-06-23T01:46:50.162Z] [INFO] [0mGET /api/v1/formulaires?actif=true&module=MAINTENANCE [36m304[0m 4.316 ms - -[0m
+[2026-06-23T01:46:50.166Z] [INFO] [0mGET /api/v1/soumissions?page=1&limit=15&module=MAINTENANCE [31m500[0m 9.331 ms - 569[0m
+[2026-06-23T01:46:50.164Z] [ERROR] la colonne s.valide_par n'existe pas {"stack":"error: la colonne s.valide_par n'existe pas\n    at D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\node_modules\\pg-pool\\index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async Object.getAll (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\soumissions\\soumissions.service.js:34:22)\n    at async getAll (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\soumissions\\soumissions.controller.js:3:62)","method":"GET","url":"/api/v1/soumissions?page=1&limit=15&module=MAINTENANCE","ip":"127.0.0.1","user":"admin@innofaso.com"}
+[2026-06-23T01:46:50.176Z] [INFO] [0mGET /api/v1/formulaires?actif=true&module=MAINTENANCE [36m304[0m 5.484 ms - -[0m
+[2026-06-23T01:46:50.183Z] [ERROR] la colonne s.valide_par n'existe pas {"stack":"error: la colonne s.valide_par n'existe pas\n    at D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\node_modules\\pg-pool\\index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async Object.getAll (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\soumissions\\soumissions.service.js:34:22)\n    at async getAll (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\soumissions\\soumissions.controller.js:3:62)","method":"GET","url":"/api/v1/soumissions?page=1&limit=15&module=MAINTENANCE","ip":"127.0.0.1","user":"admin@innofaso.com"}
+[2026-06-23T01:46:50.183Z] [INFO] [0mGET /api/v1/soumissions?page=1&limit=15&module=MAINTENANCE [31m500[0m 8.826 ms - 569[0m
+[2026-06-23T01:46:51.642Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.070 ms - -[0m
+[2026-06-23T01:46:51.645Z] [ERROR] la colonne s.valide_par n'existe pas {"stack":"error: la colonne s.valide_par n'existe pas\n    at D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\node_modules\\pg-pool\\index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async Object.getAll (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\soumissions\\soumissions.service.js:34:22)\n    at async getAll (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\soumissions\\soumissions.controller.js:3:62)","method":"GET","url":"/api/v1/soumissions?page=1&limit=20&module=MAINTENANCE","ip":"127.0.0.1","user":"admin@innofaso.com"}
+[2026-06-23T01:46:51.646Z] [INFO] [0mGET /api/v1/soumissions?page=1&limit=20&module=MAINTENANCE [31m500[0m 7.065 ms - 569[0m
+[2026-06-23T01:46:51.659Z] [ERROR] la colonne s.valide_par n'existe pas {"stack":"error: la colonne s.valide_par n'existe pas\n    at D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\node_modules\\pg-pool\\index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async Object.getAll (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\soumissions\\soumissions.service.js:34:22)\n    at async getAll (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\soumissions\\soumissions.controller.js:3:62)","method":"GET","url":"/api/v1/soumissions?page=1&limit=20&module=MAINTENANCE","ip":"127.0.0.1","user":"admin@innofaso.com"}
+[2026-06-23T01:46:51.660Z] [INFO] [0mGET /api/v1/soumissions?page=1&limit=20&module=MAINTENANCE [31m500[0m 5.663 ms - 569[0m
+[2026-06-23T01:46:54.852Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 76.819 ms - -[0m
+[2026-06-23T01:46:54.863Z] [ERROR] la colonne s.valide_par n'existe pas {"stack":"error: la colonne s.valide_par n'existe pas\n    at D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\node_modules\\pg-pool\\index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async Object.getAll (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\soumissions\\soumissions.service.js:34:22)\n    at async getAll (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\soumissions\\soumissions.controller.js:3:62)","method":"GET","url":"/api/v1/soumissions?page=1&limit=15&module=MAINTENANCE","ip":"127.0.0.1","user":"admin@innofaso.com"}
+[2026-06-23T01:46:54.864Z] [INFO] [0mGET /api/v1/soumissions?page=1&limit=15&module=MAINTENANCE [31m500[0m 87.490 ms - 569[0m
+[2026-06-23T01:46:54.875Z] [INFO] [0mGET /api/v1/formulaires?actif=true&module=MAINTENANCE [36m304[0m 97.246 ms - -[0m
+[2026-06-23T01:46:54.882Z] [ERROR] la colonne s.valide_par n'existe pas {"stack":"error: la colonne s.valide_par n'existe pas\n    at D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\node_modules\\pg-pool\\index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async Object.getAll (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\soumissions\\soumissions.service.js:34:22)\n    at async getAll (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\soumissions\\soumissions.controller.js:3:62)","method":"GET","url":"/api/v1/soumissions?page=1&limit=15&module=MAINTENANCE","ip":"127.0.0.1","user":"admin@innofaso.com"}
+[2026-06-23T01:46:54.882Z] [INFO] [0mGET /api/v1/soumissions?page=1&limit=15&module=MAINTENANCE [31m500[0m 5.696 ms - 569[0m
+[2026-06-23T01:46:54.895Z] [INFO] [0mGET /api/v1/formulaires?actif=true&module=MAINTENANCE [36m304[0m 13.637 ms - -[0m
+[2026-06-23T01:46:58.864Z] [ERROR] la colonne s.valide_par n'existe pas {"stack":"error: la colonne s.valide_par n'existe pas\n    at D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\node_modules\\pg-pool\\index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async Object.getAll (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\soumissions\\soumissions.service.js:34:22)\n    at async getAll (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\soumissions\\soumissions.controller.js:3:62)","method":"GET","url":"/api/v1/soumissions?page=1&limit=20&module=MAINTENANCE","ip":"127.0.0.1","user":"admin@innofaso.com"}
+[2026-06-23T01:46:58.865Z] [INFO] [0mGET /api/v1/soumissions?page=1&limit=20&module=MAINTENANCE [31m500[0m 7.231 ms - 569[0m
+[2026-06-23T01:46:58.930Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 70.203 ms - -[0m
+[2026-06-23T01:46:58.943Z] [ERROR] la colonne s.valide_par n'existe pas {"stack":"error: la colonne s.valide_par n'existe pas\n    at D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\node_modules\\pg-pool\\index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async Object.getAll (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\soumissions\\soumissions.service.js:34:22)\n    at async getAll (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\soumissions\\soumissions.controller.js:3:62)","method":"GET","url":"/api/v1/soumissions?page=1&limit=20&module=MAINTENANCE","ip":"127.0.0.1","user":"admin@innofaso.com"}
+[2026-06-23T01:46:58.943Z] [INFO] [0mGET /api/v1/soumissions?page=1&limit=20&module=MAINTENANCE [31m500[0m 69.988 ms - 569[0m
+[2026-06-23T01:47:02.422Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.821 ms - -[0m
+[2026-06-23T01:47:02.490Z] [INFO] [0mGET /api/v1/alertes?statut=NON_LUE&module=MAINTENANCE&page=1&limit=20 [32m200[0m 70.028 ms - 9377[0m
+[2026-06-23T01:47:02.502Z] [INFO] [0mGET /api/v1/alertes?statut=NON_LUE&module=MAINTENANCE&page=1&limit=20 [36m304[0m 6.258 ms - -[0m
+[2026-06-23T01:47:04.098Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.002 ms - -[0m
+[2026-06-23T01:47:04.105Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 9.851 ms - -[0m
+[2026-06-23T01:47:04.113Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 2.372 ms - -[0m
+[2026-06-23T01:47:05.776Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.305 ms - -[0m
+[2026-06-23T01:47:05.779Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [32m200[0m 5.269 ms - 159[0m
+[2026-06-23T01:47:05.795Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 8.194 ms - -[0m
+[2026-06-23T01:47:10.124Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [32m200[0m 4.366 ms - 1125[0m
+[2026-06-23T01:47:23.020Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 5.495 ms - -[0m
+[2026-06-23T01:47:23.027Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 4.374 ms - -[0m
+[2026-06-23T01:47:23.039Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 2.052 ms - -[0m
+[2026-06-23T01:47:23.044Z] [INFO] [0mGET /api/v1/formulaires/04acd23e-7529-44cd-bdfa-340fc5792764 [32m200[0m 30.701 ms - 6223[0m
+[2026-06-23T01:47:23.058Z] [INFO] [0mGET /api/v1/formulaires/04acd23e-7529-44cd-bdfa-340fc5792764 [36m304[0m 5.550 ms - -[0m
+[2026-06-23T01:47:23.122Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 104.293 ms - -[0m
+[2026-06-23T01:47:23.128Z] [ERROR] la relation « formulaire_entete » n'existe pas {"stack":"error: la relation « formulaire_entete » n'existe pas\n    at D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\node_modules\\pg-pool\\index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async Object.getEntete (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\formulaires\\formulaires.service.js:355:22)\n    at async getEntete (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\formulaires\\formulaires.controller.js:36:63)","method":"GET","url":"/api/v1/formulaires/04acd23e-7529-44cd-bdfa-340fc5792764/entete","ip":"127.0.0.1","user":"admin@innofaso.com"}
+[2026-06-23T01:47:23.129Z] [INFO] [0mGET /api/v1/formulaires/04acd23e-7529-44cd-bdfa-340fc5792764/entete [31m500[0m 104.718 ms - 601[0m
+[2026-06-23T01:47:23.136Z] [INFO] [0mGET /api/v1/equipements [36m304[0m 8.808 ms - -[0m
+[2026-06-23T01:47:23.141Z] [ERROR] la relation « formulaire_entete » n'existe pas {"stack":"error: la relation « formulaire_entete » n'existe pas\n    at D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\node_modules\\pg-pool\\index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async Object.getEntete (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\formulaires\\formulaires.service.js:355:22)\n    at async getEntete (D:\\Dossiers\\INNOFASO\\innofasopro1\\innofaso_backend\\src\\modules\\formulaires\\formulaires.controller.js:36:63)","method":"GET","url":"/api/v1/formulaires/04acd23e-7529-44cd-bdfa-340fc5792764/entete","ip":"127.0.0.1","user":"admin@innofaso.com"}
+[2026-06-23T01:47:23.142Z] [INFO] [0mGET /api/v1/formulaires/04acd23e-7529-44cd-bdfa-340fc5792764/entete [31m500[0m 3.231 ms - 601[0m
+[2026-06-23T01:48:20.833Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.681 ms - -[0m
+[2026-06-23T01:48:20.837Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 6.053 ms - -[0m
+[2026-06-23T01:48:20.849Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 2.762 ms - -[0m
+[2026-06-23T01:48:33.948Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 5.660 ms - -[0m
+[2026-06-23T01:48:37.178Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 5.396 ms - -[0m
+[2026-06-23T01:48:47.930Z] [INFO] [0mGET /api/v1/processus?etape=VERIFICATION [36m304[0m 4.065 ms - -[0m
+[2026-06-23T01:48:49.183Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 4.185 ms - -[0m
+[2026-06-23T01:49:21.826Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.472 ms - -[0m
+[2026-06-23T01:50:20.836Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.650 ms - -[0m
+[2026-06-23T01:51:03.473Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 7.131 ms - -[0m
+[2026-06-23T01:51:03.553Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 85.908 ms - -[0m
+[2026-06-23T01:51:03.557Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 87.969 ms - -[0m
+[2026-06-23T01:51:03.565Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 3.136 ms - -[0m
+[2026-06-23T01:51:03.566Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 1.636 ms - -[0m
+[2026-06-23T01:51:03.569Z] [INFO] [0mGET /api/v1/planning/maintenanciers/lister [36m304[0m 99.022 ms - -[0m
+[2026-06-23T01:51:03.576Z] [INFO] [0mGET /api/v1/planning/formulaires/disponibles [36m304[0m 105.137 ms - -[0m
+[2026-06-23T01:51:03.579Z] [INFO] [0mGET /api/v1/planning/maintenanciers/lister [36m304[0m 4.788 ms - -[0m
+[2026-06-23T01:51:03.588Z] [INFO] [0mGET /api/v1/planning/formulaires/disponibles [36m304[0m 4.185 ms - -[0m
+[2026-06-23T01:51:03.601Z] [INFO] [0mGET /api/v1/planning/mois?ligne_id=c3e56289-afb2-44b8-b9da-be7deda29242&mois=6&annee=2026&semaine_index=4 [36m304[0m 12.706 ms - -[0m
+[2026-06-23T01:51:19.293Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.868 ms - -[0m
+[2026-06-23T01:51:19.294Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 4.091 ms - -[0m
+[2026-06-23T01:51:19.303Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 3.074 ms - -[0m
+[2026-06-23T01:52:19.312Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 10.613 ms - -[0m
+[2026-06-23T01:52:54.426Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.240 ms - -[0m
+[2026-06-23T01:52:54.431Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 3.030 ms - -[0m
+[2026-06-23T01:52:54.441Z] [INFO] [0mGET /api/v1/planning/maintenanciers/lister [36m304[0m 8.514 ms - -[0m
+[2026-06-23T01:52:54.452Z] [INFO] [0mGET /api/v1/planning/maintenanciers/lister [36m304[0m 3.492 ms - -[0m
+[2026-06-23T01:52:54.513Z] [INFO] [0mGET /api/v1/planning/formulaires/disponibles [36m304[0m 79.373 ms - -[0m
+[2026-06-23T01:52:54.517Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 80.974 ms - -[0m
+[2026-06-23T01:52:54.526Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 1.268 ms - -[0m
+[2026-06-23T01:52:54.528Z] [INFO] [0mGET /api/v1/planning/formulaires/disponibles [36m304[0m 4.981 ms - -[0m
+[2026-06-23T01:52:54.531Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 91.573 ms - -[0m
+[2026-06-23T01:52:54.547Z] [INFO] [0mGET /api/v1/planning/mois?ligne_id=c3e56289-afb2-44b8-b9da-be7deda29242&mois=6&annee=2026&semaine_index=4 [36m304[0m 12.886 ms - -[0m
+[2026-06-23T01:53:35.785Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [33m401[0m 0.915 ms - 58[0m
+[2026-06-23T01:53:35.787Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [33m401[0m 0.508 ms - 58[0m
+[2026-06-23T01:53:35.794Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [33m401[0m 0.540 ms - 58[0m
+[2026-06-23T01:54:03.906Z] [INFO] [0mPOST /api/v1/auth/login [32m200[0m 338.991 ms - 551[0m
+[2026-06-23T01:54:03.982Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 10.148 ms - -[0m
+[2026-06-23T01:54:03.994Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.008 ms - -[0m
+[2026-06-23T01:54:04.091Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 113.646 ms - -[0m
+[2026-06-23T01:54:04.101Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 1.862 ms - -[0m
+[2026-06-23T01:54:04.110Z] [INFO] [0mGET /api/v1/planning/suivi-equipements?mois=6&annee=2026 [36m304[0m 127.996 ms - -[0m
+[2026-06-23T01:54:04.114Z] [INFO] [0mGET /api/v1/planning/synthese?mois=6&annee=2026 [36m304[0m 134.584 ms - -[0m
+[2026-06-23T01:54:04.117Z] [INFO] [0mGET /api/v1/planning/graphiques?mois=6&annee=2026 [36m304[0m 137.096 ms - -[0m
+[2026-06-23T01:54:04.128Z] [INFO] [0mGET /api/v1/planning/suivi-equipements?mois=6&annee=2026 [36m304[0m 8.274 ms - -[0m
+[2026-06-23T01:54:04.132Z] [INFO] [0mGET /api/v1/planning/synthese?mois=6&annee=2026 [36m304[0m 10.199 ms - -[0m
+[2026-06-23T01:54:04.146Z] [INFO] [0mGET /api/v1/planning/graphiques?mois=6&annee=2026 [36m304[0m 21.513 ms - -[0m
+[2026-06-23T01:54:10.548Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.780 ms - -[0m
+[2026-06-23T01:54:10.549Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 4.685 ms - -[0m
+[2026-06-23T01:54:10.561Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 3.693 ms - -[0m
+[2026-06-23T01:54:15.517Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.816 ms - -[0m
+[2026-06-23T01:54:15.519Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 4.603 ms - -[0m
+[2026-06-23T01:54:15.520Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 3.690 ms - -[0m
+[2026-06-23T01:54:15.522Z] [INFO] [0mGET /api/v1/planning/maintenanciers/lister [36m304[0m 6.724 ms - -[0m
+[2026-06-23T01:54:15.524Z] [INFO] [0mGET /api/v1/planning/formulaires/disponibles [36m304[0m 7.819 ms - -[0m
+[2026-06-23T01:54:15.535Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 2.229 ms - -[0m
+[2026-06-23T01:54:15.538Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 1.098 ms - -[0m
+[2026-06-23T01:54:15.544Z] [INFO] [0mGET /api/v1/planning/maintenanciers/lister [36m304[0m 4.948 ms - -[0m
+[2026-06-23T01:54:15.546Z] [INFO] [0mGET /api/v1/planning/formulaires/disponibles [36m304[0m 5.899 ms - -[0m
+[2026-06-23T01:54:15.562Z] [INFO] [0mGET /api/v1/planning/mois?ligne_id=c3e56289-afb2-44b8-b9da-be7deda29242&mois=6&annee=2026&semaine_index=4 [36m304[0m 18.649 ms - -[0m
+[2026-06-23T01:54:31.032Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.216 ms - -[0m
+[2026-06-23T01:54:31.035Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 4.323 ms - -[0m
+[2026-06-23T01:54:31.043Z] [INFO] [0mGET /api/v1/processus/counts?utilisateur_id=fba3654e-c170-476f-94f7-cc2332a3a660 [36m304[0m 2.575 ms - -[0m
+[2026-06-23T01:54:42.712Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 5.196 ms - -[0m
+[2026-06-23T01:55:12.546Z] [INFO] [0mGET /api/v1/processus?etape=VERIFICATION [36m304[0m 4.104 ms - -[0m
+[2026-06-23T01:55:18.322Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 5.101 ms - -[0m
+[2026-06-23T01:55:19.360Z] [INFO] [0mGET /api/v1/processus?etape=VERIFICATION [36m304[0m 4.027 ms - -[0m
+[2026-06-23T01:55:20.795Z] [INFO] [0mGET /api/v1/processus?etape=VALIDATION [36m304[0m 3.863 ms - -[0m
+[2026-06-23T01:55:23.438Z] [INFO] [0mGET /api/v1/processus?etape=VERIFICATION [36m304[0m 7.716 ms - -[0m
+[2026-06-23T01:55:24.504Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 4.502 ms - -[0m
+[2026-06-23T01:55:26.925Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 6.315 ms - -[0m
+[2026-06-23T01:55:27.994Z] [INFO] [0mGET /api/v1/processus?etape=VERIFICATION [36m304[0m 3.813 ms - -[0m
+[2026-06-23T01:55:30.244Z] [INFO] [0mGET /api/v1/processus?etape=VALIDATION [36m304[0m 5.394 ms - -[0m
+[2026-06-23T01:55:31.039Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.986 ms - -[0m
+[2026-06-23T01:55:31.262Z] [INFO] [0mGET /api/v1/processus?etape=VERIFICATION [36m304[0m 3.523 ms - -[0m
+[2026-06-23T01:55:32.287Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 4.632 ms - -[0m
+[2026-06-23T01:56:31.036Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 4.154 ms - -[0m
+[2026-06-23T01:57:31.030Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.508 ms - -[0m
+[2026-06-23T01:58:31.107Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 62.486 ms - -[0m
+[2026-06-23T01:59:31.044Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 3.625 ms - -[0m
+[2026-06-23T02:00:00.040Z] [INFO] Cron [Deadline quart — alerte responsables] démarré
+[2026-06-23T02:00:00.047Z] [INFO] Cron [Deadline quart — alerte responsables] terminé
+[2026-06-23T02:00:31.029Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.055 ms - -[0m
+[2026-06-23T02:01:31.899Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 57.019 ms - -[0m
+[2026-06-23T02:03:04.899Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 57.639 ms - -[0m
+[2026-06-23T02:04:04.829Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.686 ms - -[0m
+[2026-06-23T02:05:04.837Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.954 ms - -[0m
+[2026-06-23T02:06:04.841Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.819 ms - -[0m
+[2026-06-23T02:06:56.509Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.005 ms - -[0m
+[2026-06-23T02:07:31.829Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 1.635 ms - -[0m
+[2026-06-23T02:08:05.329Z] [INFO] [0mGET /api/v1/processus?etape=EXECUTION [36m304[0m 8.319 ms - -[0m
+[2026-06-23T02:08:08.673Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 2.118 ms - -[0m
+[2026-06-23T02:08:08.686Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 10.684 ms - -[0m
+[2026-06-23T02:08:08.697Z] [INFO] [0mGET /api/v1/planning/lignes [36m304[0m 3.516 ms - -[0m
+[2026-06-23T02:08:08.773Z] [INFO] [0mGET /api/v1/planning/maintenanciers/lister [36m304[0m 96.030 ms - -[0m
+[2026-06-23T02:08:08.775Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 95.688 ms - -[0m
+[2026-06-23T02:08:08.782Z] [INFO] [0mGET /api/v1/planning/formulaires/disponibles [36m304[0m 99.722 ms - -[0m
+[2026-06-23T02:08:08.789Z] [INFO] [0mGET /api/v1/planning/maintenanciers/lister [36m304[0m 5.406 ms - -[0m
+[2026-06-23T02:08:08.786Z] [INFO] [0mGET /api/v1/utilisateurs/liste-signataires [36m304[0m 1.114 ms - -[0m
+[2026-06-23T02:08:08.799Z] [INFO] [0mGET /api/v1/planning/formulaires/disponibles [36m304[0m 3.970 ms - -[0m
+[2026-06-23T02:08:08.816Z] [INFO] [0mGET /api/v1/planning/mois?ligne_id=c3e56289-afb2-44b8-b9da-be7deda29242&mois=6&annee=2026&semaine_index=4 [36m304[0m 18.958 ms - -[0m
+[2026-06-23T02:09:08.883Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 57.537 ms - -[0m
+[2026-06-23T02:10:08.844Z] [INFO] [0mGET /api/v1/alertes/non-lues/count [36m304[0m 5.212 ms - -[0m

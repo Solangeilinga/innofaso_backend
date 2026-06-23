@@ -22,6 +22,7 @@ const planningRoutes    = require('./src/modules/planning/planning.routes');
 const lignesRoutes      = require('./src/modules/lignes/lignes.routes');
 const rapportsRoutes    = require('./src/modules/rapports/rapports.routes');
 const dashboardRoutes   = require('./src/modules/dashboard/dashboard.routes');
+const processusRoutes   = require('./src/modules/processus/processus.routes');
 
 const app = express();
 
@@ -88,6 +89,7 @@ app.use(`${v1}/planning`,     planningRoutes);
 app.use(`${v1}/lignes`,       lignesRoutes);
 app.use(`${v1}/rapports`,     rapportsRoutes);
 app.use(`${v1}/dashboard`,    dashboardRoutes);
+app.use(`${v1}/processus`,    processusRoutes);
 
 // ── En production : servir le frontend buildé ───────────────────
 if (process.env.NODE_ENV === 'production' && process.env.SERVE_FRONTEND === 'true') {
