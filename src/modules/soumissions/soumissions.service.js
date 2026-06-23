@@ -84,10 +84,10 @@ const getById = async (id) => {
         const err = new Error('Soumission non trouvée.'); err.statusCode = 404; throw err;
     }
 
-    const [{ rows: entete }, { rows: valeurs }, { rows: pieces }] = await Promise.all([
+    const [{ rows: entete }, { rows: valeurs }, { rows: pieces }, { rows: formEntete }] = await Promise.all([
         query('SELECT * FROM entetes WHERE soumission_id = $1', [id]),
         query(
-            `SELECT vs.*, cd.nom_champ, cd.type_champ, cd.section, cd.unite, cd.ordre
+            `SELECT vs.*, cd.nom_champ, cd.type_champ, cd.section, cd.unite, cd.ordre, cd.id AS champ_def_id
              FROM valeurs_saisies vs
              LEFT JOIN champs_definitions cd ON cd.id = vs.champ_def_id
              WHERE vs.soumission_id = $1
@@ -95,9 +95,16 @@ const getById = async (id) => {
             [id]
         ),
         query('SELECT * FROM pieces_jointes WHERE soumission_id = $1', [id]),
+        query('SELECT * FROM formulaire_entete WHERE formulaire_type_id = $1', [soum[0].formulaire_type_id]),
     ]);
 
-    return { ...soum[0], entete: entete[0] || null, valeurs: valeurs || [], pieces_jointes: pieces || [] };
+    return {
+        ...soum[0],
+        entete:            entete[0]    || null,
+        formulaire_entete: formEntete[0] || null,
+        valeurs:           valeurs      || [],
+        pieces_jointes:    pieces       || [],
+    };
 };
 
 const create = async (data, utilisateurId, ip, appareil) => {
