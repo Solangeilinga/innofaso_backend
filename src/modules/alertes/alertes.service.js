@@ -58,11 +58,11 @@ const marquerTraitee = async (alerteId) => {
 };
 
 const creer = async ({ soumission_id = null, equipement_id = null, utilisateur_id,
-    type_alerte, message }) => {
+    type_alerte, message, lien = null }) => {
     const { rows } = await query(
-        `INSERT INTO alertes (soumission_id, equipement_id, utilisateur_id, type_alerte, message, date_creation, statut)
-         VALUES ($1,$2,$3,$4,$5,NOW(),'NON_LUE') RETURNING id`,
-        [soumission_id, equipement_id, utilisateur_id, type_alerte, message]
+        `INSERT INTO alertes (soumission_id, equipement_id, utilisateur_id, type_alerte, message, date_creation, statut, lien)
+         VALUES ($1,$2,$3,$4,$5,NOW(),'NON_LUE',$6) RETURNING id`,
+        [soumission_id, equipement_id, utilisateur_id, type_alerte, message, lien]
     );
     return rows[0];
 };

@@ -47,6 +47,16 @@ router.get('/lignes/lister',         auth, ctrl.listerLignes);
 router.get('/quarts/lister',         auth, ctrl.listerQuarts);
 router.get('/maintenanciers/lister', auth, ctrl.listerMaintenanciers);
 
+// ── SIGNALEMENTS DE PANNES ────────────────────────────
+router.post('/signalement/creer', auth, ctrl.creerSignalementPanne);
+router.get('/signalements/lister', auth, ctrl.listerSignalements);
+
+// ── MAINTENANCE CORRECTIVE ────────────────────────────
+router.get('/correctif/semaine/:planning_semaine_id', auth, ctrl.obtenirCorrectifSemaine);
+router.post('/correctif/sauvegarder', auth, GESTIONNAIRES, ctrl.sauvegarderCorrectif);
+router.post('/correctif/toggle-formulaire', auth, GESTIONNAIRES, ctrl.toggleFormulaireCorrectif);
+router.get('/equipements-et-lignes', auth, ctrl.listerEquipementsEtLignes);
+
 // ── CRUD BASIQUE ─────────────────────────────────────
 router.get('/',             auth, (req, res) => res.json([]));
 router.post('/',            auth, GESTIONNAIRES, (req, res) => res.status(201).json({}));

@@ -1315,9 +1315,9 @@ exports.toggleFormulaireQuart = async (req, res) => {
     );
 
     if (existing.length) {
+      // Supprimer d'abord la tâche processus (FK) puis le lien formulaire
+      await db.query('DELETE FROM processus_taches WHERE planning_quart_formulaire_id = $1', [existing[0].id]);
       await db.query('DELETE FROM planning_quart_formulaires WHERE id = $1', [existing[0].id]);
-      // Supprimer la tâche processus associée
-      try { await db.query('DELETE FROM processus_taches WHERE planning_quart_formulaire_id = $1', [existing[0].id]); } catch (_) {}
       return res.json({ action: 'removed' });
     }
 
@@ -1455,6 +1455,201 @@ exports.listerSemainesPlanifiees = async (req, res) => {
 
     const { rows } = await db.query(query, params);
     res.json(rows);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+// ========================================
+// SIGNALEMENTS DE PANNES
+// ========================================
+
+exports.creerSignalementPanne = async (req, res) => {
+  try {
+    const { signale_par_id, assigne_a_id, observation } = req.body;
+    if (!signale_par_id || !assigne_a_id) {
+      return res.status(400).json({ error: 'signale_par_id et assigne_a_id requis' });
+    }
+    const { rows } = await db.query(
+      `INSERT INTO signalements_pannes (id, signale_par_id, assigne_a_id, observation)
+       VALUES ($1, $2, $3, $4) RETURNING *`,
+      [uuid(), signale_par_id, assigne_a_id, observation || null]
+    );
+    try {
+      const alertesService = require('../alertes/alertes.service');
+      await alertesService.creer({
+        utilisateur_id: assigne_a_id,
+        type_alerte:    'MAINTENANCE_CORRECTIVE',
+        message:        `⚠️ Panne signalée nécessitant votre planification corrective.`,
+        lien:           '/plannification',
+      });
+    } catch (_) {}
+    res.json(rows[0]);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+exports.listerSignalements = async (req, res) => {
+  try {
+    const { rows } = await db.query(
+      `SELECT sp.*,
+        jsonb_build_object('id', s.id, 'nom', s.nom, 'prenom', s.prenom) AS signaleur,
+        jsonb_build_object('id', a.id, 'nom', a.nom, 'prenom', a.prenom) AS assigne
+       FROM signalements_pannes sp
+       LEFT JOIN utilisateurs s ON s.id = sp.signale_par_id
+       LEFT JOIN utilisateurs a ON a.id = sp.assigne_a_id
+       ORDER BY sp.cree_le DESC`
+    );
+    res.json(rows);
+  } catch (e) {
+    if (e.code === '42P01') return res.json([]);
+    console.error(e);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+// ========================================
+// MAINTENANCE CORRECTIVE
+// ========================================
+
+exports.obtenirCorrectifSemaine = async (req, res) => {
+  try {
+    const { planning_semaine_id } = req.params;
+    if (!planning_semaine_id) return res.status(400).json({ error: 'planning_semaine_id requis' });
+
+    const { rows } = await db.query(
+      `SELECT mc.*,
+        jsonb_build_object('id', eq.id, 'nom', eq.nom, 'code_ref', eq.code_ref, 'ligne', eq.ligne_production) AS equipement,
+        jsonb_build_object('id', ex.id, 'nom', ex.nom, 'prenom', ex.prenom) AS executeur,
+        jsonb_build_object('id', co.id, 'nom', co.nom, 'prenom', co.prenom) AS co_executeur,
+        jsonb_build_object('id', vf.id, 'nom', vf.nom, 'prenom', vf.prenom) AS verificateur,
+        jsonb_build_object('id', vl.id, 'nom', vl.nom, 'prenom', vl.prenom) AS validateur
+       FROM maintenance_corrective mc
+       LEFT JOIN equipements  eq ON eq.id = mc.equipement_id
+       LEFT JOIN utilisateurs ex ON ex.id = mc.executeur_id
+       LEFT JOIN utilisateurs co ON co.id = mc.co_executeur_id
+       LEFT JOIN utilisateurs vf ON vf.id = mc.verificateur_id
+       LEFT JOIN utilisateurs vl ON vl.id = mc.validateur_id
+       WHERE mc.planning_semaine_id = $1
+       ORDER BY mc.cree_le`,
+      [planning_semaine_id]
+    );
+    for (const row of rows) {
+      try {
+        const { rows: forms } = await db.query(
+          `SELECT ft.id, ft.code, ft.titre
+           FROM maintenance_corrective_formulaires mcf
+           JOIN formulaires_types ft ON ft.id = mcf.formulaire_id
+           WHERE mcf.maintenance_corrective_id = $1`,
+          [row.id]
+        );
+        row.formulaires = forms;
+      } catch { row.formulaires = []; }
+    }
+    res.json(rows);
+  } catch (e) {
+    if (e.code === '42P01') return res.json([]);
+    console.error(e);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+exports.sauvegarderCorrectif = async (req, res) => {
+  try {
+    const {
+      planning_semaine_id, equipement_id, equipement_libre, date_intervention,
+      executeur_id, co_executeur_id, verificateur_id, validateur_id,
+      signalement_panne_id, duree_arret, duree_maintenance, cause, observations,
+    } = req.body;
+
+    if (!planning_semaine_id) {
+      return res.status(400).json({ error: 'planning_semaine_id requis' });
+    }
+
+    const { rows: existing } = await db.query(
+      'SELECT id FROM maintenance_corrective WHERE planning_semaine_id = $1',
+      [planning_semaine_id]
+    );
+
+    let result;
+    if (existing.length) {
+      ({ rows: result } = await db.query(
+        `UPDATE maintenance_corrective
+         SET equipement_id = $1, equipement_libre = $2, date_intervention = $3,
+             executeur_id = $4, co_executeur_id = $5,
+             verificateur_id = $6, validateur_id = $7,
+             signalement_panne_id = $8,
+             duree_arret = $9, duree_maintenance = $10,
+             cause = $11, observations = $12,
+             modifie_le = NOW()
+         WHERE planning_semaine_id = $13
+         RETURNING *`,
+        [equipement_id || null, equipement_libre || null, date_intervention || null,
+         executeur_id, co_executeur_id || null, verificateur_id || null, validateur_id || null,
+         signalement_panne_id || null,
+         duree_arret || 0, duree_maintenance || 0,
+         cause || null, observations || null,
+         planning_semaine_id]
+      ));
+    } else {
+      ({ rows: result } = await db.query(
+        `INSERT INTO maintenance_corrective
+         (id, planning_semaine_id, equipement_id, equipement_libre, date_intervention,
+          executeur_id, co_executeur_id, verificateur_id, validateur_id,
+          signalement_panne_id, duree_arret, duree_maintenance, cause, observations)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
+         RETURNING *`,
+        [uuid(), planning_semaine_id, equipement_id || null, equipement_libre || null, date_intervention || null,
+         executeur_id, co_executeur_id || null, verificateur_id || null, validateur_id || null,
+         signalement_panne_id || null, duree_arret || 0, duree_maintenance || 0,
+         cause || null, observations || null]
+      ));
+    }
+
+    res.json(result[0]);
+  } catch (e) {
+    if (e.code === '42P01') return res.status(503).json({ error: 'Migration 020 non exécutée' });
+    console.error(e);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+exports.toggleFormulaireCorrectif = async (req, res) => {
+  try {
+    const { maintenance_corrective_id, formulaire_id } = req.body;
+    if (!maintenance_corrective_id || !formulaire_id) {
+      return res.status(400).json({ error: 'IDs requis' });
+    }
+    const { rows: existing } = await db.query(
+      'SELECT id FROM maintenance_corrective_formulaires WHERE maintenance_corrective_id = $1 AND formulaire_id = $2',
+      [maintenance_corrective_id, formulaire_id]
+    );
+    if (existing.length) {
+      await db.query('DELETE FROM maintenance_corrective_formulaires WHERE id = $1', [existing[0].id]);
+    } else {
+      await db.query(
+        'INSERT INTO maintenance_corrective_formulaires (id, maintenance_corrective_id, formulaire_id) VALUES ($1,$2,$3)',
+        [uuid(), maintenance_corrective_id, formulaire_id]
+      );
+    }
+    res.json({ success: true });
+  } catch (e) {
+    if (e.code === '42P01') return res.json({ success: true });
+    console.error(e);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+exports.listerEquipementsEtLignes = async (req, res) => {
+  try {
+    const [eqRows, ligRows] = await Promise.all([
+      db.query("SELECT id, nom, code_ref, 'equipement' AS type FROM equipements WHERE actif = TRUE ORDER BY nom"),
+      db.query("SELECT id, code AS nom, code AS code_ref, 'ligne' AS type FROM ligne_production WHERE actif = TRUE ORDER BY code"),
+    ]);
+    res.json([...eqRows.rows, ...ligRows.rows]);
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: 'Erreur serveur' });
