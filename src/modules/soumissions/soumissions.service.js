@@ -287,19 +287,19 @@ const updateStatut = async (id, statut, userId, role, ip, appareil, commentaire)
     // Sauvegarder le commentaire de rejet et l'info de validation
     if (statut === 'REJETE') {
         await query(
-            `UPDATE soumissions SET statut=$1, date_modification=NOW(),
+            `UPDATE soumissions SET statut=$1::statut_soumission, date_modification=NOW(),
              commentaire_rejet=$2, valide_par=$3, valide_le=NOW() WHERE id=$4`,
             [statut, commentaire || null, userId, id]
         );
     } else if (statut === 'VALIDE') {
         await query(
-            `UPDATE soumissions SET statut=$1, date_modification=NOW(),
+            `UPDATE soumissions SET statut=$1::statut_soumission, date_modification=NOW(),
              commentaire_rejet=NULL, valide_par=$2, valide_le=NOW() WHERE id=$3`,
             [statut, userId, id]
         );
     } else {
         await query(
-            `UPDATE soumissions SET statut=$1, date_modification=NOW() WHERE id=$2`,
+            `UPDATE soumissions SET statut=$1::statut_soumission, date_modification=NOW() WHERE id=$2`,
             [statut, id]
         );
     }
@@ -325,6 +325,14 @@ const updateStatut = async (id, statut, userId, role, ip, appareil, commentaire)
         action: 'UPDATE', ancienne_valeur: { statut: actuel },
         nouvelle_valeur: { statut, commentaire }, adresse_ip: ip, appareil,
     });
+
+    // Déduire automatiquement les pièces du stock lors de la validation
+    if (statut === 'VALIDE') {
+        try {
+            const stockCtrl = require('../stock/stock.controller');
+            await stockCtrl.deduireDepuisSoumission(id, userId);
+        } catch (e) { console.error('Déduction stock erreur:', e.message); }
+    }
 };
 
 const addPieceJointe = async (soumissionId, file) => {
