@@ -91,4 +91,27 @@ router.delete('/:id/pieces-jointes/:pjId', ctrl.deletePieceJointe);
 // Export Excel
 router.get('/export/excel', ctrl.exportExcel);
 
+
+// Mettre à jour des valeurs spécifiques (ex: signatures lors de vérification)
+router.patch('/:id/valeurs', auth, async (req, res, next) => {
+    try {
+        const { valeurs } = req.body; // [{champ_def_id, valeur_texte}]
+        if (!Array.isArray(valeurs) || valeurs.length === 0) {
+            return res.status(400).json({ message: 'valeurs requis' });
+        }
+        const { pool } = require('../../config/db');
+        for (const v of valeurs) {
+            // Upsert : update si existe, insert sinon
+            await pool.query(
+                `INSERT INTO valeurs_saisies (soumission_id, champ_def_id, valeur_texte)
+                 VALUES ($1, $2, $3)
+                 ON CONFLICT (soumission_id, champ_def_id)
+                 DO UPDATE SET valeur_texte = EXCLUDED.valeur_texte`,
+                [req.params.id, v.champ_def_id, v.valeur_texte || null]
+            );
+        }
+        res.json({ message: 'Valeurs mises à jour' });
+    } catch (err) { next(err); }
+});
+
 module.exports = router;
