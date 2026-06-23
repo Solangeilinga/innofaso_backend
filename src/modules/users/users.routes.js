@@ -19,7 +19,13 @@ const updateSchema = Joi.object({
     prenom: Joi.string().min(2).max(100),
     email: Joi.string().email(),
     role_id: Joi.string().uuid(),
+    mot_de_passe: Joi.string().min(8),
     actif: Joi.boolean(),
+});
+
+const roleSchema = Joi.object({
+    nom:         Joi.string().min(2).max(50).uppercase().required(),
+    description: Joi.string().max(300).allow('', null),
 });
 
 // Route publique pour les listes déroulantes de formulaires
@@ -27,15 +33,19 @@ router.get('/liste-signataires', ctrl.getSignataires);
 
 router.use(auth);
 
-// Routes statiques AVANT /:id
-router.get('/roles',      roles('ADMIN'), ctrl.getRoles);         // liste des rôles dispo
+// ── Gestion des rôles (ADMIN uniquement) ─────────────────────────
+router.get('/roles',            roles('ADMIN'), ctrl.getRoles);
+router.post('/roles',           roles('ADMIN'), validate(roleSchema), ctrl.createRole);
+router.put('/roles/:roleId',    roles('ADMIN'), validate(roleSchema), ctrl.updateRole);
+router.delete('/roles/:roleId', roles('ADMIN'), ctrl.deleteRole);
 
-router.get('/',           roles('ADMIN'), ctrl.getAll);
-router.get('/:id',        roles('ADMIN'), ctrl.getById);
-router.post('/',          roles('ADMIN'), validate(createSchema), ctrl.create);
-router.put('/:id',        roles('ADMIN'), validate(updateSchema), ctrl.update);
-router.patch('/:id/actif', roles('ADMIN'), ctrl.toggleActif);     // soft delete toggle
-router.patch('/:id/role', roles('ADMIN'), ctrl.modifierRole);
-router.delete('/:id',     roles('ADMIN'), ctrl.deactivate);       // soft delete
+// ── Gestion des utilisateurs (ADMIN uniquement) ──────────────────
+router.get('/',            roles('ADMIN'), ctrl.getAll);
+router.get('/:id',         roles('ADMIN'), ctrl.getById);
+router.post('/',           roles('ADMIN'), validate(createSchema), ctrl.create);
+router.put('/:id',         roles('ADMIN'), validate(updateSchema), ctrl.update);
+router.patch('/:id/actif', roles('ADMIN'), ctrl.toggleActif);
+router.patch('/:id/role',  roles('ADMIN'), ctrl.modifierRole);
+router.delete('/:id',      roles('ADMIN'), ctrl.deactivate);
 
 module.exports = router;
