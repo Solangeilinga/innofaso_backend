@@ -55,7 +55,16 @@ router.get('/signalements/lister', auth, ctrl.listerSignalements);
 router.get('/correctif/semaine/:planning_semaine_id', auth, ctrl.obtenirCorrectifSemaine);
 router.post('/correctif/sauvegarder', auth, GESTIONNAIRES, ctrl.sauvegarderCorrectif);
 router.post('/correctif/toggle-formulaire', auth, GESTIONNAIRES, ctrl.toggleFormulaireCorrectif);
+router.get('/correctif/historique', auth, ctrl.listerHistoriqueCorrectif);
+router.get('/correctif/semaine-par-date', auth, ctrl.obtenirSemaineParDate);
 router.get('/equipements-et-lignes', auth, ctrl.listerEquipementsEtLignes);
+
+// ── PLANNING AUTRE ────────────────────────────────────
+router.post('/autre/creer', auth, GESTIONNAIRES, ctrl.creerPlanningAutre);
+router.put('/autre/:id',    auth, GESTIONNAIRES, ctrl.modifierPlanningAutre);
+router.get('/autre/lister', auth, ctrl.listerPlanningAutre);
+router.get('/autre/historique', auth, ctrl.listerHistoriqueAutre);
+router.delete('/autre/:id', auth, GESTIONNAIRES, ctrl.supprimerPlanningAutre);
 
 // ── CRUD BASIQUE ─────────────────────────────────────
 router.get('/',             auth, (req, res) => res.json([]));

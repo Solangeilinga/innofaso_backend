@@ -593,6 +593,7 @@ exports.mettreAJourInterventionLigne = async (req, res) => {
       duree_arret_agregee,
       cause_indisponibilite,
       observations,
+      commentaire,
       temps_couverture = 8.0,
       taux_cible,
     } = req.body;
@@ -622,19 +623,20 @@ exports.mettreAJourInterventionLigne = async (req, res) => {
          SET duree_arret_agregee = COALESCE($1, duree_arret_agregee),
              cause_indisponibilite = COALESCE($2, cause_indisponibilite),
              observations = COALESCE($3, observations),
-             temps_couverture = COALESCE($4, temps_couverture),
-             taux_cible = COALESCE($5, taux_cible),
+             commentaire = COALESCE($4, commentaire),
+             temps_couverture = COALESCE($5, temps_couverture),
+             taux_cible = COALESCE($6, taux_cible),
              modifie_le = NOW()
-         WHERE planning_quart_id = $6
+         WHERE planning_quart_id = $7
          RETURNING *`,
-        [duree_arret_agregee, cause_indisponibilite, observations, temps_couverture, taux_cible, planning_quart_id]
+        [duree_arret_agregee, cause_indisponibilite, observations, commentaire, temps_couverture, taux_cible, planning_quart_id]
       ));
     } else {
       ({ rows } = await db.query(
         `INSERT INTO intervention_ligne
          (id, planning_quart_id, ligne_id, duree_arret_agregee,
-          cause_indisponibilite, observations, temps_couverture, taux_cible)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+          cause_indisponibilite, observations, commentaire, temps_couverture, taux_cible)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
          RETURNING *`,
         [
           uuid(),
@@ -643,6 +645,7 @@ exports.mettreAJourInterventionLigne = async (req, res) => {
           duree_arret_agregee || 0,
           cause_indisponibilite || null,
           observations || null,
+          commentaire || null,
           temps_couverture,
           taux_cible || null,
         ]
@@ -1561,6 +1564,7 @@ exports.sauvegarderCorrectif = async (req, res) => {
   try {
     const {
       planning_semaine_id, equipement_id, equipement_libre, date_intervention,
+      heure_intervention, temps_couverture, taux_cible, commentaire,
       executeur_id, co_executeur_id, verificateur_id, validateur_id,
       signalement_panne_id, duree_arret, duree_maintenance, cause, observations,
     } = req.body;
@@ -1568,6 +1572,9 @@ exports.sauvegarderCorrectif = async (req, res) => {
     if (!planning_semaine_id) {
       return res.status(400).json({ error: 'planning_semaine_id requis' });
     }
+
+    // Fix __libre__ UUID bug
+    const eqId = (equipement_id && equipement_id !== '__libre__') ? equipement_id : null;
 
     const { rows: existing } = await db.query(
       'SELECT id FROM maintenance_corrective WHERE planning_semaine_id = $1',
@@ -1579,15 +1586,17 @@ exports.sauvegarderCorrectif = async (req, res) => {
       ({ rows: result } = await db.query(
         `UPDATE maintenance_corrective
          SET equipement_id = $1, equipement_libre = $2, date_intervention = $3,
-             executeur_id = $4, co_executeur_id = $5,
-             verificateur_id = $6, validateur_id = $7,
-             signalement_panne_id = $8,
-             duree_arret = $9, duree_maintenance = $10,
-             cause = $11, observations = $12,
+             heure_intervention = $4, temps_couverture = $5, taux_cible = $6, commentaire = $7,
+             executeur_id = $8, co_executeur_id = $9,
+             verificateur_id = $10, validateur_id = $11,
+             signalement_panne_id = $12,
+             duree_arret = $13, duree_maintenance = $14,
+             cause = $15, observations = $16,
              modifie_le = NOW()
-         WHERE planning_semaine_id = $13
+         WHERE planning_semaine_id = $17
          RETURNING *`,
-        [equipement_id || null, equipement_libre || null, date_intervention || null,
+        [eqId, equipement_libre || null, date_intervention || null,
+         heure_intervention || null, temps_couverture || 8, taux_cible || 90, commentaire || null,
          executeur_id, co_executeur_id || null, verificateur_id || null, validateur_id || null,
          signalement_panne_id || null,
          duree_arret || 0, duree_maintenance || 0,
@@ -1598,16 +1607,44 @@ exports.sauvegarderCorrectif = async (req, res) => {
       ({ rows: result } = await db.query(
         `INSERT INTO maintenance_corrective
          (id, planning_semaine_id, equipement_id, equipement_libre, date_intervention,
+          heure_intervention, temps_couverture, taux_cible, commentaire,
           executeur_id, co_executeur_id, verificateur_id, validateur_id,
           signalement_panne_id, duree_arret, duree_maintenance, cause, observations)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18)
          RETURNING *`,
-        [uuid(), planning_semaine_id, equipement_id || null, equipement_libre || null, date_intervention || null,
+        [uuid(), planning_semaine_id, eqId, equipement_libre || null, date_intervention || null,
+         heure_intervention || null, temps_couverture || 8, taux_cible || 90, commentaire || null,
          executeur_id, co_executeur_id || null, verificateur_id || null, validateur_id || null,
          signalement_panne_id || null, duree_arret || 0, duree_maintenance || 0,
          cause || null, observations || null]
       ));
     }
+
+    // ── Synchroniser processus_taches ──────────────────────────────────
+    try {
+      const mcId = result[0].id;
+      const { rows: forms } = await db.query(
+        'SELECT formulaire_id FROM maintenance_corrective_formulaires WHERE maintenance_corrective_id = $1',
+        [mcId]
+      );
+      const a = result[0];
+      if (a && a.executeur_id && a.verificateur_id && a.validateur_id && forms.length > 0) {
+        for (const f of forms) {
+          const { rows: existing } = await db.query(
+            'SELECT id FROM processus_taches WHERE maintenance_corrective_id = $1 AND formulaire_id = $2',
+            [mcId, f.formulaire_id]
+          );
+          if (!existing.length) {
+            await db.query(
+              `INSERT INTO processus_taches
+               (id, formulaire_id, executeur_id, verificateur_id, validateur_id, maintenance_corrective_id)
+               VALUES ($1, $2, $3, $4, $5, $6)`,
+              [uuid(), f.formulaire_id, a.executeur_id, a.verificateur_id, a.validateur_id, mcId]
+            );
+          }
+        }
+      }
+    } catch (_) {}
 
     res.json(result[0]);
   } catch (e) {
@@ -1629,15 +1666,289 @@ exports.toggleFormulaireCorrectif = async (req, res) => {
     );
     if (existing.length) {
       await db.query('DELETE FROM maintenance_corrective_formulaires WHERE id = $1', [existing[0].id]);
+      await db.query(
+        'DELETE FROM processus_taches WHERE maintenance_corrective_id = $1 AND formulaire_id = $2',
+        [maintenance_corrective_id, formulaire_id]
+      );
     } else {
       await db.query(
         'INSERT INTO maintenance_corrective_formulaires (id, maintenance_corrective_id, formulaire_id) VALUES ($1,$2,$3)',
         [uuid(), maintenance_corrective_id, formulaire_id]
       );
+      try {
+        const { rows: mc } = await db.query(
+          'SELECT executeur_id, verificateur_id, validateur_id FROM maintenance_corrective WHERE id = $1',
+          [maintenance_corrective_id]
+        );
+        const a = mc[0];
+        if (a && a.executeur_id && a.verificateur_id && a.validateur_id) {
+          await db.query(
+            `INSERT INTO processus_taches
+             (id, formulaire_id, executeur_id, verificateur_id, validateur_id, maintenance_corrective_id)
+             VALUES ($1, $2, $3, $4, $5, $6)`,
+            [uuid(), formulaire_id, a.executeur_id, a.verificateur_id, a.validateur_id, maintenance_corrective_id]
+          );
+        }
+      } catch (_) {}
     }
     res.json({ success: true });
   } catch (e) {
     if (e.code === '42P01') return res.json({ success: true });
+    console.error(e);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+/**
+ * Historique maintenance corrective (lecture seule)
+ */
+exports.listerHistoriqueCorrectif = async (req, res) => {
+  try {
+    const { ligne_id, mois, annee } = req.query;
+    const params = [];
+    let query = `
+      SELECT mc.id, mc.duree_arret, mc.duree_maintenance, mc.cause, mc.observations,
+             mc.date_intervention, mc.statut, mc.cree_le,
+             ps.semaine_index, ps.date_debut_semaine, ps.date_fin_semaine, ps.annee,
+             lp.code AS ligne_code, lp.nom AS ligne_nom,
+             eq.nom AS equipement_nom, eq.code_ref AS equipement_code,
+             mc.equipement_libre,
+             jsonb_build_object('id', ex.id, 'nom', ex.nom, 'prenom', ex.prenom) AS executeur,
+             jsonb_build_object('id', co.id, 'nom', co.nom, 'prenom', co.prenom) AS co_executeur,
+             jsonb_build_object('id', vf.id, 'nom', vf.nom, 'prenom', vf.prenom) AS verificateur,
+             jsonb_build_object('id', vl.id, 'nom', vl.nom, 'prenom', vl.prenom) AS validateur,
+             (SELECT COUNT(*) FROM maintenance_corrective_formulaires mcf WHERE mcf.maintenance_corrective_id = mc.id) AS nb_formulaires
+      FROM maintenance_corrective mc
+      JOIN planning_semaine ps ON ps.id = mc.planning_semaine_id
+      JOIN ligne_production lp ON lp.id = ps.ligne_id
+      LEFT JOIN equipements eq ON eq.id = mc.equipement_id
+      LEFT JOIN utilisateurs ex ON ex.id = mc.executeur_id
+      LEFT JOIN utilisateurs co ON co.id = mc.co_executeur_id
+      LEFT JOIN utilisateurs vf ON vf.id = mc.verificateur_id
+      LEFT JOIN utilisateurs vl ON vl.id = mc.validateur_id
+      WHERE 1=1
+    `;
+
+    if (ligne_id) {
+      params.push(ligne_id);
+      query += ` AND ps.ligne_id = $${params.length}`;
+    }
+    if (mois) {
+      params.push(parseInt(mois, 10));
+      query += ` AND ps.mois = $${params.length}`;
+    }
+    if (annee) {
+      params.push(parseInt(annee, 10));
+      query += ` AND ps.annee = $${params.length}`;
+    }
+
+    query += `
+      ORDER BY ps.annee DESC, ps.mois DESC, ps.semaine_index DESC, mc.cree_le DESC
+      LIMIT 50
+    `;
+
+    const { rows } = await db.query(query, params);
+    res.json(rows);
+  } catch (e) {
+    if (e.code === '42P01') return res.json([]);
+    console.error(e);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+/**
+ * Obtenir ou créer un planning_semaine à partir d'une date (pour corrective)
+ */
+exports.obtenirSemaineParDate = async (req, res) => {
+  try {
+    const { date, ligne_id } = req.query;
+    if (!date || !ligne_id) {
+      return res.status(400).json({ error: 'date et ligne_id requis' });
+    }
+
+    const dateObj = new Date(date);
+    const annee = dateObj.getFullYear();
+    const mois = dateObj.getMonth() + 1;
+    const day = dateObj.getDate();
+    const semaineIndex = day <= 7 ? 1 : day <= 14 ? 2 : day <= 21 ? 3 : 4;
+
+    let { rows: existing } = await db.query(
+      'SELECT * FROM planning_semaine WHERE ligne_id=$1 AND annee=$2 AND mois=$3 AND semaine_index=$4',
+      [ligne_id, annee, mois, semaineIndex]
+    );
+
+    if (existing.length) {
+      return res.json({ planning_semaine: existing[0], semaine_index: semaineIndex });
+    }
+
+    const adminId = req.user.id;
+    const planning = await ensurePlanningSemaine(db, {
+      ligneId: ligne_id,
+      annee,
+      mois,
+      semaineIndex,
+      adminId,
+    });
+
+    res.json({ planning_semaine: planning, semaine_index: semaineIndex });
+  } catch (e) {
+    console.error('obtenirSemaineParDate:', e.message);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+// ========================================
+// PLANNING AUTRE
+// ========================================
+
+exports.creerPlanningAutre = async (req, res) => {
+  try {
+    const { date_planif, heure_planif, executeur_id, verificateur_id, validateur_id, formulaire_id } = req.body;
+    if (!date_planif || !executeur_id || !formulaire_id) {
+      return res.status(400).json({ error: 'date_planif, executeur_id et formulaire_id requis' });
+    }
+    const { rows } = await db.query(
+      `INSERT INTO planning_autre (id, date_planif, heure_planif, executeur_id, verificateur_id, validateur_id, formulaire_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+      [uuid(), date_planif, heure_planif || null, executeur_id, verificateur_id || null, validateur_id || null, formulaire_id]
+    );
+
+    // Sync processus_taches
+    try {
+      const r = rows[0];
+      if (r.executeur_id && r.verificateur_id && r.validateur_id) {
+        const { rows: exist } = await db.query(
+          'SELECT id FROM processus_taches WHERE planning_autre_id = $1',
+          [r.id]
+        );
+        if (!exist.length) {
+          await db.query(
+            `INSERT INTO processus_taches (id, formulaire_id, executeur_id, verificateur_id, validateur_id, planning_autre_id, date_debut)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+            [uuid(), r.formulaire_id, r.executeur_id, r.verificateur_id, r.validateur_id, r.id, r.date_planif]
+          );
+        }
+      }
+    } catch (_) {}
+
+    // Alerte
+    try {
+      const alertesService = require('../alertes/alertes.service');
+      const { rows: u } = await db.query(
+        'SELECT prenom, nom FROM utilisateurs WHERE id=$1', [executeur_id]
+      );
+      await alertesService.creer({
+        utilisateur_id: executeur_id,
+        type_alerte: 'MAINTENANCE_AUTRE',
+        message: `Nouvelle tâche planifiée le ${date_planif}${heure_planif ? ' à ' + heure_planif.slice(0,5) : ''}`,
+      });
+    } catch (_) {}
+    res.status(201).json(rows[0]);
+  } catch (e) {
+    if (e.code === '42P01') return res.status(503).json({ error: 'Migration 027 non exécutée' });
+    console.error(e);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+exports.modifierPlanningAutre = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { date_planif, heure_planif, executeur_id, verificateur_id, validateur_id, formulaire_id } = req.body;
+    const { rows } = await db.query(
+      `UPDATE planning_autre
+       SET date_planif = COALESCE($1, date_planif),
+           heure_planif = COALESCE($2, heure_planif),
+           executeur_id = COALESCE($3, executeur_id),
+           verificateur_id = COALESCE($4, verificateur_id),
+           validateur_id = COALESCE($5, validateur_id),
+           formulaire_id = COALESCE($6, formulaire_id),
+           modifie_le = NOW()
+       WHERE id = $7 RETURNING *`,
+      [date_planif, heure_planif, executeur_id, verificateur_id, validateur_id, formulaire_id, id]
+    );
+    if (!rows.length) return res.status(404).json({ error: 'Planning non trouvé' });
+    res.json(rows[0]);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+exports.listerPlanningAutre = async (req, res) => {
+  try {
+    const { date_debut, date_fin, executeur_id } = req.query;
+    const params = [];
+    let query = `
+      SELECT pa.*,
+        jsonb_build_object('id', ex.id, 'nom', ex.nom, 'prenom', ex.prenom) AS executeur,
+        jsonb_build_object('id', vf.id, 'nom', vf.nom, 'prenom', vf.prenom) AS verificateur,
+        jsonb_build_object('id', vl.id, 'nom', vl.nom, 'prenom', vl.prenom) AS validateur,
+        jsonb_build_object('id', ft.id, 'titre', ft.titre, 'code', ft.code) AS formulaire
+      FROM planning_autre pa
+      LEFT JOIN utilisateurs ex ON ex.id = pa.executeur_id
+      LEFT JOIN utilisateurs vf ON vf.id = pa.verificateur_id
+      LEFT JOIN utilisateurs vl ON vl.id = pa.validateur_id
+      JOIN formulaires_types ft ON ft.id = pa.formulaire_id
+      WHERE 1=1
+    `;
+    if (date_debut) { params.push(date_debut); query += ` AND pa.date_planif >= $${params.length}`; }
+    if (date_fin)   { params.push(date_fin);   query += ` AND pa.date_planif <= $${params.length}`; }
+    if (executeur_id) { params.push(executeur_id); query += ` AND pa.executeur_id = $${params.length}`; }
+    query += ' ORDER BY pa.date_planif DESC, pa.cree_le DESC';
+
+    const { rows } = await db.query(query, params);
+    res.json(rows);
+  } catch (e) {
+    if (e.code === '42P01') return res.json([]);
+    console.error(e);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+exports.supprimerPlanningAutre = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await db.query('DELETE FROM processus_taches WHERE planning_autre_id = $1', [id]);
+    const { rows } = await db.query('DELETE FROM planning_autre WHERE id = $1 RETURNING id', [id]);
+    if (!rows.length) return res.status(404).json({ error: 'Planning non trouvé' });
+    res.json({ success: true });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+exports.listerHistoriqueAutre = async (req, res) => {
+  try {
+    const { mois, annee } = req.query;
+    const params = [];
+    let query = `
+      SELECT pa.*,
+        jsonb_build_object('id', ex.id, 'nom', ex.nom, 'prenom', ex.prenom) AS executeur,
+        jsonb_build_object('id', vf.id, 'nom', vf.nom, 'prenom', vf.prenom) AS verificateur,
+        jsonb_build_object('id', vl.id, 'nom', vl.nom, 'prenom', vl.prenom) AS validateur,
+        jsonb_build_object('id', ft.id, 'titre', ft.titre, 'code', ft.code) AS formulaire
+      FROM planning_autre pa
+      LEFT JOIN utilisateurs ex ON ex.id = pa.executeur_id
+      LEFT JOIN utilisateurs vf ON vf.id = pa.verificateur_id
+      LEFT JOIN utilisateurs vl ON vl.id = pa.validateur_id
+      JOIN formulaires_types ft ON ft.id = pa.formulaire_id
+      WHERE 1=1
+    `;
+    if (mois) {
+      params.push(parseInt(mois, 10));
+      query += ` AND EXTRACT(MONTH FROM pa.date_planif) = $${params.length}`;
+    }
+    if (annee) {
+      params.push(parseInt(annee, 10));
+      query += ` AND EXTRACT(YEAR FROM pa.date_planif) = $${params.length}`;
+    }
+    query += ' ORDER BY pa.date_planif DESC, pa.cree_le DESC LIMIT 50';
+    const { rows } = await db.query(query, params);
+    res.json(rows);
+  } catch (e) {
+    if (e.code === '42P01') return res.json([]);
     console.error(e);
     res.status(500).json({ error: 'Erreur serveur' });
   }
