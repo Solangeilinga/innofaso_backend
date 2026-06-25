@@ -287,4 +287,118 @@ const ficheFormulaire = async (soumission, valeurs, entete) => {
     }));
 };
 
-module.exports = { genererPDF, buildHtmlPage, rapportJournalierMaintenance, rapportHebdomadaire, ficheEquipement, ficheFormulaire };
+const rapportMensuelIndicateurs = async (data) => {
+    const { periode, globaux: g, par_equipement, encres_solvants } = data;
+
+    const MOIS_NOMS = ['Janvier','Février','Mars','Avril','Mai','Juin',
+                       'Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+    const moisNom = MOIS_NOMS[periode.mois - 1];
+
+    const kpiCards = [
+        { label: 'OEE',           value: g.oee_pct != null           ? `${g.oee_pct} %`           : '—', color: '#16a34a' },
+        { label: 'Disponibilité', value: g.disponibilite_pct != null ? `${g.disponibilite_pct} %` : '—', color: '#2563eb' },
+        { label: 'MTBF',          value: g.mtbf_h != null            ? `${g.mtbf_h} h`            : '—', color: '#7c3aed' },
+        { label: 'MTTR',          value: g.mttr_h != null            ? `${g.mttr_h} h`            : '—', color: '#ea580c' },
+        { label: 'Correctifs',    value: g.nb_pannes_total,                                               color: '#dc2626' },
+        { label: 'Signalements',  value: g.nb_signalements,                                              color: '#d97706' },
+    ].map(k => `
+        <div class="metric-card">
+            <div class="nb" style="color:${k.color}">${k.value}</div>
+            <div class="label">${k.label}</div>
+        </div>`).join('');
+
+    const lignesEquipements = par_equipement.length > 0 ? par_equipement.map(r => `
+        <tr>
+            <td><strong>${r.equipement || '—'}</strong></td>
+            <td style="text-align:center;color:#dc2626;font-weight:bold">${r.nb_correctifs}</td>
+            <td style="text-align:center">${r.total_arret_h} h</td>
+            <td style="text-align:center">${r.total_maint_h} h</td>
+            <td style="text-align:center;color:#7c3aed">${r.mtbf_h ?? '—'}</td>
+            <td style="text-align:center;color:#ea580c">${r.mttr_h ?? '—'}</td>
+            <td style="text-align:center;color:#2563eb">${r.disponibilite_pct} %</td>
+            <td style="text-align:center;color:#16a34a;font-weight:bold">${r.oee_pct} %</td>
+        </tr>`).join('')
+        : '<tr><td colspan="8" style="text-align:center;color:#999">Aucune donnée corrective ce mois</td></tr>';
+
+    const lignesEncres = encres_solvants.length > 0 ? encres_solvants.map(r => `
+        <tr>
+            <td>${r.code}</td>
+            <td>${r.titre}</td>
+            <td style="text-align:center;font-weight:bold">${r.nb_saisies}</td>
+        </tr>`).join('')
+        : '<tr><td colspan="3" style="text-align:center;color:#999">Aucune saisie</td></tr>';
+
+    const tauxPrev = g.preventives_planifiees > 0
+        ? Math.round(g.preventives_realisees / g.preventives_planifiees * 100)
+        : 0;
+
+    const contenu = `
+    <div class="metrics">${kpiCards}</div>
+
+    <div class="section-title">Données de la période</div>
+    <table style="margin-bottom:16px">
+        <tbody>
+            <tr>
+                <td><strong>Période</strong></td><td>${moisNom} ${periode.annee}</td>
+                <td><strong>Jours</strong></td><td>${periode.jours} jours</td>
+                <td><strong>Heures d'ouverture</strong></td><td>${periode.heures_ouverture} h</td>
+            </tr>
+            <tr>
+                <td><strong>Arrêts totaux</strong></td><td>${g.total_arret_h} h</td>
+                <td><strong>Correctifs</strong></td><td>${g.nb_pannes_total}</td>
+                <td><strong>Signalements</strong></td><td>${g.nb_signalements}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="section-title">Maintenances préventives</div>
+    <div class="metrics">
+        <div class="metric-card">
+            <div class="nb" style="color:#1e3a5f">${g.preventives_planifiees}</div>
+            <div class="label">Planifiées</div>
+        </div>
+        <div class="metric-card">
+            <div class="nb" style="color:#16a34a">${g.preventives_realisees}</div>
+            <div class="label">Réalisées</div>
+        </div>
+        <div class="metric-card">
+            <div class="nb" style="color:#dc2626">${g.preventives_en_retard}</div>
+            <div class="label">En retard</div>
+        </div>
+        <div class="metric-card">
+            <div class="nb" style="color:${tauxPrev >= 80 ? '#16a34a' : tauxPrev >= 50 ? '#ea580c' : '#dc2626'}">${tauxPrev} %</div>
+            <div class="label">Taux de réalisation</div>
+        </div>
+    </div>
+
+    <div class="section-title">Indicateurs par équipement</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Équipement</th><th>Correctifs</th><th>Arrêt (h)</th><th>Maint. (h)</th>
+                <th>MTBF (h)</th><th>MTTR (h)</th><th>Dispo (%)</th><th>OEE (%)</th>
+            </tr>
+        </thead>
+        <tbody>${lignesEquipements}</tbody>
+    </table>
+
+    <div class="section-title">Suivi encres &amp; solvants</div>
+    <table>
+        <thead><tr><th>Code</th><th>Formulaire</th><th>Nb saisies</th></tr></thead>
+        <tbody>${lignesEncres}</tbody>
+    </table>
+
+    <div style="margin:16px 20px;padding:10px 14px;background:#f0f4f8;border-radius:6px;font-size:9px;color:#64748b">
+        * OEE calculé sur la base de la disponibilité machine (Disponibilité × Performance × Qualité).
+        Les facteurs Performance et Qualité sont estimés à 1 faute de données process.
+        Période de référence : ${periode.jours} jours — ${periode.heures_ouverture} h d'ouverture continue (3×8).
+    </div>`;
+
+    return genererPDF(buildHtmlPage({
+        titre: `Rapport Mensuel — OEE / MTBF / MTTR`,
+        sousTitre: `Période : ${moisNom} ${periode.annee} · Généré le ${new Date().toLocaleDateString('fr-FR')}`,
+        contenu,
+    }));
+};
+
+module.exports = { genererPDF, buildHtmlPage, rapportJournalierMaintenance, rapportHebdomadaire, ficheEquipement, ficheFormulaire, rapportMensuelIndicateurs };

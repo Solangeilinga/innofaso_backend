@@ -10,6 +10,7 @@ router.use(auth);
 router.get('/journalier-maintenance', roles('ADMIN', 'RESP_MAINT'), ctrl.getJournalierMaintenance);
 router.get('/hebdomadaire', roles('ADMIN', 'RESP_MAINT', 'RESP_PROD'), ctrl.getHebdomadaire);
 router.get('/mensuel-indicateurs', roles('ADMIN', 'RESP_MAINT'), ctrl.getMensuelIndicateurs);
+router.get('/mensuel-indicateurs/pdf', roles('ADMIN', 'RESP_MAINT'), ctrl.getMensuelPDF);
 router.get('/equipement/:id', roles('ADMIN', 'RESP_MAINT'), ctrl.getFicheEquipement);
 router.get('/export-excel', ctrl.getExportExcel);
 router.get('/export-csv', ctrl.getExportCSV);
