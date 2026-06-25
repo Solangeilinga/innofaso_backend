@@ -1,4 +1,3 @@
-
 const service = require('./rapports.service');
 
 const getJournalierMaintenance = async (req, res, next) => {
@@ -86,10 +85,21 @@ const getExportCSV = async (req, res, next) => {
     } catch (err) { next(err); }
 };
 
+const getMensuelIndicateurs = async (req, res, next) => {
+    try {
+        const data = await service.genererRapportMensuelIndicateurs({
+            annee: req.query.annee,
+            mois:  req.query.mois,
+        });
+        res.json(data);
+    } catch (err) { next(err); }
+};
+
 module.exports = {
     getJournalierMaintenance,
     getHebdomadaire,
     getFicheEquipement,
     getExportExcel,
     getExportCSV,
+    getMensuelIndicateurs,
 };
