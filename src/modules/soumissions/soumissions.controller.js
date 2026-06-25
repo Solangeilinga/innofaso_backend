@@ -38,17 +38,23 @@ const exportExcel = async (req, res, next) => {
 
 module.exports = { getAll, getById, create, updateStatut, uploadPieceJointe, deletePieceJointe, sync, exportExcel };
 
-// Helper: extraire la valeur lisible d'un champ
+// Helper: extraire la valeur lisible d'un champ (tous types)
 const getValeurLisible = (v) => {
     if (v.valeur_booleen !== null && v.valeur_booleen !== undefined)
         return v.valeur_booleen ? 'Oui' : 'Non';
     if (v.valeur_nombre !== null && v.valeur_nombre !== undefined)
-        return `${v.valeur_nombre}${v.unite ? ' ' + v.unite : ''}`;
+        return v.unite ? `${v.valeur_nombre} ${v.unite}` : String(v.valeur_nombre);
     if (v.valeur_date)
         return new Date(v.valeur_date).toLocaleDateString('fr-FR');
-    if (v.valeur_texte && v.valeur_texte.trim())
-        return v.valeur_texte.trim();
-    return null; // vide
+    if (v.valeur_texte !== null && v.valeur_texte !== undefined && String(v.valeur_texte).trim())
+        return String(v.valeur_texte).trim();
+    if (v.valeur_json) {
+        try {
+            const j = typeof v.valeur_json === 'string' ? JSON.parse(v.valeur_json) : v.valeur_json;
+            return Array.isArray(j) ? j.join(', ') : JSON.stringify(j);
+        } catch { return String(v.valeur_json); }
+    }
+    return null; // champ vide
 };
 
 // ── Export PDF sans Puppeteer — HTML imprimable ──────────────────
@@ -185,72 +191,107 @@ const exportSoumissionExcel = async (req, res, next) => {
 
         const wb = new ExcelJS.Workbook();
         wb.creator = 'InnoFaso';
+        const ws = wb.addWorksheet('Formulaire');
 
-        // ── Feuille 1 : Informations générales ─────────────────
-        const sheetMeta = wb.addWorksheet('Informations');
-        sheetMeta.columns = [
-            { header: 'Champ', key: 'champ', width: 28 },
-            { header: 'Valeur', key: 'valeur', width: 55 },
+        // Largeurs colonnes
+        ws.columns = [
+            { key: 'champ',  width: 38 },
+            { key: 'valeur', width: 55 },
         ];
-        const hdr1 = sheetMeta.getRow(1);
-        hdr1.font = { bold: true, color: { argb: 'FFFFFFFF' } };
-        hdr1.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1d4ed8' } };
 
+        const BLUE   = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1d4ed8' } };
+        const TEAL   = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0f766e' } };
+        const GRAY   = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFf1f5f9' } };
+        const WHITE  = { color: { argb: 'FFFFFFFF' } };
+        const DARK   = { color: { argb: 'FF1e293b' } };
+
+        const addTitle = (text) => {
+            ws.mergeCells(`A${ws.rowCount+1}:B${ws.rowCount+1}`);
+            const row = ws.lastRow;
+            row.getCell(1).value = text;
+            row.getCell(1).font = { bold: true, size: 12, color: WHITE };
+            row.getCell(1).fill = BLUE;
+            row.getCell(1).alignment = { vertical: 'middle', indent: 1 };
+            row.height = 22;
+        };
+
+        const addSection = (text) => {
+            ws.mergeCells(`A${ws.rowCount+1}:B${ws.rowCount+1}`);
+            const row = ws.lastRow;
+            row.getCell(1).value = text;
+            row.getCell(1).font = { bold: true, size: 11, color: WHITE };
+            row.getCell(1).fill = TEAL;
+            row.getCell(1).alignment = { vertical: 'middle', indent: 1 };
+            row.height = 20;
+        };
+
+        const addRow = (champ, valeur, isGray = false) => {
+            ws.addRow({ champ, valeur });
+            const row = ws.lastRow;
+            row.getCell(1).font = { color: { argb: 'FF475569' }, size: 10 };
+            row.getCell(2).font = { bold: true, color: DARK, size: 10 };
+            row.getCell(2).alignment = { wrapText: true };
+            if (isGray) {
+                row.getCell(1).fill = GRAY;
+                row.getCell(2).fill = GRAY;
+            }
+            row.height = 16;
+        };
+
+        // ── Titre ──────────────────────────────────────────────
+        addTitle(`${soumission.formulaire_code || ''} — ${soumission.formulaire_titre || ''}`);
+
+        // ── Infos générales ────────────────────────────────────
+        addSection('Informations générales');
+        const date_str = soumission.date_soumission
+            ? new Date(soumission.date_soumission).toLocaleString('fr-FR') : '—';
+        addRow('Module',      soumission.module || '—');
+        addRow('Fréquence',   soumission.frequence || '—', true);
+        addRow('Statut',      soumission.statut || '—');
+        addRow('Date',        date_str, true);
+        addRow('Auteur',      `${soumission.auteur_prenom||''} ${soumission.auteur_nom||''}`.trim() || '—');
+        addRow('Équipement',  soumission.equipement_nom || '—', true);
+
+        // ── Entête officielle ──────────────────────────────────
         const e = soumission.formulaire_entete || soumission.entete;
-        [
-            ['Formulaire',  `${soumission.formulaire_code || ''} — ${soumission.formulaire_titre || ''}`],
-            ['Module',      soumission.module || ''],
-            ['Fréquence',   soumission.frequence || '—'],
-            ['Statut',      soumission.statut || ''],
-            ['Date',        soumission.date_soumission ? new Date(soumission.date_soumission).toLocaleString('fr-FR') : '—'],
-            ['Auteur',      `${soumission.auteur_prenom||''} ${soumission.auteur_nom||''}`.trim()],
-            ['Équipement',  soumission.equipement_nom || '—'],
-            ['', ''],
-            e ? ['— Entête officielle —', ''] : null,
-            e ? ['Émetteur', `${e.emetteur_nom||'—'} (${e.emetteur_fonction||''})`] : null,
-            e ? ['Vérificateur', `${e.verificateur_nom||'—'} (${e.verificateur_fonction||''})`] : null,
-            e ? ['Approbateur', `${e.approbateur_nom||'—'} (${e.approbateur_fonction||''})`] : null,
-            e?.destinataires ? ['Destinataires', e.destinataires] : null,
-        ].filter(Boolean).forEach(([champ, valeur]) => sheetMeta.addRow({ champ, valeur }));
+        if (e && (e.emetteur_nom || e.verificateur_nom || e.approbateur_nom)) {
+            addSection('Entête officielle');
+            if (e.emetteur_nom)     addRow('Émetteur',     `${e.emetteur_nom} (${e.emetteur_fonction||''})`);
+            if (e.verificateur_nom) addRow('Vérificateur', `${e.verificateur_nom} (${e.verificateur_fonction||''})`, true);
+            if (e.approbateur_nom)  addRow('Approbateur',  `${e.approbateur_nom} (${e.approbateur_fonction||''})`);
+            if (e.destinataires)    addRow('Destinataires', e.destinataires, true);
+        }
 
-        // ── Feuille 2 : Données du formulaire ──────────────────
-        const sheetVals = wb.addWorksheet('Formulaire');
-        sheetVals.columns = [
-            { header: 'Section', key: 'section', width: 22 },
-            { header: 'Champ',   key: 'champ',   width: 38 },
-            { header: 'Valeur',  key: 'valeur',  width: 45 },
-        ];
-        const hdr2 = sheetVals.getRow(1);
-        hdr2.font = { bold: true, color: { argb: 'FFFFFFFF' } };
-        hdr2.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0d9488' } };
-
-        let rowNum = 1;
-        let lastSection = '';
+        // ── Données du formulaire par section ──────────────────
+        const sections = {};
         for (const v of (soumission.valeurs || [])) {
             if (!v.nom_champ) continue;
             const val = getValeurLisible(v);
-            if (val === null) continue; // skip champs vides
-
-            rowNum++;
-            const section = v.section || 'Général';
-            sheetVals.addRow({ section, champ: v.nom_champ, valeur: val });
-
-            // Colorier les lignes de section alternativement
-            const row = sheetVals.getRow(rowNum);
-            if (section !== lastSection) {
-                row.getCell('section').font = { bold: true };
-                lastSection = section;
-            }
-            row.getCell('valeur').alignment = { wrapText: true };
+            if (val === null || val === undefined) continue;
+            const sec = v.section || 'Général';
+            if (!sections[sec]) sections[sec] = [];
+            sections[sec].push({ champ: v.nom_champ, valeur: val });
         }
 
-        sheetVals.views = [{ state: 'frozen', ySplit: 1 }];
+        let rowIdx = 0;
+        for (const [section, champs] of Object.entries(sections)) {
+            addSection(section);
+            champs.forEach((c, i) => addRow(c.champ, c.valeur, i % 2 === 1));
+        }
+
+        // ── Motif de rejet ─────────────────────────────────────
+        if (soumission.commentaire_rejet) {
+            addSection('Motif de rejet');
+            addRow('Raison', soumission.commentaire_rejet);
+        }
+
+        ws.views = [{ state: 'normal' }];
 
         const code = (soumission.formulaire_code||'formulaire').replace(/[^a-zA-Z0-9-]/g, '_');
-        const date = (soumission.date_soumission||new Date()).toString().slice(0, 10);
+        const dateStr = (soumission.date_soumission||new Date()).toString().slice(0, 10);
         res.set({
             'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition': `attachment; filename="${code}_${date}.xlsx"`,
+            'Content-Disposition': `attachment; filename="${code}_${dateStr}.xlsx"`,
         });
         await wb.xlsx.write(res);
         res.end();
