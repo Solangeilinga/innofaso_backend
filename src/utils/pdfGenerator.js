@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const logger = require('./logger');
 
 // Instance browser réutilisable (évite de relancer Chromium à chaque rapport)
@@ -6,16 +6,38 @@ let browserInstance = null;
 
 const getBrowser = async () => {
     if (!browserInstance || !browserInstance.isConnected()) {
+        let executablePath;
+        let args = [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-gpu',
+        ];
+
+        if (process.env.NODE_ENV === 'production') {
+            // Sur Render / Linux serverless : utiliser @sparticuz/chromium
+            const chromium = require('@sparticuz/chromium');
+            executablePath = await chromium.executablePath();
+            args = [...args, ...chromium.args];
+        } else {
+            // En local : chercher Chrome/Chromium installé sur la machine
+            const { execSync } = require('child_process');
+            const candidates = [
+                '/usr/bin/google-chrome',
+                '/usr/bin/chromium-browser',
+                '/usr/bin/chromium',
+                '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+            ];
+            executablePath = candidates.find(p => {
+                try { execSync(`test -f "${p}"`); return true; } catch { return false; }
+            }) || '/usr/bin/chromium';
+        }
+
         browserInstance = await puppeteer.launch({
             headless: 'new',
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-dev-shm-usage',
-                '--disable-gpu',
-            ],
+            executablePath,
+            args,
         });
-        // Réinitialiser si le browser se déconnecte
         browserInstance.on('disconnected', () => { browserInstance = null; });
     }
     return browserInstance;
