@@ -58,6 +58,8 @@ router.post('/correctif/toggle-formulaire', auth, GESTIONNAIRES, ctrl.toggleForm
 router.get('/correctif/historique', auth, ctrl.listerHistoriqueCorrectif);
 router.get('/correctif/semaine-par-date', auth, ctrl.obtenirSemaineParDate);
 router.get('/equipements-et-lignes', auth, ctrl.listerEquipementsEtLignes);
+router.get('/equipement/:id/detail', auth, ctrl.detailEquipementMaintenance);
+router.get('/equipements/courbe-correctives', auth, ctrl.courbeCorrectivesEquipements);
 
 // ── PLANNING AUTRE ────────────────────────────────────
 router.post('/autre/creer', auth, GESTIONNAIRES, ctrl.creerPlanningAutre);

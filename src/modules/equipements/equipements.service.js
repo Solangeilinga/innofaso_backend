@@ -121,4 +121,14 @@ const updateEtat = async (id, etat, actorId, ip, appareil) => {
     });
 };
 
-module.exports = { getAll, getById, getHistorique, create, update, updateEtat };
+const remove = async (id, actorId, ip, appareil) => {
+  const ancien = await getById(id);
+  await query('DELETE FROM equipements WHERE id = $1', [id]);
+  await logAudit({
+    utilisateur_id: actorId, table_cible: 'equipements',
+    enregistrement_id: id, action: 'DELETE',
+    ancienne_valeur: ancien, adresse_ip: ip, appareil,
+  });
+};
+
+module.exports = { getAll, getById, getHistorique, create, update, updateEtat, remove };

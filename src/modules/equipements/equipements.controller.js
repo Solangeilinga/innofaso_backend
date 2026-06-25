@@ -7,4 +7,6 @@ const create = async (req, res, next) => { try { res.status(201).json(await serv
 const update = async (req, res, next) => { try { res.json(await service.update(req.params.id, req.body, req.user.id, req.ip_client, req.user_agent)); } catch (e) { next(e); } };
 const updateEtat = async (req, res, next) => { try { await service.updateEtat(req.params.id, req.body.etat, req.user.id, req.ip_client, req.user_agent); res.json({ message: 'État mis à jour.' }); } catch (e) { next(e); } };
 
-module.exports = { getAll, getById, getHistorique, create, update, updateEtat };
+const remove = async (req, res, next) => { try { await service.remove(req.params.id, req.user.id, req.ip_client, req.user_agent); res.json({ message: 'Équipement supprimé.' }); } catch (e) { next(e); } };
+
+module.exports = { getAll, getById, getHistorique, create, update, updateEtat, remove };

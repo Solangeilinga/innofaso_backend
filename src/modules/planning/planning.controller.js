@@ -822,65 +822,96 @@ exports.dashboardSynthese = async (req, res) => {
     const moisInt = parseInt(mois, 10);
     const anneeInt = parseInt(annee, 10);
 
-    // Filtre ligne optionnel
-    const ligneJoin  = ligne_id ? `JOIN equipements eq ON eq.id = s.equipement_id` : '';
-    const ligneWhere = ligne_id ? `AND eq.ligne_production = $3` : '';
-    const baseParams = ligne_id ? [anneeInt, moisInt, ligne_id] : [anneeInt, moisInt];
+    const params = ligne_id ? [anneeInt, moisInt, ligne_id] : [anneeInt, moisInt];
+    const ligneWhereOpt = ligne_id ? `AND ps.ligne_id = $3` : '';
 
     // ── KPIs depuis soumissions maintenance ────────────────────────
     const { rows: kpiRows } = await db.query(
       `SELECT
-         COUNT(DISTINCT s.id)           AS nb_soumissions,
-         COUNT(DISTINCT s.equipement_id) AS nb_equipements,
-         COUNT(DISTINCT s.utilisateur_id) AS nb_techniciens,
+         COUNT(DISTINCT s.id)              AS nb_soumissions,
+         COUNT(DISTINCT s.equipement_id)   AS nb_equipements,
+         COUNT(DISTINCT s.utilisateur_id)  AS nb_techniciens,
          COUNT(DISTINCT CASE WHEN s.statut = 'VALIDE'  THEN s.id END) AS nb_valides,
          COUNT(DISTINCT CASE WHEN s.statut = 'REJETE'  THEN s.id END) AS nb_rejetes,
          COUNT(DISTINCT CASE WHEN s.statut = 'SOUMIS'  THEN s.id END) AS nb_en_attente
        FROM soumissions s
        JOIN formulaires_types ft ON ft.id = s.formulaire_type_id
-       ${ligneJoin}
+       ${ligne_id ? 'JOIN equipements eq ON eq.id = s.equipement_id' : ''}
        WHERE ft.module = 'MAINTENANCE'
          AND EXTRACT(YEAR  FROM s.date_soumission) = $1
          AND EXTRACT(MONTH FROM s.date_soumission) = $2
-         ${ligneWhere}`,
-      baseParams
+         ${ligne_id ? 'AND eq.ligne_production = $3' : ''}`,
+      params
     );
 
-    // ── Heures correctives (champs durée dans les soumissions correctives) ─
+    // ── KPIs depuis intervention_ligne (disponibilité réelle) ──────
+    const { rows: dispoRows } = await db.query(
+      `SELECT
+         ROUND(AVG(il.taux_disponibilite_calcule)::numeric, 1) AS disponibilite_moyenne,
+         ROUND(SUM(il.duree_arret_agregee)::numeric, 1) AS total_arrets,
+         COUNT(*) AS nb_quarts,
+         ROUND(
+           (COUNT(CASE WHEN il.taux_disponibilite_calcule >= COALESCE(il.taux_cible, 90) THEN 1 END)::numeric
+            / NULLIF(COUNT(*), 0) * 100), 1
+         ) AS taux_atteinte_cible
+       FROM intervention_ligne il
+       JOIN planning_quart pq ON pq.id = il.planning_quart_id
+       JOIN planning_jour pj ON pj.id = pq.planning_jour_id
+       JOIN planning_semaine ps ON ps.id = pj.planning_semaine_id
+       WHERE ps.annee = $1 AND ps.mois = $2
+         ${ligne_id ? 'AND il.ligne_id = $3' : ''}`,
+      params
+    );
+
+    // ── KPIs depuis maintenance_corrective ─────────────────────────
+    const corrParams = ligne_id ? [anneeInt, moisInt, ligne_id] : [anneeInt, moisInt];
     const { rows: corrRows } = await db.query(
-      `SELECT COALESCE(SUM(vs.valeur_nombre), 0) AS heures_correctives
-       FROM soumissions s
-       JOIN formulaires_types ft ON ft.id = s.formulaire_type_id
-       JOIN valeurs_saisies vs   ON vs.soumission_id = s.id
-       JOIN champs_definitions cd ON cd.id = vs.champ_def_id
-       ${ligneJoin}
-       WHERE ft.module = 'MAINTENANCE'
-         AND (cd.nom_champ ILIKE '%durée%' OR cd.nom_champ ILIKE '%heure%' OR cd.nom_champ ILIKE '%temps%')
-         AND vs.valeur_nombre IS NOT NULL
-         AND EXTRACT(YEAR  FROM s.date_soumission) = $1
-         AND EXTRACT(MONTH FROM s.date_soumission) = $2
-         ${ligneWhere}`,
-      baseParams
+      `SELECT
+         COALESCE(SUM(mc.duree_arret), 0) AS heures_correctives,
+         COALESCE(SUM(mc.duree_maintenance), 0) AS heures_maintenance,
+         COUNT(*) AS nb_correctifs,
+         ROUND(AVG(mc.duree_maintenance)::numeric, 2) AS mttr_heures
+       FROM maintenance_corrective mc
+       JOIN planning_semaine ps ON ps.id = mc.planning_semaine_id
+       WHERE ps.annee = $1 AND ps.mois = $2
+         ${ligne_id ? 'AND ps.ligne_id = $3' : ''}`,
+      corrParams
     );
 
-    // ── Par technicien ─────────────────────────────────────────────
+    // ── Par maintenancier enrichi ──────────────────────────────────
     const { rows: parTech } = await db.query(
       `SELECT
-         u.prenom || ' ' || u.nom AS maintenancier_nom,
-         COUNT(DISTINCT s.id)     AS nb_interventions,
-         COUNT(DISTINCT s.equipement_id) AS nb_equipements,
-         COUNT(DISTINCT CASE WHEN s.statut = 'VALIDE' THEN s.id END) AS nb_valides
+         COALESCE(u.prenom || ' ' || u.nom, u.nom) AS maintenancier_nom,
+         COUNT(DISTINCT s.id) AS nb_interventions,
+         COUNT(DISTINCT CASE WHEN s.statut = 'VALIDE' THEN s.id END) AS nb_valides,
+         COALESCE(d.heures_arret, 0) AS heures_arret,
+         d.taux_moyen,
+         d.nb_quarts AS nb_shifts
        FROM soumissions s
        JOIN formulaires_types ft ON ft.id = s.formulaire_type_id
-       JOIN utilisateurs u       ON u.id = s.utilisateur_id
-       ${ligneJoin}
+       LEFT JOIN utilisateurs u ON u.id = s.utilisateur_id
+       ${ligne_id ? 'JOIN equipements eq ON eq.id = s.equipement_id' : ''}
+       LEFT JOIN LATERAL (
+         SELECT pq2.maintenancier_id,
+                SUM(il.duree_arret_agregee) AS heures_arret,
+                ROUND(AVG(il.taux_disponibilite_calcule)::numeric, 1) AS taux_moyen,
+                COUNT(*) AS nb_quarts
+         FROM planning_quart pq2
+         JOIN planning_jour pj2 ON pj2.id = pq2.planning_jour_id
+         JOIN planning_semaine ps2 ON ps2.id = pj2.planning_semaine_id
+         LEFT JOIN intervention_ligne il ON il.planning_quart_id = pq2.id
+         WHERE pq2.maintenancier_id = s.utilisateur_id
+           AND ps2.annee = $1 AND ps2.mois = $2
+           ${ligne_id ? 'AND ps2.ligne_id = $3' : ''}
+         GROUP BY pq2.maintenancier_id
+       ) d ON true
        WHERE ft.module = 'MAINTENANCE'
          AND EXTRACT(YEAR  FROM s.date_soumission) = $1
          AND EXTRACT(MONTH FROM s.date_soumission) = $2
-         ${ligneWhere}
-       GROUP BY u.id, u.prenom, u.nom
+         ${ligne_id ? 'AND eq.ligne_production = $3' : ''}
+       GROUP BY u.id, u.prenom, u.nom, d.heures_arret, d.taux_moyen, d.nb_quarts
        ORDER BY nb_interventions DESC`,
-      baseParams
+      params
     );
 
     // ── Par formulaire ─────────────────────────────────────────────
@@ -891,21 +922,33 @@ exports.dashboardSynthese = async (req, res) => {
          COUNT(CASE WHEN s.statut = 'VALIDE' THEN 1 END) AS nb_valides
        FROM soumissions s
        JOIN formulaires_types ft ON ft.id = s.formulaire_type_id
-       ${ligneJoin}
+       ${ligne_id ? 'JOIN equipements eq ON eq.id = s.equipement_id' : ''}
        WHERE ft.module = 'MAINTENANCE'
          AND EXTRACT(YEAR  FROM s.date_soumission) = $1
          AND EXTRACT(MONTH FROM s.date_soumission) = $2
-         ${ligneWhere}
+         ${ligne_id ? 'AND eq.ligne_production = $3' : ''}
        GROUP BY ft.id, ft.code, ft.titre
        ORDER BY nb DESC
        LIMIT 10`,
-      baseParams
+      params
     );
 
     const k = kpiRows[0] || {};
     const total    = Number(k.nb_soumissions || 0);
     const valides  = Number(k.nb_valides || 0);
     const tauxValid = total > 0 ? Math.round((valides / total) * 100) : 0;
+
+    const d = dispoRows[0] || {};
+    const c = corrRows[0] || {};
+    const nbCorrectifs = Number(c.nb_correctifs || 0);
+
+    // MTBF estimé : (période_en_heures - total_arrets) / nb_correctifs
+    const joursPeriode = new Date(anneeInt, moisInt, 0).getDate();
+    const heuresPeriode = joursPeriode * 24;
+    const totalArrets = Number(d.total_arrets || 0);
+    const mtbf = nbCorrectifs > 0
+      ? Math.round((heuresPeriode - totalArrets) / nbCorrectifs * 10) / 10
+      : null;
 
     res.json({
       kpis: {
@@ -916,8 +959,14 @@ exports.dashboardSynthese = async (req, res) => {
         nb_rejetes:            Number(k.nb_rejetes || 0),
         nb_en_attente:         Number(k.nb_en_attente || 0),
         taux_validation:       tauxValid,
-        heures_correctives:    Number(corrRows[0]?.heures_correctives || 0),
-        disponibilite_moyenne: tauxValid,
+        heures_correctives:    Number(c.heures_correctives || 0) + Number(c.heures_maintenance || 0),
+        disponibilite_moyenne: Number(d.disponibilite_moyenne || 0),
+        total_arrets:          totalArrets,
+        taux_atteinte_cible:   Number(d.taux_atteinte_cible || 0),
+        nb_quarts_executes:    Number(d.nb_quarts || 0),
+        nb_correctifs:         nbCorrectifs,
+        mttr_heures:           Number(c.mttr_heures || 0),
+        mtbf_heures:           mtbf,
       },
       par_maintenancier: parTech,
       par_formulaire:    parFormulaire,
@@ -1156,27 +1205,67 @@ exports.dashboardGraphiques = async (req, res) => {
       baseParams
     );
 
-    // ── Répartition par type de formulaire ─────────────────────────
-    const repartParams = moisInt
-      ? (ligne_id ? [anneeInt, moisInt, ligne_id] : [anneeInt, moisInt])
-      : baseParams;
-    const repartWhere = moisInt
-      ? `AND EXTRACT(MONTH FROM s.date_soumission) = $${ligne_id ? 3 : 2}`
-      : '';
+    // ── Disponibilité par ligne (depuis intervention_ligne) ─────────
+    const dispoParams = [];
+    let dispoQuery = `
+      SELECT lp.code AS ligne,
+             ROUND(AVG(il.taux_disponibilite_calcule)::numeric, 1) AS taux
+      FROM intervention_ligne il
+      JOIN planning_quart pq ON pq.id = il.planning_quart_id
+      JOIN planning_jour pj ON pj.id = pq.planning_jour_id
+      JOIN planning_semaine ps ON ps.id = pj.planning_semaine_id
+      JOIN ligne_production lp ON lp.id = il.ligne_id
+      WHERE ps.annee = $1
+    `;
+    dispoParams.push(anneeInt);
+    if (moisInt) { dispoParams.push(moisInt); dispoQuery += ` AND ps.mois = $${dispoParams.length}`; }
+    if (ligne_id) { dispoParams.push(ligne_id); dispoQuery += ` AND il.ligne_id = $${dispoParams.length}`; }
+    dispoQuery += ' GROUP BY lp.code ORDER BY lp.code';
+    const { rows: dispoLignes } = await db.query(dispoQuery, dispoParams);
 
-    const { rows: repartition } = await db.query(
-      `SELECT ft.code AS name, ft.titre AS fullname, COUNT(s.id)::int AS value
-       FROM soumissions s
-       JOIN formulaires_types ft ON ft.id = s.formulaire_type_id
-       ${ligneJoin}
-       WHERE ft.module = 'MAINTENANCE'
-         AND EXTRACT(YEAR FROM s.date_soumission) = $1
-         ${repartWhere}
-         ${ligne_id && !moisInt ? ligneWhere : (ligne_id && moisInt ? `AND eq.ligne_production = $3` : '')}
-       GROUP BY ft.id, ft.code, ft.titre
-       ORDER BY value DESC LIMIT 8`,
-      repartParams
-    );
+    // ── Arrêts par semaine (depuis intervention_ligne) ──────────────
+    const semParams = [];
+    let semQuery = `
+      SELECT ps.semaine_index AS semaine,
+             ROUND(SUM(il.duree_arret_agregee)::numeric, 1) AS heures
+      FROM intervention_ligne il
+      JOIN planning_quart pq ON pq.id = il.planning_quart_id
+      JOIN planning_jour pj ON pj.id = pq.planning_jour_id
+      JOIN planning_semaine ps ON ps.id = pj.planning_semaine_id
+      WHERE ps.annee = $1
+    `;
+    semParams.push(anneeInt);
+    if (moisInt) { semParams.push(moisInt); semQuery += ` AND ps.mois = $${semParams.length}`; }
+    if (ligne_id) { semParams.push(ligne_id); semQuery += ` AND il.ligne_id = $${semParams.length}`; }
+    semQuery += ' GROUP BY ps.semaine_index ORDER BY ps.semaine_index';
+    const { rows: parSemaine } = await db.query(semQuery, semParams);
+
+    // ── Répartition correctif / préventif (heures d'arrêt) ──────────
+    const repartParams = [];
+    let repartQuery = `
+      SELECT type, SUM(heures) AS heures FROM (
+        SELECT 'Préventif' AS type, COALESCE(SUM(il.duree_arret_agregee), 0) AS heures
+        FROM intervention_ligne il
+        JOIN planning_quart pq ON pq.id = il.planning_quart_id
+        JOIN planning_jour pj ON pj.id = pq.planning_jour_id
+        JOIN planning_semaine ps ON ps.id = pj.planning_semaine_id
+        WHERE ps.annee = $1
+    `;
+    repartParams.push(anneeInt);
+    if (moisInt) { repartParams.push(moisInt); repartQuery += ` AND ps.mois = $${repartParams.length}`; }
+    if (ligne_id) { repartParams.push(ligne_id); repartQuery += ` AND il.ligne_id = $${repartParams.length}`; }
+    repartQuery += `
+        UNION ALL
+        SELECT 'Correctif' AS type, COALESCE(SUM(mc.duree_arret), 0) AS heures
+        FROM maintenance_corrective mc
+        JOIN planning_semaine ps ON ps.id = mc.planning_semaine_id
+        WHERE ps.annee = $${repartParams.length + 1}
+    `;
+    repartParams.push(anneeInt);
+    if (moisInt) { repartParams.push(moisInt); repartQuery += ` AND ps.mois = $${repartParams.length}`; }
+    if (ligne_id) { repartParams.push(ligne_id); repartQuery += ` AND ps.ligne_id = $${repartParams.length}`; }
+    repartQuery += ` ) sub GROUP BY type`;
+    const { rows: repartition } = await db.query(repartQuery, repartParams);
 
     // ── Par équipement (top 8) ─────────────────────────────────────
     const { rows: parEquip } = await db.query(
@@ -1207,17 +1296,36 @@ exports.dashboardGraphiques = async (req, res) => {
 
     const COLORS = ['#4DB8A8','#1d4ed8','#f59e0b','#8b5cf6','#ef4444','#10b981','#f97316','#6366f1'];
 
+    // ── Pareto des causes (top 10) ──────────────────────────────────
+    const paretoParams = [];
+    let paretoQuery = `
+      SELECT il.cause_indisponibilite AS cause,
+             ROUND(SUM(il.duree_arret_agregee)::numeric, 1) AS heures,
+             COUNT(*) AS nb_occurrences
+      FROM intervention_ligne il
+      JOIN planning_quart pq ON pq.id = il.planning_quart_id
+      JOIN planning_jour pj ON pj.id = pq.planning_jour_id
+      JOIN planning_semaine ps ON ps.id = pj.planning_semaine_id
+      WHERE il.cause_indisponibilite IS NOT NULL AND il.cause_indisponibilite != ''
+        AND ps.annee = $1
+    `;
+    paretoParams.push(anneeInt);
+    if (moisInt) { paretoParams.push(moisInt); paretoQuery += ` AND ps.mois = $${paretoParams.length}`; }
+    if (ligne_id) { paretoParams.push(ligne_id); paretoQuery += ` AND il.ligne_id = $${paretoParams.length}`; }
+    paretoQuery += ' GROUP BY il.cause_indisponibilite ORDER BY heures DESC LIMIT 10';
+    const { rows: paretoCauses } = await db.query(paretoQuery, paretoParams);
+
     res.json({
       evolution:      evolutionFull,
-      dispo_par_ligne: [],
-      repartition:    repartition.map((r, i) => ({
-        name:  r.name,
-        label: r.fullname?.slice(0, 30),
-        value: r.value,
-        fill:  COLORS[i % COLORS.length],
+      dispo_par_ligne: dispoLignes,
+      repartition:    repartition.map(r => ({
+        name:  r.type,
+        value: Number(r.heures || 0),
+        fill:  r.type === 'Préventif' ? '#4DB8A8' : '#dc2626',
       })),
-      par_semaine:    [],
+      par_semaine:    parSemaine,
       par_equipement: parEquip,
+      pareto_causes:  paretoCauses,
     });
   } catch (e) {
     console.error('dashboardGraphiques:', e.message);
@@ -1964,5 +2072,220 @@ exports.listerEquipementsEtLignes = async (req, res) => {
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+/**
+ * Détail d'un équipement — heures préventif/correctif/total
+ * GET /api/planning/equipement/:id/detail?type=jour|mois|annee&date=...
+ */
+exports.detailEquipementMaintenance = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { type = 'mois', date: dateParam } = req.query;
+
+    if (!id) return res.status(400).json({ error: 'id équipement requis' });
+
+    const refDate = dateParam ? new Date(dateParam) : new Date();
+    const annee = refDate.getFullYear();
+    const mois = refDate.getMonth() + 1;
+
+    // Heures préventives (depuis intervention_ligne via intervention_quart)
+    let prevQuery, prevParams;
+    if (type === 'jour') {
+      const jour = refDate.getDate();
+      prevQuery = `
+        SELECT pj.date_jour::text AS periode,
+               ROUND(COALESCE(SUM(iq.duree_arret_effectif), 0)::numeric, 1) AS heures
+        FROM intervention_quart iq
+        JOIN planning_quart pq ON pq.id = iq.planning_quart_id
+        JOIN planning_jour pj ON pj.id = pq.planning_jour_id
+        JOIN planning_semaine ps ON ps.id = pj.planning_semaine_id
+        WHERE iq.equipement_id = $1
+          AND ps.annee = $2 AND ps.mois = $3 AND EXTRACT(DAY FROM pj.date_jour) = $4
+        GROUP BY pj.date_jour ORDER BY pj.date_jour
+      `;
+      prevParams = [id, annee, mois, jour];
+    } else if (type === 'annee') {
+      prevQuery = `
+        SELECT EXTRACT(MONTH FROM pj.date_jour)::int || '/' || ps.annee AS periode,
+               ROUND(COALESCE(SUM(iq.duree_arret_effectif), 0)::numeric, 1) AS heures
+        FROM intervention_quart iq
+        JOIN planning_quart pq ON pq.id = iq.planning_quart_id
+        JOIN planning_jour pj ON pj.id = pq.planning_jour_id
+        JOIN planning_semaine ps ON ps.id = pj.planning_semaine_id
+        WHERE iq.equipement_id = $1 AND ps.annee = $2
+        GROUP BY ps.annee, EXTRACT(MONTH FROM pj.date_jour)
+        ORDER BY MIN(pj.date_jour)
+      `;
+      prevParams = [id, annee];
+    } else {
+      prevQuery = `
+        SELECT ps.semaine_num || '/' || ps.mois || '/' || ps.annee AS periode,
+               ROUND(COALESCE(SUM(iq.duree_arret_effectif), 0)::numeric, 1) AS heures
+        FROM intervention_quart iq
+        JOIN planning_quart pq ON pq.id = iq.planning_quart_id
+        JOIN planning_jour pj ON pj.id = pq.planning_jour_id
+        JOIN planning_semaine ps ON ps.id = pj.planning_semaine_id
+        WHERE iq.equipement_id = $1 AND ps.annee = $2 AND ps.mois = $3
+        GROUP BY ps.semaine_num, ps.mois, ps.annee ORDER BY ps.semaine_num
+      `;
+      prevParams = [id, annee, mois];
+    }
+    const { rows: prevRows } = await db.query(prevQuery, prevParams);
+
+    // Heures correctives (depuis maintenance_corrective)
+    let corrQuery, corrParams;
+    if (type === 'jour') {
+      const jour = refDate.getDate();
+      corrQuery = `
+        SELECT mc.date_intervention::text AS periode,
+               ROUND(COALESCE(SUM(mc.duree_arret), 0)::numeric, 1) AS heures
+        FROM maintenance_corrective mc
+        WHERE mc.equipement_id = $1
+          AND EXTRACT(YEAR FROM mc.date_intervention) = $2
+          AND EXTRACT(MONTH FROM mc.date_intervention) = $3
+          AND EXTRACT(DAY FROM mc.date_intervention) = $4
+        GROUP BY mc.date_intervention ORDER BY mc.date_intervention
+      `;
+      corrParams = [id, annee, mois, jour];
+    } else if (type === 'annee') {
+      corrQuery = `
+        SELECT EXTRACT(MONTH FROM mc.date_intervention)::int || '/' || EXTRACT(YEAR FROM mc.date_intervention)::int AS periode,
+               ROUND(COALESCE(SUM(mc.duree_arret), 0)::numeric, 1) AS heures
+        FROM maintenance_corrective mc
+        WHERE mc.equipement_id = $1 AND EXTRACT(YEAR FROM mc.date_intervention) = $2
+        GROUP BY EXTRACT(YEAR FROM mc.date_intervention), EXTRACT(MONTH FROM mc.date_intervention)
+        ORDER BY MIN(mc.date_intervention)
+      `;
+      corrParams = [id, annee];
+    } else {
+      corrQuery = `
+        SELECT ps.semaine_num || '/' || ps.mois || '/' || ps.annee AS periode,
+               ROUND(COALESCE(SUM(mc.duree_arret), 0)::numeric, 1) AS heures
+        FROM maintenance_corrective mc
+        JOIN planning_semaine ps ON ps.id = mc.planning_semaine_id
+        WHERE mc.equipement_id = $1 AND ps.annee = $2 AND ps.mois = $3
+        GROUP BY ps.semaine_num, ps.mois, ps.annee ORDER BY ps.semaine_num
+      `;
+      corrParams = [id, annee, mois];
+    }
+    const { rows: corrRows } = await db.query(corrQuery, corrParams);
+
+    // Fusionner les périodes
+    const toutesPeriodes = [...new Set([...prevRows.map(r => r.periode), ...corrRows.map(r => r.periode)])].sort();
+    const detail = toutesPeriodes.map(periode => {
+      const prev = prevRows.find(r => r.periode === periode);
+      const corr = corrRows.find(r => r.periode === periode);
+      const hPrev = Number(prev?.heures || 0);
+      const hCorr = Number(corr?.heures || 0);
+      return {
+        periode,
+        heures_prev: hPrev,
+        heures_corr: hCorr,
+        heures_total: Math.round((hPrev + hCorr) * 10) / 10,
+      };
+    });
+
+    // Commentaire le plus fréquent/critique
+    const { rows: topObs } = await db.query(`
+      SELECT iq.observations, COUNT(*) AS nb
+      FROM intervention_quart iq
+      WHERE iq.equipement_id = $1 AND iq.observations IS NOT NULL AND iq.observations != ''
+      GROUP BY iq.observations ORDER BY nb DESC LIMIT 1
+    `, [id]);
+
+    const { rows: topCorrObs } = await db.query(`
+      SELECT mc.observations, COUNT(*) AS nb
+      FROM maintenance_corrective mc
+      WHERE mc.equipement_id = $1 AND mc.observations IS NOT NULL AND mc.observations != ''
+      GROUP BY mc.observations ORDER BY nb DESC LIMIT 1
+    `, [id]);
+
+    // Temps le plus élevé passé sur l'équipement
+    const { rows: maxTime } = await db.query(`
+      SELECT 'Préventif' AS type, MAX(iq.duree_arret_effectif) AS duree_max
+      FROM intervention_quart iq WHERE iq.equipement_id = $1
+      UNION ALL
+      SELECT 'Correctif' AS type, MAX(mc.duree_arret) AS duree_max
+      FROM maintenance_corrective mc WHERE mc.equipement_id = $1
+      ORDER BY duree_max DESC LIMIT 1
+    `, [id]);
+
+    res.json({
+      detail,
+      observations_frequentes: [
+        ...(topObs.rows[0] ? [{ texte: topObs.rows[0].observations, nb: topObs.rows[0].nb }] : []),
+        ...(topCorrObs.rows[0] ? [{ texte: topCorrObs.rows[0].observations, nb: topCorrObs.rows[0].nb }] : []),
+      ],
+      temps_max: maxTime.rows[0] || null,
+    });
+  } catch (e) {
+    console.error('detailEquipementMaintenance:', e.message);
+    res.status(500).json({ error: 'Erreur serveur', detail: e.message });
+  }
+};
+
+/**
+ * Mini-dashboard: courbe heures correctives par équipement
+ * GET /api/planning/equipements/courbe-correctives?type=jour|mois|annee&date=...
+ */
+exports.courbeCorrectivesEquipements = async (req, res) => {
+  try {
+    const { type = 'mois', date: dateParam } = req.query;
+    const refDate = dateParam ? new Date(dateParam) : new Date();
+    const annee = refDate.getFullYear();
+    const mois = refDate.getMonth() + 1;
+    const jour = refDate.getDate();
+
+    let query;
+    if (type === 'jour') {
+      query = `
+        SELECT e.nom AS equipement, e.code_ref,
+               ROUND(COALESCE(SUM(mc.duree_arret), 0)::numeric, 1) AS heures
+        FROM equipements e
+        LEFT JOIN maintenance_corrective mc ON mc.equipement_id = e.id
+          AND EXTRACT(YEAR FROM mc.date_intervention) = $1
+          AND EXTRACT(MONTH FROM mc.date_intervention) = $2
+          AND EXTRACT(DAY FROM mc.date_intervention) = $3
+        WHERE e.actif = true
+        GROUP BY e.id, e.nom, e.code_ref
+        HAVING COALESCE(SUM(mc.duree_arret), 0) > 0
+        ORDER BY heures DESC
+      `;
+    } else if (type === 'annee') {
+      query = `
+        SELECT e.nom AS equipement, e.code_ref,
+               ROUND(COALESCE(SUM(mc.duree_arret), 0)::numeric, 1) AS heures
+        FROM equipements e
+        LEFT JOIN maintenance_corrective mc ON mc.equipement_id = e.id
+          AND EXTRACT(YEAR FROM mc.date_intervention) = $1
+        WHERE e.actif = true
+        GROUP BY e.id, e.nom, e.code_ref
+        HAVING COALESCE(SUM(mc.duree_arret), 0) > 0
+        ORDER BY heures DESC
+      `;
+    } else {
+      query = `
+        SELECT e.nom AS equipement, e.code_ref,
+               ROUND(COALESCE(SUM(mc.duree_arret), 0)::numeric, 1) AS heures
+        FROM equipements e
+        LEFT JOIN maintenance_corrective mc ON mc.equipement_id = e.id
+          AND EXTRACT(YEAR FROM mc.date_intervention) = $1
+          AND EXTRACT(MONTH FROM mc.date_intervention) = $2
+        WHERE e.actif = true
+        GROUP BY e.id, e.nom, e.code_ref
+        HAVING COALESCE(SUM(mc.duree_arret), 0) > 0
+        ORDER BY heures DESC
+      `;
+    }
+
+    const params = type === 'jour' ? [annee, mois, jour] : type === 'annee' ? [annee] : [annee, mois];
+    const { rows } = await db.query(query, params);
+
+    res.json(rows);
+  } catch (e) {
+    console.error('courbeCorrectivesEquipements:', e.message);
+    res.status(500).json({ error: 'Erreur serveur', detail: e.message });
   }
 };

@@ -51,5 +51,6 @@ router.get('/:id/historique', ctrl.getHistorique);
 router.post('/',              roles('ADMIN','RESP_MAINT'), validate(createSchema), ctrl.create);
 router.put('/:id',            roles('ADMIN','RESP_MAINT'), validate(updateSchema), ctrl.update);
 router.patch('/:id/etat',     roles('ADMIN','RESP_MAINT','TECHNICIEN'), ctrl.updateEtat);
+router.delete('/:id',         roles('ADMIN','RESP_MAINT'), ctrl.remove);
 
 module.exports = router;
