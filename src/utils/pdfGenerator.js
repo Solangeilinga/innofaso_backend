@@ -216,4 +216,104 @@ const ficheEquipement = async (equipement, historique, piecesRechange) => {
     }));
 };
 
-module.exports = { genererPDF, buildHtmlPage, rapportJournalierMaintenance, rapportHebdomadaire, ficheEquipement };
+module.exports = { genererPDF, buildHtmlPage, rapportJournalierMaintenance, rapportHebdomadaire, ficheEquipement, ficheFormulaire };
+
+const ficheFormulaire = async (soumission, valeurs, entete) => {
+    const esc = (v) => String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+    // Grouper les valeurs par section
+    const sections = {};
+    for (const v of valeurs) {
+        const sec = v.section || 'Général';
+        if (!sections[sec]) sections[sec] = [];
+        sections[sec].push(v);
+    }
+
+    const getVal = (v) => {
+        if (v.valeur_booleen !== null && v.valeur_booleen !== undefined)
+            return v.valeur_booleen ? 'Oui ✓' : 'Non ✗';
+        if (v.valeur_nombre !== null && v.valeur_nombre !== undefined)
+            return `${v.valeur_nombre}${v.unite ? ' ' + v.unite : ''}`;
+        if (v.valeur_date) return new Date(v.valeur_date).toLocaleDateString('fr-FR');
+        if (v.valeur_texte) return esc(v.valeur_texte);
+        return '—';
+    };
+
+    const statusColor = { VALIDE:'#16a34a', REJETE:'#dc2626', SOUMIS:'#2563eb', BROUILLON:'#64748b' };
+
+    const enteteBlock = entete ? `
+    <table style="margin-bottom:16px;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden">
+      <thead><tr style="background:#f8fafc">
+        <th style="padding:8px 12px;text-align:left;font-size:11px;color:#64748b">ÉMETTEUR</th>
+        <th style="padding:8px 12px;text-align:left;font-size:11px;color:#64748b">VÉRIFICATEUR</th>
+        <th style="padding:8px 12px;text-align:left;font-size:11px;color:#64748b">APPROBATEUR</th>
+      </tr></thead>
+      <tbody><tr>
+        <td style="padding:8px 12px;font-size:12px">
+          <strong>${esc(entete.emetteur_nom||'—')}</strong><br/>
+          ${esc(entete.emetteur_fonction||'')}
+          ${entete.emetteur_date ? `<br/><span style="color:#64748b;font-size:11px">${new Date(entete.emetteur_date).toLocaleDateString('fr-FR')}</span>` : ''}
+        </td>
+        <td style="padding:8px 12px;font-size:12px">
+          <strong>${esc(entete.verificateur_nom||'—')}</strong><br/>
+          ${esc(entete.verificateur_fonction||'')}
+          ${entete.verificateur_date ? `<br/><span style="color:#64748b;font-size:11px">${new Date(entete.verificateur_date).toLocaleDateString('fr-FR')}</span>` : ''}
+        </td>
+        <td style="padding:8px 12px;font-size:12px">
+          <strong>${esc(entete.approbateur_nom||'—')}</strong><br/>
+          ${esc(entete.approbateur_fonction||'')}
+          ${entete.approbateur_date ? `<br/><span style="color:#64748b;font-size:11px">${new Date(entete.approbateur_date).toLocaleDateString('fr-FR')}</span>` : ''}
+        </td>
+      </tr></tbody>
+    </table>
+    ${entete.destinataires ? `<p style="font-size:12px;color:#64748b;margin-bottom:16px"><strong>Destinataires :</strong> ${esc(entete.destinataires)}</p>` : ''}
+    ` : '';
+
+    const sectionsBlock = Object.entries(sections).map(([sec, champs]) => `
+    <div class="section-title">${esc(sec)}</div>
+    <table>
+      <thead><tr><th style="width:50%">Champ</th><th>Valeur</th></tr></thead>
+      <tbody>
+        ${champs.map(v => `
+        <tr>
+          <td style="color:#475569">${esc(v.nom_champ)}</td>
+          <td><strong>${getVal(v)}</strong></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`).join('');
+
+    const contenu = `
+    <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap">
+      <div style="flex:1;min-width:200px;background:#f8fafc;border-radius:8px;padding:12px;border:1px solid #e2e8f0">
+        <p style="font-size:11px;color:#64748b;margin-bottom:4px">AUTEUR</p>
+        <p style="font-weight:600;font-size:13px">${esc(soumission.auteur_prenom||'')} ${esc(soumission.auteur_nom||'')}</p>
+        <p style="font-size:11px;color:#64748b">${esc(soumission.auteur_role||'')}</p>
+      </div>
+      <div style="flex:1;min-width:200px;background:#f8fafc;border-radius:8px;padding:12px;border:1px solid #e2e8f0">
+        <p style="font-size:11px;color:#64748b;margin-bottom:4px">DATE SOUMISSION</p>
+        <p style="font-weight:600;font-size:13px">${soumission.date_soumission ? new Date(soumission.date_soumission).toLocaleString('fr-FR') : '—'}</p>
+      </div>
+      <div style="flex:1;min-width:200px;background:#f8fafc;border-radius:8px;padding:12px;border:1px solid #e2e8f0">
+        <p style="font-size:11px;color:#64748b;margin-bottom:4px">STATUT</p>
+        <p style="font-weight:700;font-size:13px;color:${statusColor[soumission.statut]||'#64748b'}">${soumission.statut}</p>
+      </div>
+      ${soumission.equipement_nom ? `
+      <div style="flex:1;min-width:200px;background:#f8fafc;border-radius:8px;padding:12px;border:1px solid #e2e8f0">
+        <p style="font-size:11px;color:#64748b;margin-bottom:4px">ÉQUIPEMENT</p>
+        <p style="font-weight:600;font-size:13px">${esc(soumission.equipement_nom)}</p>
+      </div>` : ''}
+    </div>
+    ${enteteBlock}
+    ${sectionsBlock}
+    ${soumission.commentaire_rejet ? `
+    <div style="margin-top:16px;padding:12px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px">
+      <p style="font-size:11px;color:#dc2626;font-weight:700;margin-bottom:4px">MOTIF DE REJET</p>
+      <p style="font-size:12px;color:#7f1d1d">${esc(soumission.commentaire_rejet)}</p>
+    </div>` : ''}`;
+
+    return genererPDF(buildHtmlPage({
+        titre: `${soumission.formulaire_code} — ${soumission.formulaire_titre}`,
+        sousTitre: `Module : ${soumission.module} · Fréquence : ${soumission.frequence || '—'}`,
+        contenu,
+    }));
+};

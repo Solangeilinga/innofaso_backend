@@ -114,4 +114,8 @@ router.patch('/:id/valeurs', auth, async (req, res, next) => {
     } catch (err) { next(err); }
 });
 
+// ── Exports individuels ───────────────────────────────────────────
+router.get('/:id/export/pdf',   auth, ctrl.exportPDF);
+router.get('/:id/export/excel', auth, ctrl.exportSoumissionExcel);
+
 module.exports = router;
