@@ -227,20 +227,15 @@ const genererRapportMensuelIndicateurs = async ({ annee, mois }) => {
             ORDER BY ft.code
         `, [a, m]),
 
-        // Pannes par équipement (signalements)
+        // Pannes signalées sur le mois
         query(`
             SELECT
-                COALESCE(e.nom, sp.description)  AS equipement,
-                COUNT(sp.id)                      AS nb_pannes,
-                MIN(sp.date_panne)                AS premiere_panne,
-                MAX(sp.date_panne)                AS derniere_panne
+                COUNT(sp.id)       AS nb_pannes,
+                MIN(sp.date_panne) AS premiere_panne,
+                MAX(sp.date_panne) AS derniere_panne
             FROM signalements_pannes sp
-            LEFT JOIN equipements e ON e.id = sp.equipement_id
             WHERE EXTRACT(YEAR FROM sp.date_panne) = $1
               AND EXTRACT(MONTH FROM sp.date_panne) = $2
-            GROUP BY COALESCE(e.nom, sp.description)
-            ORDER BY nb_pannes DESC
-            LIMIT 10
         `, [a, m]),
     ]);
 
@@ -309,14 +304,14 @@ const genererRapportMensuelIndicateurs = async ({ annee, mois }) => {
             mtbf_h:                mtbfGlobal,
             mttr_h:                mttrGlobal,
             disponibilite_pct:     disponibiliteGlobale,
-            oee_pct:               disponibiliteGlobale, // cf. note OEE ci-dessus
+            oee_pct:               disponibiliteGlobale,
             preventives_planifiees: parseInt(prev.total_planifiees) || 0,
             preventives_realisees:  parseInt(prev.realisees)         || 0,
             preventives_en_retard:  parseInt(prev.en_retard)         || 0,
             taux_realisation_pct:   parseFloat(prev.taux_realisation_pct) || 0,
+            nb_signalements:        parseInt(pannesParEquipement.rows[0]?.nb_pannes) || 0,
         },
         par_equipement:    indicateursParEquipement,
-        pannes_top10:      pannesParEquipement.rows,
         encres_solvants:   encresSolvants.rows,
     };
 };
