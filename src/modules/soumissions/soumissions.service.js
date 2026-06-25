@@ -185,7 +185,11 @@ const create = async (data, utilisateurId, ip, appareil) => {
         if ((data.statut || 'SOUMIS') === 'SOUMIS') {
             try {
                 const alertesService = require('../alertes/alertes.service');
-                await alertesService.fermerAlertesFormulaire(data.formulaire_type_id);
+                await alertesService.fermerAlertesFormulaire(
+                    data.formulaire_type_id,
+                    utilisateurId,
+                    new Date()
+                );
             } catch (e) { console.error('fermerAlertesFormulaire error:', e.message); }
         }
 

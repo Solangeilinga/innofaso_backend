@@ -12,32 +12,12 @@ const getMatieresService = () => require('../modules/matieres/matieres.service')
 
 logger.info('⏰ Cron des alertes démarré.');
 
-// ── Formulaires JOURNALIER : vérifier à 17h chaque jour ──────────────
-cron.schedule('0 17 * * *', safeRun('17h00 — formulaires journaliers non soumis', async () => {
+// ── Formulaires non couverts dans les plannings (toutes les 2h) ───────
+// On vérifie les quarts terminés dont un formulaire assigné n'a pas été soumis
+cron.schedule('0 */2 * * *', safeRun('Planning non couvert — formulaires manquants', async () => {
     const svc = getAlertesService();
-    await svc.verifierFormulairesEnRetardParFrequence(['JOURNALIER']);
-}));
-
-// ── Formulaires HEBDO : vendredi à 16h ───────────────────────────────
-cron.schedule('0 16 * * 5', safeRun('Ven 16h00 — formulaires hebdo non soumis', async () => {
-    const svc = getAlertesService();
-    await svc.verifierFormulairesEnRetardParFrequence(['HEBDO','HEBDOMADAIRE']);
-}));
-
-// ── Formulaires MENSUEL : dernier jour du mois à 16h ─────────────────
-// On vérifie les jours 28 à 31 et on contrôle si c'est le dernier jour
-cron.schedule('0 16 28-31 * *', safeRun('Fin mois 16h — formulaires mensuels non soumis', async () => {
-    const demain = new Date(); demain.setDate(demain.getDate() + 1);
-    const estDernierJour = demain.getDate() === 1; // si demain est le 1er, aujourd'hui est le dernier
-    if (!estDernierJour) return;
-    const svc = getAlertesService();
-    await svc.verifierFormulairesEnRetardParFrequence(['MENSUEL']);
-}));
-
-// ── Rappel général du matin : formulaires JOURNALIER pas encore remplis ─
-cron.schedule('0 8 * * *', safeRun('08h00 — rappel matinal formulaires', async () => {
-    const svc = getAlertesService();
-    await svc.verifierFormulairesEnRetardParFrequence(['JOURNALIER'], true); // mode rappel = ne pas dupliquer si alerte récente
+    const nb = await svc.verifierPlanningsNonCouverts(2); // fenêtre anti-doublon 2h
+    logger.info(`Planning non couvert : ${nb} formulaire(s) manquant(s)`);
 }));
 
 // ── Plannings EN_RETARD (07h30) ───────────────────────────────────────

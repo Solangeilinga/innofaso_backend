@@ -80,73 +80,125 @@ const creerAlertePanneCritique = async (soumissionId, equipementId) => {
     }
 };
 
-// ── Vérification formulaires en retard par fréquence ─────────────────
-// skipIfRecent: ne pas créer si une alerte identique existe dans les dernières heures
-const verifierFormulairesEnRetardParFrequence = async (frequences, skipIfRecent = false) => {
-    const { rows: enRetard } = await query(`
-        WITH periodes AS (
-            SELECT ft.id AS formulaire_type_id, ft.frequence, ft.titre, ft.module,
-                CASE ft.frequence
-                    WHEN 'JOURNALIER'    THEN CURRENT_DATE
-                    WHEN 'HEBDO'         THEN DATE_TRUNC('week', CURRENT_DATE)::DATE
-                    WHEN 'HEBDOMADAIRE'  THEN DATE_TRUNC('week', CURRENT_DATE)::DATE
-                    WHEN 'MENSUEL'       THEN DATE_TRUNC('month', CURRENT_DATE)::DATE
-                    ELSE NULL
-                END AS debut_periode
-            FROM formulaires_types ft
-            WHERE ft.actif = TRUE AND ft.frequence = ANY($1)
-        )
-        SELECT p.* FROM periodes p
-        WHERE p.debut_periode IS NOT NULL
-          AND NOT EXISTS (
-            SELECT 1 FROM soumissions s
-            WHERE s.formulaire_type_id = p.formulaire_type_id
-              AND s.statut = 'SOUMIS'
-              AND s.date_soumission >= p.debut_periode
-          )
-    `, [frequences]);
+// ── Vérification formulaires non soumis basée sur les PLANNINGS ──────
+// On alerte uniquement quand un formulaire assigné à un quart planifié
+// n'a pas été soumis par le maintenancier concerné.
+const verifierPlanningsNonCouverts = async (fenetre_heures = 2) => {
+    // Récupérer tous les quarts passés dont au moins un formulaire assigné
+    // n'a pas été soumis par le maintenancier (ou co-maintenancier)
+    const { rows: quartsNonCouverts } = await query(`
+        SELECT
+            pq.id                  AS planning_quart_id,
+            pq.maintenancier_id,
+            pq.co_maintenancier_id,
+            pj.date_jour,
+            qm.nom                 AS quart_nom,
+            qm.heure_debut,
+            qm.heure_fin,
+            lp.code                AS ligne_code,
+            ft.id                  AS formulaire_type_id,
+            ft.titre               AS formulaire_titre,
+            ft.module
+        FROM planning_quart pq
+        JOIN planning_jour pj          ON pj.id  = pq.planning_jour_id
+        JOIN planning_semaine ps        ON ps.id  = pj.planning_semaine_id
+        JOIN ligne_production lp        ON lp.id  = ps.ligne_id
+        JOIN quart_maintenance qm       ON qm.id  = pq.quart_id
+        JOIN planning_quart_formulaires pqf ON pqf.planning_quart_id = pq.id
+        JOIN formulaires_types ft       ON ft.id  = pqf.formulaire_id
+        WHERE
+            -- Le quart est terminé (date passée ou heure dépassée aujourd'hui)
+            (
+                pj.date_jour < CURRENT_DATE
+                OR (
+                    pj.date_jour = CURRENT_DATE
+                    AND qm.heure_fin <= EXTRACT(HOUR FROM NOW())
+                )
+            )
+            -- Pas de soumission validée par le maintenancier (ou co) pour ce formulaire ce jour-là
+            AND NOT EXISTS (
+                SELECT 1 FROM soumissions s
+                WHERE s.formulaire_type_id = ft.id
+                  AND s.utilisateur_id IN (
+                      pq.maintenancier_id,
+                      pq.co_maintenancier_id
+                  )
+                  AND s.statut = 'SOUMIS'
+                  AND s.date_soumission::DATE = pj.date_jour
+            )
+            -- Uniquement les quarts des dernières 48h (éviter de re-alerter sur des anciens)
+            AND pj.date_jour >= CURRENT_DATE - INTERVAL '2 days'
+    `);
 
-    for (const formulaire of enRetard) {
-        const { rows: dest } = await query(
-            `SELECT u.id FROM utilisateurs u
-             JOIN roles r ON r.id = u.role_id
-             WHERE u.actif = TRUE AND (
-                 r.nom = 'ADMIN'
-                 OR (r.nom IN ('RESP_MAINT','TECHNICIEN') AND $1 = 'MAINTENANCE')
-                 OR (r.nom IN ('RESP_PROD','OPERATEUR')   AND $1 = 'PRODUCTION')
-             )`,
-            [formulaire.module]
-        );
+    for (const quart of quartsNonCouverts) {
+        const destinataires = [quart.maintenancier_id, quart.co_maintenancier_id].filter(Boolean);
+        const dateF = new Date(quart.date_jour).toLocaleDateString('fr-FR');
+        const msg = `⏰ Formulaire non soumis : "${quart.formulaire_titre}" — ${quart.quart_nom} Ligne ${quart.ligne_code} (${dateF})`;
 
-        for (const d of dest) {
-            // Fenêtre anti-doublon : 4h pour journalier, 24h pour hebdo/mensuel
-            const fenetre = frequences.includes('JOURNALIER') ? '4 hours' : '24 hours';
-            const { rows: ex } = await query(
-                `SELECT id FROM alertes
-                 WHERE type_alerte='FORMULAIRE_EN_RETARD'
-                   AND utilisateur_id=$1
-                   AND message ILIKE $2
-                   AND date_creation >= NOW() - INTERVAL '${fenetre}'`,
-                [d.id, `%${formulaire.titre}%`]
-            );
+        for (const uid of destinataires) {
+            // Anti-doublon : pas deux alertes identiques dans la fenêtre (défaut 2h)
+            const { rows: ex } = await query(`
+                SELECT id FROM alertes
+                WHERE type_alerte = 'FORMULAIRE_EN_RETARD'
+                  AND utilisateur_id = $1
+                  AND message ILIKE $2
+                  AND date_creation >= NOW() - INTERVAL '${fenetre_heures} hours'
+            `, [uid, `%${quart.formulaire_titre}%${quart.ligne_code}%`]);
 
             if (ex.length === 0) {
-                const emoji = formulaire.frequence === 'JOURNALIER' ? '⏰' :
-                              formulaire.frequence.includes('HEBDO')   ? '📅' : '📆';
                 await creer({
-                    utilisateur_id: d.id,
+                    utilisateur_id: uid,
                     type_alerte: 'FORMULAIRE_EN_RETARD',
-                    message: `${emoji} Formulaire non rempli : "${formulaire.titre}" (${formulaire.frequence}) — délai dépassé.`,
+                    message: msg,
                 });
             }
         }
+
+        // Alerter aussi les responsables (ADMIN, RESP_MAINT/RESP_PROD selon module)
+        const { rows: resps } = await query(`
+            SELECT u.id FROM utilisateurs u
+            JOIN roles r ON r.id = u.role_id
+            WHERE u.actif = TRUE AND (
+                r.nom = 'ADMIN'
+                OR (r.nom = 'RESP_MAINT' AND $1 = 'MAINTENANCE')
+                OR (r.nom = 'RESP_PROD'  AND $1 = 'PRODUCTION')
+            )
+        `, [quart.module]);
+
+        const msgResp = `🚨 Non couvert : "${quart.formulaire_titre}" — ${quart.quart_nom} Ligne ${quart.ligne_code} (${dateF})`;
+        for (const r of resps) {
+            const { rows: ex } = await query(`
+                SELECT id FROM alertes
+                WHERE type_alerte = 'FORMULAIRE_EN_RETARD'
+                  AND utilisateur_id = $1
+                  AND message ILIKE $2
+                  AND date_creation >= NOW() - INTERVAL '${fenetre_heures} hours'
+            `, [r.id, `%${quart.formulaire_titre}%${quart.ligne_code}%`]);
+            if (ex.length === 0) {
+                await creer({ utilisateur_id: r.id, type_alerte: 'FORMULAIRE_EN_RETARD', message: msgResp });
+            }
+        }
     }
-    return enRetard.length;
+
+    return quartsNonCouverts.length;
 };
 
-// Alias pour rétrocompatibilité cron
-const verifierFormulairesEnRetard = () =>
-    verifierFormulairesEnRetardParFrequence(['JOURNALIER','HEBDO','HEBDOMADAIRE','MENSUEL']);
+// Fermer les alertes planning quand le formulaire est soumis depuis un quart
+const fermerAlertesPlanningQuart = async (formulaireTypeId, utilisateurId, dateJour) => {
+    const { rows: ft } = await query('SELECT titre FROM formulaires_types WHERE id = $1', [formulaireTypeId]);
+    if (!ft.length) return;
+    const dateStr = new Date(dateJour || Date.now()).toLocaleDateString('fr-FR');
+    await query(`
+        UPDATE alertes SET statut = 'TRAITEE'
+        WHERE type_alerte = 'FORMULAIRE_EN_RETARD'
+          AND statut IN ('NON_LUE', 'LUE')
+          AND utilisateur_id = $1
+          AND message ILIKE $2
+    `, [utilisateurId, `%${ft[0].titre}%`]);
+};
+
+// Alias conservé pour rétrocompatibilité (fermeture depuis soumissions.service)
+const fermerAlertesFormulaire = fermerAlertesPlanningQuart;
 
 const verifierStocksBas = async () => {
     const { rows: bas } = await query(
@@ -238,7 +290,7 @@ const creerAlerteAssignationPlanning = async (technicierId, ligneCode, dateJour,
 module.exports = {
     getAll, marquerLue, marquerTraitee, creer,
     creerAlertePanneCritique, creerAlerteNouvellesoumission,
-    verifierFormulairesEnRetard, verifierFormulairesEnRetardParFrequence,
-    verifierStocksBas, fermerAlertesFormulaire,
+    verifierPlanningsNonCouverts,
+    verifierStocksBas, fermerAlertesFormulaire, fermerAlertesPlanningQuart,
     creerAlerteAssignationPlanning,
 };
