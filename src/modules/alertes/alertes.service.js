@@ -252,20 +252,6 @@ const creerAlerteNouvellesoumission = async (soumissionId, formulaireModule) => 
     }
 };
 
-// ── Fermeture auto quand formulaire soumis ────────────────────────────
-const fermerAlertesFormulaire = async (formulaireTypeId) => {
-    const { rows: ft } = await query(
-        'SELECT titre FROM formulaires_types WHERE id = $1', [formulaireTypeId]
-    );
-    if (!ft.length) return;
-    await query(`
-        UPDATE alertes SET statut = 'TRAITEE'
-        WHERE type_alerte = 'FORMULAIRE_EN_RETARD'
-          AND statut IN ('NON_LUE', 'LUE')
-          AND message ILIKE $1
-    `, [`%${ft[0].titre}%`]);
-};
-
 // ── Alerte assignation planning (technicien) ──────────────────────────
 const creerAlerteAssignationPlanning = async (technicierId, ligneCode, dateJour, quartNom) => {
     if (!technicierId) return;
