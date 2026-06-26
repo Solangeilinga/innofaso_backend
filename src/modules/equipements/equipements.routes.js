@@ -67,10 +67,10 @@ router.post('/ia/bot-chat', async (req, res, next) => {
 });
 
 router.post('/ia/bot-chat-stream', (req, res) => {
-    const http = require('http');
-    const parts = (process.env.IA_SERVICE_URL || 'http://localhost:5001').replace(/^https?:\/\//, '').split(':');
-    const hostname = parts[0];
-    const port = parseInt(parts[1]) || 80;
+    const IA_URL = process.env.IA_SERVICE_URL || 'http://localhost:5001';
+    const isHttps = IA_URL.startsWith('https://');
+    const httpMod = require(isHttps ? 'https' : 'http');
+    const urlObj = new URL(IA_URL);
     const { message, history } = req.body;
     if (!message) return res.status(400).json({ error: 'Champ "message" requis' });
 
@@ -83,8 +83,8 @@ router.post('/ia/bot-chat-stream', (req, res) => {
 
     const body = JSON.stringify({ message, history: history || [] });
     const options = {
-        hostname,
-        port,
+        hostname: urlObj.hostname,
+        port: urlObj.port || (isHttps ? 443 : 80),
         path: '/api/bot/chat/stream',
         method: 'POST',
         headers: {
@@ -95,7 +95,7 @@ router.post('/ia/bot-chat-stream', (req, res) => {
 
     const writeSse = (obj) => res.write(`data: ${JSON.stringify(obj)}\n\n`);
 
-    const flaskReq = http.request(options, (flaskRes) => {
+    const flaskReq = httpMod.request(options, (flaskRes) => {
         if (flaskRes.statusCode !== 200) {
             let body = '';
             flaskRes.on('data', c => body += c);
