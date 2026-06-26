@@ -69,7 +69,6 @@ const exportPDF = async (req, res, next) => {
         const e = soumission.formulaire_entete || soumission.entete;
         const valeurs = (soumission.valeurs || []).filter(v => v.nom_champ);
 
-        // Grouper par section
         const sections = {};
         for (const v of valeurs) {
             const sec = v.section || 'Général';
@@ -82,9 +81,7 @@ const exportPDF = async (req, res, next) => {
 
         const enteteHtml = e ? `
         <table class="entete-table">
-          <tr>
-            <th>ÉMETTEUR</th><th>VÉRIFICATEUR</th><th>APPROBATEUR</th>
-          </tr>
+          <tr><th>ÉMETTEUR</th><th>VÉRIFICATEUR</th><th>APPROBATEUR</th></tr>
           <tr>
             <td><strong>${esc(e.emetteur_nom||'—')}</strong><br><small>${esc(e.emetteur_fonction||'')}</small></td>
             <td><strong>${esc(e.verificateur_nom||'—')}</strong><br><small>${esc(e.verificateur_fonction||'')}</small></td>
@@ -101,7 +98,7 @@ const exportPDF = async (req, res, next) => {
             <tr><th style="width:45%">Champ</th><th>Valeur</th></tr>
             ${champs.map(v => {
                 const val = getValeurLisible(v);
-                if (!val && val !== 0) return ''; // skip vides
+                if (!val && val !== 0) return '';
                 return `<tr><td class="label">${esc(v.nom_champ)}</td><td class="value">${esc(val)}</td></tr>`;
             }).join('')}
           </table>
@@ -146,27 +143,20 @@ const exportPDF = async (req, res, next) => {
     <h1>${esc(soumission.formulaire_code || '')} — ${esc(soumission.formulaire_titre || '')}</h1>
     <div class="sub">Module : ${esc(soumission.module||'')} · Fréquence : ${esc(soumission.frequence||'—')}</div>
   </div>
-
   <div class="meta-grid">
     <div class="meta-card"><div class="label">Auteur</div><div class="val">${esc((soumission.auteur_prenom||'')+' '+(soumission.auteur_nom||''))}</div></div>
     <div class="meta-card"><div class="label">Date</div><div class="val">${soumission.date_soumission ? new Date(soumission.date_soumission).toLocaleString('fr-FR') : '—'}</div></div>
     <div class="meta-card"><div class="label">Statut</div><div class="val status">${esc(soumission.statut||'')}</div></div>
     ${soumission.equipement_nom ? `<div class="meta-card"><div class="label">Équipement</div><div class="val">${esc(soumission.equipement_nom)}</div></div>` : ''}
   </div>
-
   ${enteteHtml}
   ${sectionsHtml}
-
   ${soumission.commentaire_rejet ? `
   <div class="rejet-box">
     <div class="title">Motif de rejet</div>
     <p style="margin-top:4px;font-size:11px">${esc(soumission.commentaire_rejet)}</p>
   </div>` : ''}
-
-  <div class="footer">
-    Généré par InnoFaso · ${new Date().toLocaleDateString('fr-FR')}
-  </div>
-
+  <div class="footer">Généré par InnoFaso · ${new Date().toLocaleDateString('fr-FR')}</div>
   <script>window.onload = () => window.print();</script>
 </body>
 </html>`;

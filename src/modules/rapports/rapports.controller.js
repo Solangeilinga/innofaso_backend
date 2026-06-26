@@ -95,6 +95,24 @@ const getMensuelIndicateurs = async (req, res, next) => {
     } catch (err) { next(err); }
 };
 
+const getMensuelPDF = async (req, res, next) => {
+    try {
+        const data = await service.genererRapportMensuelIndicateurs({
+            annee: req.query.annee,
+            mois:  req.query.mois,
+        });
+        const pdfGenerator = require('../../utils/pdfGenerator');
+        const pdf = await pdfGenerator.rapportMensuelIndicateurs(data);
+        const mois = String(req.query.mois || new Date().getMonth() + 1).padStart(2, '0');
+        const annee = req.query.annee || new Date().getFullYear();
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment; filename="rapport_mensuel_${annee}-${mois}.pdf"`,
+        });
+        res.send(pdf);
+    } catch (err) { next(err); }
+};
+
 module.exports = {
     getJournalierMaintenance,
     getHebdomadaire,
@@ -102,4 +120,5 @@ module.exports = {
     getExportExcel,
     getExportCSV,
     getMensuelIndicateurs,
+    getMensuelPDF,
 };
