@@ -34,13 +34,46 @@ router.use(auth);
 router.get('/ia/predictions', async (req, res, next) => {
     try {
         const iaService = require('../../services/ia.service');
+        const { query }  = require('../../config/db');
         const now   = new Date();
         const mois  = parseInt(req.query.mois)  || now.getMonth() + 1;
         const annee = parseInt(req.query.annee) || now.getFullYear();
 
         const data = await iaService.getPredictionsPannes(annee, mois);
         if (!data) return res.json({ disponible: false, predictions: [] });
-        res.json({ disponible: true, ...data });
+
+        // Charger tous les équipements de la BDD pour enrichir le matching
+        const { rows: equips } = await query(
+            'SELECT id, nom, code_ref FROM equipements WHERE actif = TRUE ORDER BY nom'
+        );
+
+        // Normaliser un nom : retire accents, apostrophes, tirets
+        const norm = (s) => (s || '')
+            .toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/[\u2018\u2019'`]/g, '')
+            .replace(/[-_]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+        // Pour chaque prédiction Flask, trouver l'équipement BDD correspondant
+        const predictions = (data.predictions || []).map(pred => {
+            const pNorm = norm(pred.equipement);
+            const match = equips.find(e => {
+                const eNorm = norm(e.nom);
+                return eNorm === pNorm
+                    || eNorm.includes(pNorm)
+                    || pNorm.includes(eNorm)
+                    || norm(e.code_ref) === pNorm;
+            });
+            return {
+                ...pred,
+                equipement_id:  match?.id   || null,
+                equipement_nom_bdd: match?.nom || pred.equipement,
+            };
+        });
+
+        res.json({ disponible: true, ...data, predictions });
     } catch (err) { next(err); }
 });
 
